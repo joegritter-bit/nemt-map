@@ -28,7 +28,8 @@ def init_db():
             pickup_address TEXT,
             dropoff_address TEXT,
             broker TEXT,
-            timestamp TEXT
+            timestamp TEXT,
+            last_seen TEXT
         )
     ''')
     conn.commit()
@@ -40,48 +41,67 @@ def align_schema(df, conn):
     not yet in the database, and adds them automatically.
     """
     cursor = conn.cursor()
-    # Get current database columns
     cursor.execute("PRAGMA table_info(trips)")
     db_cols = [info[1] for info in cursor.fetchall()]
     
-    # Check for missing columns
     for col in df.columns:
         if col not in db_cols:
             print(f"   🔧 Adding new column to database: '{col}'")
             try:
-                # Add the column dynamically. 
-                # Note: This is simple text substitution; assume safe headers from internal code.
                 cursor.execute(f"ALTER TABLE trips ADD COLUMN {col} TEXT")
                 conn.commit()
             except Exception as e:
                 print(f"   ⚠️ Could not add column {col}: {e}")
 
 def save_batch(df):
-    """ Save a dataframe of trips to the database safely. """
+    """ Save a dataframe of trips to the database safely, updating 'last_seen'. """
     if df.empty:
         return
 
-    init_db() # Ensure basic table exists
+    init_db() 
     conn = get_connection()
     
-    # Add timestamp
-    df['timestamp'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    # Standardize timestamps
+    now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
-    # 1. FIX SCHEMA: Make sure DB has all the columns the DF has
+    # 1. Prepare Dataframe
+    # 'last_seen' is NOW for everything in this batch
+    df['last_seen'] = now_str
+    
+    # 'timestamp' (First Seen) is only for new rows, but we set it here for the insert later
+    if 'timestamp' not in df.columns:
+        df['timestamp'] = now_str
+
+    # 2. Ensure Schema (This will add 'last_seen' column if it's missing)
     align_schema(df, conn)
 
     try:
-        # 2. FILTER DUPLICATES: Read existing IDs to avoid crashing
-        existing_ids = pd.read_sql_query("SELECT trip_id FROM trips", conn)['trip_id'].tolist()
+        cursor = conn.cursor()
+        trip_ids = df['trip_id'].tolist()
+
+        # 3. UPDATE "Last Seen" for ALL trips in this batch (Existing + New)
+        # This marks old trips as "Still Active"
+        if trip_ids:
+            placeholders = ','.join(['?'] * len(trip_ids))
+            sql = f"UPDATE trips SET last_seen = ? WHERE trip_id IN ({placeholders})"
+            cursor.execute(sql, [now_str] + trip_ids)
+            conn.commit()
         
-        # Keep only trips that are NOT in the database
-        new_trips = df[~df['trip_id'].isin(existing_ids)]
+        # 4. INSERT New Trips
+        # Identify which IDs are already in the DB
+        existing_check_sql = f"SELECT trip_id FROM trips WHERE trip_id IN ({placeholders})"
+        existing_ids = pd.read_sql_query(existing_check_sql, conn, params=trip_ids)['trip_id'].tolist()
+        
+        # Filter for trips that are NOT in the DB yet
+        new_trips = df[~df['trip_id'].isin(existing_ids)].copy()
         
         if not new_trips.empty:
+            # Ensure new trips have the 'timestamp' set to creation time
+            new_trips['timestamp'] = now_str
             new_trips.to_sql('trips', conn, if_exists='append', index=False)
-            print(f"   💾 Saved {len(new_trips)} new trips. ({len(df) - len(new_trips)} duplicates skipped)")
+            print(f"   💾 Saved {len(new_trips)} NEW trips. (Updated timestamps for {len(trip_ids)} active trips)")
         else:
-            print("   💤 No new unique trips found in this batch.")
+            print(f"   🔄 Updated 'last_seen' for {len(trip_ids)} recurring trips.")
 
     except Exception as e:
         print(f"   ⚠️ Database Save Error: {e}")

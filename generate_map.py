@@ -13,15 +13,14 @@ MAP_OUTPUT = 'nemt_war_room.html'
 CLINICS_FILE = 'clinics.txt'
 
 # Initialize Geocoder
-geolocator = Nominatim(user_agent="nemt_map_v7_iron_dome", timeout=15)
+geolocator = Nominatim(user_agent="jgritter_nemt_map_v2", timeout=15)
 geocode_service = RateLimiter(geolocator.geocode, min_delay_seconds=1.5)
 
 # 📦 THE MIDWEST CAGE
 # Defined GPS corners for [IL, MO, IN, WI, KY]
-# This prevents results jumping to Idaho or California
 MIDWEST_VIEWBOX = [
-    (35.0, -95.0), # South-West Corner (Arkansas/Oklahoma border)
-    (44.0, -84.0)  # North-East Corner (Michigan/Ohio)
+    (35.0, -95.0), # South-West Corner
+    (44.0, -84.0)  # North-East Corner
 ]
 
 def get_db_connection():
@@ -83,16 +82,25 @@ def get_coordinates(conn, original_addr):
     # EXECUTE with IRON DOME settings
     for search_query in strategies:
         try:
-            print(f"   🌍 Trying: {search_query[:45]}...")
+            print(f"   🔍 Trying: {search_query[:45]}...")
             
             # 🔒 LOCKED DOWN SEARCH
             location = geocode_service(
                 search_query, 
-                country_codes='us',     # No Italy
-                viewbox=MIDWEST_VIEWBOX # No Idaho
+                country_codes='us',     
+                viewbox=MIDWEST_VIEWBOX,
+                bounded=True  # FORCE results to stay inside the Midwest Cage
             )
             
             if location:
+                # 🛑 SANITY CHECK: IL Border Logic 🛑
+                # If the address says 'IL', but the longitude is East of -87.5,
+                # it's likely mapped to Indianapolis (-86.1) or Ohio. REJECT IT.
+                if "IL" in search_query.upper() or "ILLINOIS" in search_query.upper():
+                    if location.longitude > -87.5: 
+                        print(f"      ⚠️ Rejecting bad match: IL address mapped too far East ({location.longitude})")
+                        continue # Skip this result and try the next strategy
+                
                 cursor.execute("INSERT OR REPLACE INTO geo_cache (address, lat, lon) VALUES (?, ?, ?)", 
                                (clean_key, location.latitude, location.longitude))
                 conn.commit()
@@ -108,26 +116,49 @@ def get_coordinates(conn, original_addr):
     return None, None
 
 def generate_map():
-    print("🗺️  Initializing War Room Map v7 (Iron Dome)...")
+    print("🗺️  Initializing Map (Active Snapshot Mode)...")
     conn = get_db_connection()
     ensure_cache_table(conn)
     
+    # Load all data
     df = pd.read_sql_query("SELECT * FROM trips", conn)
-    df['dt_date'] = pd.to_datetime(df['date'], errors='coerce')
-    today = pd.Timestamp.now().normalize()
-    df = df[df['dt_date'] >= today]
     
+    if df.empty:
+        print("   ⚠️ Database is empty. Run the scraper first.")
+        return
+
+    # --- 🛡️ ACTIVE SNAPSHOT FILTER 🛡️ ---
+    if 'last_seen' not in df.columns:
+        print("   ⚠️ Column 'last_seen' missing. Run the scraper once to update your data!")
+        return
+
+    # Convert last_seen to datetime
+    df['last_seen'] = pd.to_datetime(df['last_seen'], errors='coerce')
+    
+    # Find the latest time anyone saw ANY trip
+    last_run_time = df['last_seen'].max()
+    print(f"   🕒 Latest Scrape Data: {last_run_time}")
+    
+    # Keep trips seen in the last 45 minutes of that time
+    cutoff_time = last_run_time - pd.Timedelta(minutes=45)
+    active_df = df[df['last_seen'] >= cutoff_time].copy()
+    
+    print(f"   📉 Mapping {len(active_df)} Active Trips (Hiding {len(df) - len(active_df)} inactive/taken trips).")
+
+    # Load Priorities
     priorities = load_priority_keywords()
     
+    # Create Map
     m = folium.Map(location=[40.0, -89.0], zoom_start=7, tiles="CartoDB positron")
     cluster = MarkerCluster().add_to(m)
-
-    print(f"   📍 Mapping {len(df)} trips...")
     
     mapped_count = 0
-    for _, row in df.iterrows():
+    
+    for _, row in active_df.iterrows():
         pickup = row.get('pickup_address', 'Unknown')
-        broker = row.get('broker', 'MTM')
+        broker = row.get('broker', 'MTM') 
+        miles = row.get('miles', 0)
+        payout = row.get('payout', 0) # GET PAYOUT DATA
         
         lat, lon = get_coordinates(conn, pickup)
         
@@ -135,19 +166,32 @@ def generate_map():
             mapped_count += 1
             is_priority = any(k in pickup.lower() for k in priorities)
             
-            if is_priority:
-                color, icon, prefix = 'red', 'star', '🚨 PRIORITY'
-            elif broker == 'Modivcare':
+            # --- DYNAMIC STYLING & TEXT ---
+            if broker == 'Modivcare':
                 color, icon, prefix = 'green', 'usd', '💰 MODIVCARE'
+                # Format price safely
+                try:
+                    val_display = f"<b>PAYOUT:</b> <span style='color:green; font-size:14px'>${float(payout):.2f}</span>"
+                except:
+                    val_display = f"<b>PAYOUT:</b> ${payout}"
             else:
-                color, icon, prefix = 'blue', 'user', '🌊 MTM'
+                # MTM Default
+                if is_priority:
+                    color, icon, prefix = 'red', 'star', '🚨 PRIORITY'
+                else:
+                    color, icon, prefix = 'blue', 'car', '🌊 MTM'
+                val_display = f"<b>MILES:</b> {miles}"
 
+            # Construct Popup
             popup = f"""
             <div style="width:200px">
                 <b>{prefix}</b><br>
-                <b>Time:</b> {row['date']} @ {row['pickup_time']}<br>
-                <b>$$$:</b> ${row.get('payout', 0)}<br>
-                <b>Addr:</b> {pickup}<br>
+                <b>Date:</b> {row['date']}<br>
+                <b>Time:</b> {row['pickup_time']}<br>
+                {val_display}<br>
+                <hr>
+                <b>From:</b> {pickup}<br>
+                <b>To:</b> {row.get('dropoff_address', '')}<br>
             </div>
             """
             
@@ -159,7 +203,7 @@ def generate_map():
 
     m.save(MAP_OUTPUT)
     conn.close()
-    print(f"✅ Map saved to: {MAP_OUTPUT} ({mapped_count}/{len(df)} trips plotted)")
+    print(f"✅ Map saved to: {MAP_OUTPUT} ({mapped_count} active trips plotted)")
 
 if __name__ == "__main__":
     generate_map()

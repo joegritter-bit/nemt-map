@@ -1,5 +1,7 @@
 from src.scrapers.broker_a import MTMScraper
 from src.scrapers.broker_b import ModivcareScraper
+from analyze_patterns import analyze_and_report
+from generate_map import generate_map
 from email_handler import EmailHandler
 from datetime import datetime, timedelta
 import time
@@ -232,3 +234,10 @@ if __name__ == "__main__":
     time.sleep(random.randint(10, 20))
     try: run_modivcare()
     except Exception as e: print(f"❌ Modivcare Error: {e}")
+
+    # UPDATE MAP FIRST
+    try: generate_map()
+    except: pass
+
+    # THEN SEND EMAIL
+    analyze_and_report()

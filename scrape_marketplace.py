@@ -20,8 +20,11 @@ class MTMController(MTMScraper):
         """ Adds random mouse movements to look human. """
         if self.page:
             try:
+                # Move mouse in a random arc/path
                 for _ in range(random.randint(2, 4)):
-                    self.page.mouse.move(random.randint(100, 700), random.randint(100, 700), steps=random.randint(5, 15))
+                    x = random.randint(100, 700)
+                    y = random.randint(100, 700)
+                    self.page.mouse.move(x, y, steps=random.randint(5, 15))
                     time.sleep(random.uniform(0.1, 0.3))
             except: pass
 
@@ -29,14 +32,22 @@ class MTMController(MTMScraper):
         print("\n🚨 MTM SESSION EXPIRED. AUTO-LOGIN...")
         user = os.getenv("MTM_USERNAME")
         pwd = os.getenv("MTM_PASSWORD")
+        
         try:
             print("   🌍 Navigating to Login...")
-            self.page.goto("https://mtm.mtmlink.net/pe/login")
+            # UPDATE 1: Increased Timeout to 60s
+            self.page.goto("https://mtm.mtmlink.net/pe/login", timeout=60000)
             
-            # FIX: Wait specifically for the Username ID
-            self.page.wait_for_selector("input[id='Username'], input[name='Username']", timeout=30000)
+            # UPDATE 2: Print Title to check for Cloudflare blocks
+            try:
+                print(f"      👀 Page Title: {self.page.title()}")
+            except: pass
+
+            # UPDATE 3: Wait longer for the username field
+            self.page.wait_for_selector("input[id='Username'], input[name='Username']", timeout=60000)
             
             print("   🔑 Typing Credentials...")
+            self.human_wiggle() # Wiggle before typing
             self.page.type("input[id='Username'], input[name='Username']", user, delay=random.randint(50, 150))
             self.page.type("input[id='Password'], input[name='Password']", pwd, delay=random.randint(50, 150))
             
@@ -44,10 +55,13 @@ class MTMController(MTMScraper):
             
             # MFA Handler
             try:
+                # Wait for MFA field to appear
                 self.page.wait_for_selector("input[id='code']", timeout=10000)
-                print("   🔐 MFA Detected! Checking Gmail...")
+                print("   🔒 MFA Detected! Checking Gmail...")
+                
                 email_bot = EmailHandler()
                 time.sleep(15) # Give email time to arrive
+                
                 code = email_bot.get_latest_code()
                 if code:
                     print(f"      ✅ Found Code: {code}")
@@ -55,12 +69,15 @@ class MTMController(MTMScraper):
                     self.page.click("button[type='submit']")
                 else:
                     print("      ❌ No MFA code found in email.")
-            except: pass
+            except: 
+                # If no MFA field appears, assume we logged in directly
+                pass
 
-            self.page.wait_for_url("**/pe/**", timeout=45000)
+            self.page.wait_for_url("**/pe/**", timeout=60000)
             print("   ✅ Login Success!")
             self.context.storage_state(path="auth.json")
             return True
+            
         except Exception as e:
             print(f"   ❌ Login Failed: {e}")
             self.page.screenshot(path="mtm_login_fail.png")
@@ -68,23 +85,30 @@ class MTMController(MTMScraper):
 
     def run_scan(self):
         print("\n🟢 STARTING MTM BROKER SCAN (Invisible Mode)...")
-        # FORCE HEADLESS = TRUE
+        # FORCE HEADLESS = TRUE for background automation
         self.start_browser(headless=True, auth_file="auth.json") 
         
         try:
             self.page.goto("https://mtm.mtmlink.net/pe/v1/marketplace?orgId=2853")
+            
+            # Check if we need to login
+            login_needed = False
             try:
                 self.page.wait_for_selector('div[class*="toggleServiceArea"]', timeout=8000)
             except:
+                login_needed = True
+
+            if login_needed:
                 if not self.perform_auto_login():
                     print("   ⛔ MTM Login failed. Skipping MTM.")
                     self.close_browser()
                     return
-                # If login worked, go back to market
+                # If login succeeded, go back to marketplace
                 self.page.goto("https://mtm.mtmlink.net/pe/v1/marketplace?orgId=2853")
 
-            # Click 'Toggle Service Area' if present
+            # Click 'Toggle Service Area'
             try:
+                self.human_wiggle() # Wiggle before toggle
                 self.page.click('div[class*="toggleServiceArea"]')
                 time.sleep(3)
             except: pass
@@ -101,6 +125,9 @@ class MTMController(MTMScraper):
                 if not self.process_date(date_str):
                     print(f"      ⚠️ Load failed. Adding to 'Circle Back' list.")
                     failed_dates.append(date_str)
+                
+                # Random pause between dates to look human
+                time.sleep(random.uniform(1.5, 3.0))
 
             # PHASE 2: Circle Back
             if failed_dates:
@@ -122,10 +149,10 @@ class MTMController(MTMScraper):
 
     def process_date(self, date_str):
         self.change_date(date_str)
+        self.human_wiggle() # Wiggle before clicking apply
         self.click_apply_filter()
         
         if self.wait_for_results(15):
-            # Calls the new pagination looper
             trips = self.scrape_all_pages(date_str)
             if trips:
                 print(f"      💰 Found {len(trips)} MTM trips (Total).")
@@ -141,27 +168,21 @@ class MTMController(MTMScraper):
         while True:
             print(f"      📖 Scraping MTM Page {page_num}...")
             
-            # 1. Scrape the current view
             current_page_trips = self.scrape_table(date_str)
             all_trips.extend(current_page_trips)
             
-            # 2. Check for "Next" button using your specific HTML
-            # We look for the list item with class 'ant-pagination-next' that explicitly has aria-disabled="false"
             next_btn_selector = 'li.ant-pagination-next[aria-disabled="false"]'
             
             if self.page.query_selector(next_btn_selector):
                 try:
-                    # Click the Next button
+                    self.human_wiggle() # Wiggle before clicking next
                     self.page.click(next_btn_selector)
-                    
-                    # Wait for the table to load new data. 
                     time.sleep(random.uniform(3.0, 5.0)) 
                     page_num += 1
                 except Exception as e:
                     print(f"      ⚠️ Pagination Click Failed: {e}")
                     break
             else:
-                # If we don't find an element with aria-disabled="false", it means the button is disabled.
                 break
                 
         return all_trips
@@ -216,7 +237,7 @@ class MTMController(MTMScraper):
 def run_modivcare():
     print("\n🔵 STARTING MODIVCARE SCAN (Invisible Mode)...")
     bot = ModivcareScraper()
-    bot.start_browser() # Will use Invisible mode by default
+    bot.start_browser() 
     time.sleep(random.uniform(2, 5))
     if bot.login():
         if bot.navigate_to_marketplace():

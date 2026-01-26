@@ -1,0 +1,5 @@
+nemt_env/
+*.csv
+__pycache__/
+*.log
+.DS_Store

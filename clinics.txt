@@ -1,0 +1,36 @@
+100 N. 8th
+101 Wall
+104 Northtown
+109 W Elm
+118 W. Chestnut
+1006 S. Division
+1200 N East
+1201 S 4th
+1433 Willow
+1480 Darlington
+14410 Rt 37
+1520 S 4th
+1530 N 7th
+1702 Lafayette
+1900 E Main
+2027 Campus
+204 W University
+2323 Stevenson
+2570 E Federal
+2615 Edwards
+304 Wesley
+4 Memorial
+400 S Lewis
+403 Commerce
+620 W 8th
+676 E Springhill
+6000 Bond
+7 S Hospital
+701 Engelwood
+701 S Durkin
+777 S. Main
+88 Wabash
+805 W National
+95 N Research
+902 W Main
+904 MLK

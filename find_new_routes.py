@@ -42,12 +42,11 @@ CITY_COUNTY_MAP = {
     "mt vernon": "Jefferson County", "mt. vernon": "Jefferson County",
     "taylorville": "Christian County", "monticello": "Piatt County",
     "louisville": "Clay County", "flora": "Clay County",
-    "paris": "Edgar County", "casey": "Clark County", "marshall": "Clark County",
-    "peoria": "Peoria County", "bloomington": "McLean County", "normal": "McLean County"
+    "paris": "Edgar County", "casey": "Clark County", "marshall": "Clark County"
 }
 
 # Geocoding
-geolocator = Nominatim(user_agent="jgritter_nemt_map_v10_34", timeout=15)
+geolocator = Nominatim(user_agent="jgritter_nemt_map_v10_31", timeout=15)
 geocode_service = RateLimiter(geolocator.geocode, min_delay_seconds=1.5)
 reverse_service = RateLimiter(geolocator.reverse, min_delay_seconds=1.5)
 MIDWEST_VIEWBOX = [(35.0, -95.0), (44.0, -84.0)]
@@ -139,7 +138,7 @@ def get_coordinates_and_county(conn, original_addr):
     return None, None, "Unknown"
 
 def generate_map():
-    print("🗺️  Generating Map v10.34 (Route Fixes & Date Toggles)...")
+    print("🗺️  Generating Map v10.31 (Robust CSV Reading)...")
     conn = get_db_connection()
     ensure_cache_table(conn)
     df = pd.read_sql_query("SELECT * FROM trips", conn)
@@ -197,19 +196,22 @@ def generate_map():
     if os.path.exists(ROUTES_FILE):
         try:
             r_df = pd.read_csv(ROUTES_FILE)
+            # FORCE DATE PARSING to ensure they sort and display correctly
             r_df['Date'] = pd.to_datetime(r_df['Date'], errors='coerce').dt.strftime('%Y-%m-%d')
             
+            route_count = 0
             for route_date in sorted(r_df['Date'].unique()):
                 daily_routes = r_df[r_df['Date'] == route_date]
                 if daily_routes.empty: continue
                 
+                # Create Layer with show=False so it doesn't clutter, but exists
                 routes_group = folium.FeatureGroup(name=f"🚀 Routes: {route_date}", show=False).add_to(m)
                 
                 for _, row in daily_routes.iterrows():
-                    # ✅ FIX: Use the 'Start Address' column to Geocode!
-                    # Fallback to Route Description split if column is missing (legacy safety)
-                    raw_addr = str(row.get('Start Address', str(row['Route Description']).split('(')[0]))
-                    addr_match = raw_addr.strip()
+                    route_count += 1
+                    raw_desc = str(row['Route Description'])
+                    # Robust Address Extraction
+                    addr_match = raw_desc.split('(')[0].strip()
                     hub_name = row.get('Hub', 'Effingham')
                     
                     lat, lon, _ = get_coordinates_and_county(conn, addr_match)
@@ -223,10 +225,8 @@ def generate_map():
                             <h4 style="margin:0; color:{marker_color};">🚀 STRATEGY</h4>
                             <b>Hub: {hub_name}</b><br>
                             Profit: <b style="color:green;">${row['Total Revenue']}</b><br>
-                            Rate: <b>${row.get('Revenue/Hour', '0')}/hr</b><br>
-                            Shift: {row.get('Shift Length (Hrs)', 0)} hrs<br>
-                            <hr style="margin:5px 0;">
-                            <i style="font-size:11px">{row['Route Description']}</i>
+                            Hrly: <b>${row.get('Revenue/Hour', '0')}/hr</b><br>
+                            <i style="font-size:11px">{raw_desc}</i>
                         </div>
                         """
                         
@@ -242,7 +242,7 @@ def generate_map():
                                 color="gray", weight=2.5, opacity=0.7, dash_array='5, 10'
                             ).add_to(routes_group)
             
-            print(f"   -> Routes plotted successfully.")
+            print(f"   -> Plotted {route_count} Strategic Routes successfully.")
 
         except Exception as e: print(f"⚠️ Error plotting routes: {e}")
 
@@ -256,6 +256,6 @@ def generate_map():
         with open(MAP_OUTPUT, "w", encoding='utf-8') as f: f.write(html.replace("</body>", inject + "</body>"))
 
     conn.close()
-    print(f"✅ Full Map v10.34 saved.")
+    print(f"✅ Full Map v10.31 saved.")
 
 if __name__ == "__main__": generate_map()

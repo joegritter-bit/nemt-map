@@ -18,13 +18,9 @@ def get_connection():
     if not os.path.exists(DB_FOLDER):
         os.makedirs(DB_FOLDER)
     
-    # Increase timeout to 30 seconds to wait for locks to clear
     conn = sqlite3.connect(DB_PATH, timeout=30)
-    
-    # ENABLE WAL MODE (The Magic Fix for 'Database Locked' errors)
-    # This allows reading and writing at the same time.
+    # WAL Mode helps with 'Database Locked' errors
     conn.execute('PRAGMA journal_mode=WAL;')
-    
     return conn
 
 def init_db():
@@ -32,7 +28,6 @@ def init_db():
     conn = get_connection()
     cursor = conn.cursor()
     
-    # Core Trips Schema
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS trips (
             trip_id TEXT PRIMARY KEY,
@@ -48,7 +43,6 @@ def init_db():
         )
     ''')
     
-    # Geo Cache Schema (Crucial for the Map)
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS geo_cache (
             address TEXT PRIMARY KEY, 
@@ -61,10 +55,7 @@ def init_db():
     conn.close()
 
 def align_schema(df, conn):
-    """ 
-    Checks if the dataframe has columns that represent NEW fields
-    not yet in the database, and adds them automatically.
-    """
+    """ Adds new columns to DB if the dataframe introduces them. """
     cursor = conn.cursor()
     cursor.execute("PRAGMA table_info(trips)")
     db_cols = [info[1] for info in cursor.fetchall()]
@@ -80,78 +71,89 @@ def align_schema(df, conn):
 
 def save_batch(df):
     """ 
-    Save a dataframe of trips to the database safely.
-    Includes RETRY LOGIC to handle database locks.
+    Save a dataframe of trips safely.
+    Fixes:
+    1. Deduplicates input (prevents batch crashes).
+    2. Uses Fallback Row-by-Row insertion if bulk fails.
     """
     if df.empty:
         return
 
-    # Initialize DB (creates tables if missing)
+    # Initialize DB
     init_db() 
     
-    # Standardize timestamps
+    # ✅ FIX 1: DEDUPLICATE INPUT
+    # If the scraper sends duplicates in the same batch, drop the extras to save the rest.
+    initial_len = len(df)
+    df = df.drop_duplicates(subset=['trip_id'], keep='last')
+    if len(df) < initial_len:
+        print(f"   ✂️  Dropped {initial_len - len(df)} duplicate IDs from batch.")
+
     now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    
-    # 'last_seen' is NOW for everything in this batch
     df['last_seen'] = now_str
-    
-    # 'timestamp' (First Seen) is only for new rows, but we set it here for the insert later
     if 'timestamp' not in df.columns:
         df['timestamp'] = now_str
 
-    # RETRY LOGIC (Try 3 times before giving up)
     max_retries = 3
     for attempt in range(max_retries):
         conn = None
         try:
             conn = get_connection()
-            
-            # 1. Ensure Schema matches (Add new columns if found)
             align_schema(df, conn)
-            
             cursor = conn.cursor()
             trip_ids = df['trip_id'].tolist()
 
-            # 2. UPDATE "Last Seen" for ALL trips in this batch (Existing + New)
-            # This marks old trips as "Still Active"
+            # 1. UPDATE "Last Seen" for existing trips
             if trip_ids:
                 placeholders = ','.join(['?'] * len(trip_ids))
                 sql = f"UPDATE trips SET last_seen = ? WHERE trip_id IN ({placeholders})"
                 cursor.execute(sql, [now_str] + trip_ids)
                 conn.commit()
             
-            # 3. INSERT New Trips
-            # Identify which IDs are already in the DB
+            # 2. FILTER for purely NEW trips
             existing_check_sql = f"SELECT trip_id FROM trips WHERE trip_id IN ({placeholders})"
             existing_ids = pd.read_sql_query(existing_check_sql, conn, params=trip_ids)['trip_id'].tolist()
             
-            # Filter for trips that are NOT in the DB yet
             new_trips = df[~df['trip_id'].isin(existing_ids)].copy()
             
             if not new_trips.empty:
-                # Ensure new trips have the 'timestamp' set to creation time
+                # Ensure 'timestamp' is set for new rows
                 new_trips['timestamp'] = now_str
-                new_trips.to_sql('trips', conn, if_exists='append', index=False)
-                print(f"   💾 Saved {len(new_trips)} NEW trips. (Updated timestamps for {len(trip_ids)} active trips)")
+                
+                # ✅ FIX 2: ROBUST INSERTION
+                try:
+                    # Try Fast Bulk Insert
+                    new_trips.to_sql('trips', conn, if_exists='append', index=False)
+                    print(f"   💾 Saved {len(new_trips)} NEW trips. (Updated timestamps for {len(trip_ids)} active trips)")
+                except Exception as bulk_e:
+                    # If Bulk Fails (e.g. Unique Constraint), try Row-by-Row Fallback
+                    print(f"   ⚠️ Bulk Save Failed ({bulk_e}). Switching to Safe Mode...")
+                    saved_count = 0
+                    for _, row in new_trips.iterrows():
+                        try:
+                            # Convert single row to DF and save
+                            pd.DataFrame([row]).to_sql('trips', conn, if_exists='append', index=False)
+                            saved_count += 1
+                        except:
+                            continue # Skip the bad apple
+                    print(f"   ✅ Safe Mode: Saved {saved_count}/{len(new_trips)} trips successfully.")
             else:
                 print(f"   🔄 Updated 'last_seen' for {len(trip_ids)} recurring trips.")
 
-            # Success! Break the loop
-            break
+            break # Success
 
         except sqlite3.OperationalError as e:
             if "locked" in str(e).lower():
-                print(f"   ⚠️ Database Locked (Attempt {attempt+1}/{max_retries}). Waiting 2s...")
+                print(f"   ⚠️ Database Locked (Attempt {attempt+1}). Waiting...")
                 time.sleep(2)
             else:
                 print(f"   ❌ Database Error: {e}")
                 break
         except Exception as e:
-            print(f"   ⚠️ Database Save Error: {e}")
+            print(f"   ❌ General Save Error: {e}")
             break
         finally:
-            if conn:
-                conn.close()
+            if conn: conn.close()
 
-# Initialize on import to be safe
+# Initialize on import
 init_db()

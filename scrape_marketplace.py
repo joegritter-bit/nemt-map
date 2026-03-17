@@ -1,264 +1,445 @@
-from src.scrapers.broker_a import MTMScraper
-from src.scrapers.broker_b import ModivcareScraper
-from analyze_patterns import analyze_and_report
-from generate_map import generate_map
-from email_handler import EmailHandler
-from datetime import datetime, timedelta
 import time
 import random
 import os
 import pandas as pd
+from datetime import datetime, timedelta
 from dotenv import load_dotenv
+from playwright.sync_api import sync_playwright
+
+# Import Custom Modules
+from src.scrapers.broker_a import MTMScraper
+from src.scrapers.broker_b import ModivcareScraper
+from analyze_patterns import analyze_and_report
+from generate_map import generate_map
+from email_handler import EmailHandler  
 from database import save_batch
+from find_complex_routes import find_complex_routes 
+from visualize_pulse import generate_pulse_chart # 📈 NEW IMPORT
 
 load_dotenv(override=True)
 
+# --- 🔧 SETTINGS ---
 DAYS_TO_SCAN = 8
+HEADLESS_MODE = False  
 
 class MTMController(MTMScraper):
+    def __init__(self):
+        super().__init__()
+        self.consecutive_zeros = 0
+        self.retry_queue = [] 
+
+    # ✅ FORCE VISIBLE BROWSER
+    def start_browser(self, headless=False, auth_file=None):
+        print("   🚀 Launching Chrome (Force Visible Mode)...")
+        self.p = sync_playwright().start()
+        
+        launch_args = ["--start-maximized", "--no-sandbox", "--disable-dev-shm-usage"]
+        
+        if auth_file and os.path.exists(auth_file):
+            print(f"   🍪 Loading session from {auth_file}...")
+            self.browser = self.p.chromium.launch_persistent_context(
+                user_data_dir="user_data",
+                headless=False, 
+                args=launch_args,
+                viewport={"width": 1280, "height": 800}
+            )
+            self.context = self.browser 
+            self.page = self.browser.pages[0]
+        else:
+            self.browser = self.p.chromium.launch(
+                headless=False, 
+                args=launch_args
+            )
+            self.context = self.browser.new_context(viewport={"width": 1280, "height": 800})
+            self.page = self.context.new_page()
+
+    # ✅ HUMAN BEHAVIOR
     def human_wiggle(self):
-        """ Adds random mouse movements to look human. """
         if self.page:
             try:
-                # Move mouse in a random arc/path
                 for _ in range(random.randint(2, 4)):
                     x = random.randint(100, 700)
                     y = random.randint(100, 700)
-                    self.page.mouse.move(x, y, steps=random.randint(5, 15))
-                    time.sleep(random.uniform(0.1, 0.3))
+                    self.page.mouse.move(x, y, steps=random.randint(10, 25))
+                    time.sleep(random.uniform(0.1, 0.4))
             except: pass
 
-    def perform_auto_login(self):
-        print("\n🚨 MTM SESSION EXPIRED. AUTO-LOGIN...")
+    def perform_login(self):
+        print("\n🔑 PERFORMING FRESH LOGIN (v10.85)...")
+        print("   👀 LOOK AT THE BROWSER WINDOW NOW!")
         user = os.getenv("MTM_USERNAME")
         pwd = os.getenv("MTM_PASSWORD")
         
         try:
-            print("   🌍 Navigating to Login...")
-            # UPDATE 1: Increased Timeout to 60s
             self.page.goto("https://mtm.mtmlink.net/pe/login", timeout=60000)
-            
-            # UPDATE 2: Print Title to check for Cloudflare blocks
-            try:
-                print(f"      👀 Page Title: {self.page.title()}")
-            except: pass
+            time.sleep(5) 
 
-            # UPDATE 3: Wait longer for the username field
-            self.page.wait_for_selector("input[id='Username'], input[name='Username']", timeout=60000)
+            # ✅ STRICT CHECK: Only return True if we see the DASHBOARD
+            if self.page.locator("button:has-text('Apply Filter')").is_visible():
+                print("   ✅ Already logged in (Dashboard found).")
+                return True
+
+            # Form Detection
+            if not self.page.locator("#LoginEmail").is_visible():
+                splash = self.page.locator("button:has-text('Sign In'), button.btn-primary").first
+                if splash.is_visible() and splash.get_attribute("id") != "SignInButton":
+                    print("   👉 Clicking Splash Button...")
+                    self.human_wiggle()
+                    splash.click()
+                    time.sleep(3)
+
+            print("   ✏️  Entering Credentials...")
+            self.page.click("#LoginEmail")
+            self.page.fill("#LoginEmail", "") 
+            self.page.type("#LoginEmail", user, delay=random.randint(50, 100))
+            self.page.keyboard.press("Tab") 
+            time.sleep(random.uniform(0.5, 1.2))
+
+            self.page.fill("#LoginPassword", "")
+            self.page.type("#LoginPassword", pwd, delay=random.randint(50, 100))
+            self.page.keyboard.press("Tab") 
+            time.sleep(random.uniform(0.8, 1.5))
+
+            submit_btn = self.page.locator("#SignInButton")
+            for attempt in range(5):
+                if submit_btn.is_disabled():
+                    print(f"   ⚠️ Button disabled. Waking up form... ({attempt+1})")
+                    self.page.click("#LoginPassword")
+                    self.page.keyboard.type(" ")
+                    self.page.keyboard.press("Backspace")
+                    time.sleep(1)
+                else:
+                    break
             
-            print("   🔑 Typing Credentials...")
-            self.human_wiggle() # Wiggle before typing
-            self.page.type("input[id='Username'], input[name='Username']", user, delay=random.randint(50, 150))
-            self.page.type("input[id='Password'], input[name='Password']", pwd, delay=random.randint(50, 150))
+            print("   👉 Clicking Sign In...")
+            self.human_wiggle()
+            submit_btn.click()
+            time.sleep(5)
+
+            # 🚨 STEP 1: CHECK FOR "REQUEST CODE" SCREEN
+            if "RequestMFA" in self.page.url or self.page.locator("text=Request Authorization Code").is_visible():
+                print("   🛡️  STEP 1: MFA Request Screen Detected!")
+                try:
+                    email_radio = self.page.locator("label:has-text('Email to:')")
+                    if email_radio.count() > 0:
+                        self.human_wiggle()
+                        email_radio.click()
+                except: pass
+
+                send_btn = self.page.locator("button:has-text('Send Code')")
+                if send_btn.is_visible():
+                    print("      👉 Clicking 'Send Code'...")
+                    self.human_wiggle()
+                    send_btn.click()
+                    self.page.wait_for_url("**/InputMFA**", timeout=15000)
+
+            # 🚨 STEP 2: ENTER CODE SCREEN
+            input_box = self.page.locator("input[name*='AuthorizationCode'], input[id*='Code'], input[type='text']")
             
-            self.page.click("button[type='submit'], button:has-text('Login')")
-            
-            # MFA Handler
-            try:
-                # Wait for MFA field to appear
-                self.page.wait_for_selector("input[id='code']", timeout=10000)
-                print("   🔒 MFA Detected! Checking Gmail...")
-                
+            if input_box.count() > 0 and input_box.first.is_visible():
+                print("   🔐 STEP 2: Enter Code Screen Detected!")
+                print("      👉 Initializing Email Handler...")
                 email_bot = EmailHandler()
-                time.sleep(15) # Give email time to arrive
+                
+                print("      ⌛ Waiting 20s for email to arrive...")
+                time.sleep(20) 
                 
                 code = email_bot.get_latest_code()
+                
                 if code:
                     print(f"      ✅ Found Code: {code}")
-                    self.page.fill("input[id='code']", code)
-                    self.page.click("button[type='submit']")
-                else:
-                    print("      ❌ No MFA code found in email.")
-            except: 
-                # If no MFA field appears, assume we logged in directly
-                pass
+                    input_box.first.fill("")
+                    input_box.first.type(code, delay=random.randint(100, 200))
+                    time.sleep(1)
 
-            self.page.wait_for_url("**/pe/**", timeout=60000)
-            print("   ✅ Login Success!")
-            self.context.storage_state(path="auth.json")
-            return True
+                    try:
+                        remember_box = self.page.locator("text=Remember this device")
+                        if remember_box.count() > 0:
+                            print("      ☑️  Clicking 'Remember this device'...")
+                            self.human_wiggle()
+                            remember_box.click()
+                            time.sleep(1)
+                    except: pass
+                    
+                    print("      👉 Clicking Submit...")
+                    self.human_wiggle()
+                    self.page.click("button:has-text('Submit')")
+                else:
+                    print("      ❌ Code not found in email.")
+
+            # FINAL WAIT
+            print("   ⌛ Waiting 5s for page load...")
+            time.sleep(5)
+
+            # ✅ THE FIX: BRUTE FORCE NAVIGATION
+            if not self.page.locator("button:has-text('Apply Filter')").is_visible():
+                print("   🔄 Dashboard not detected. Forcing navigation to Marketplace URL...")
+                self.page.goto("https://mtm.mtmlink.net/pe/v1/marketplace?orgId=2853")
+                time.sleep(5)
+
+            # Verify Success
+            try:
+                self.page.wait_for_selector("button:has-text('Apply Filter')", timeout=20000)
+                print("   ✅ Login Sequence Finished.")
+                self.context.storage_state(path="auth.json")
+                return True
+            except:
+                print("   ❌ Login Verification Failed (No Dashboard).")
+                return False
             
         except Exception as e:
-            print(f"   ❌ Login Failed: {e}")
-            self.page.screenshot(path="mtm_login_fail.png")
+            print(f"   ❌ Login Crash: {e}")
+            return False
+
+    def check_service_area_toggle(self):
+        print("   🔧 Checking 'Outside Service Area' Status...")
+        try:
+            time.sleep(3)
+            red_indicator = self.page.locator("[fill='#c14a4c']").first
+            if red_indicator.count() > 0:
+                print("      🔴 Found RED Indicator (Switch is OFF). Clicking...")
+                self.human_wiggle()
+                red_indicator.click(force=True)
+                print("      👉 Click sent. Waiting 5s...")
+                time.sleep(5)
+            else:
+                print("      🟢 RED Indicator not found. Assuming Switch is ON.")
+        except Exception as e: 
+            print(f"      ⚠️ Toggle Error: {e}")
+
+    def process_day(self, date_str):
+        print(f"   [MTM] Scanning: {date_str}")
+        self.change_date(date_str)
+        self.human_wiggle() 
+        self.page.click("button:has-text('Apply Filter')")
+        
+        try: self.page.wait_for_selector(".ant-spin-spinning", state='hidden', timeout=10000)
+        except: pass
+
+        try:
+            self.page.wait_for_selector("tr.ant-table-row, div.ant-empty-image, .ant-empty-description", timeout=40000)
+        except:
+            print("      ⚠️ Timeout: Retrying filter click (Double Tap)...")
+            self.page.click("button:has-text('Apply Filter')")
+            time.sleep(3)
+            try: self.page.wait_for_selector("tr.ant-table-row, div.ant-empty-image, .ant-empty-description", timeout=20000)
+            except: 
+                print("      ❌ Timeout: No data loaded.")
+                return False
+
+        trips = self.scrape_all_pages(date_str)
+        if trips:
+            print(f"      💰 Found {len(trips)} MTM trips.")
+            try:
+                save_batch(pd.DataFrame(trips))
+            except Exception as e:
+                if "UNIQUE" in str(e):
+                    print(f"      🔄 Updated {len(trips)} existing trips.")
+                else:
+                    print(f"      ⚠️ Database Error: {e}")
+            return True
+        else:
+            print("      ℹ️  No trips found (Marking for Retry).")
             return False
 
     def run_scan(self):
-        print("\n🟢 STARTING MTM BROKER SCAN (Invisible Mode)...")
-        # FORCE HEADLESS = TRUE for background automation
-        self.start_browser(headless=True, auth_file="auth.json") 
+        print(f"\n🟢 STARTING MTM SCAN (Self-Healing Mode)...")
         
-        try:
-            self.page.goto("https://mtm.mtmlink.net/pe/v1/marketplace?orgId=2853")
+        # --- 🛡️ SELF-HEALING SESSION LOOP ---
+        max_retries = 3
+        attempt = 0
+        session_ready = False
+
+        while attempt < max_retries:
+            attempt += 1
+            print(f"\n🔄 SESSION INIT ATTEMPT {attempt}/{max_retries}...")
             
-            # Check if we need to login
-            login_needed = False
-            try:
-                self.page.wait_for_selector('div[class*="toggleServiceArea"]', timeout=8000)
-            except:
-                login_needed = True
+            auth_path = "auth.json" if os.path.exists("auth.json") else None
+            self.start_browser(headless=HEADLESS_MODE, auth_file=auth_path) 
+            time.sleep(3)
 
-            if login_needed:
-                if not self.perform_auto_login():
-                    print("   ⛔ MTM Login failed. Skipping MTM.")
-                    self.close_browser()
-                    return
-                # If login succeeded, go back to marketplace
-                self.page.goto("https://mtm.mtmlink.net/pe/v1/marketplace?orgId=2853")
-
-            # Click 'Toggle Service Area'
             try:
-                self.human_wiggle() # Wiggle before toggle
-                self.page.click('div[class*="toggleServiceArea"]')
+                target_url = "https://mtm.mtmlink.net/pe/v1/marketplace?orgId=2853"
+                self.page.goto(target_url)
+                time.sleep(3)
+
+                login_form_visible = self.page.locator("#LoginEmail").is_visible()
+                login_url = "login" in self.page.url.lower()
+                
+                if login_form_visible or login_url:
+                    print("   ⚠️ Login Screen Detected. Proceeding to Login...")
+                    if not self.perform_login():
+                        raise Exception("Login Flow Failed")
+
+                if "marketplace" not in self.page.url.lower():
+                    print("   🔄 Force-navigating to Marketplace...")
+                    self.page.goto(target_url)
+                    time.sleep(5)
+
+                try:
+                    self.page.wait_for_selector("button:has-text('Apply Filter')", timeout=15000)
+                    print("   ✅ Session Verified! 'Apply Filter' button found.")
+                    session_ready = True
+                    break 
+                except:
+                    raise Exception("Session Invalid - Dashboard Verification Failed")
+
+            except Exception as e:
+                print(f"   ❌ Session Error: {e}")
+                print("   🗑️  HEALING: Deleting corrupt auth.json and restarting browser...")
+                if os.path.exists("auth.json"): os.remove("auth.json")
+                self.close_browser()
+        
+        if not session_ready:
+            print("   ⛔ CRITICAL FAILURE: Could not establish session after retries.")
+            return
+
+        # --- 🚀 SCANNING PHASE ---
+        try:
+            self.check_service_area_toggle()
+
+            try:
+                self.page.click("button:has-text('Apply Filter')")
                 time.sleep(3)
             except: pass
 
             start_date = datetime.now()
-            failed_dates = []
-
-            # PHASE 1: Main Sweep
+            
             for i in range(DAYS_TO_SCAN):
                 target_date = start_date + timedelta(days=i)
                 date_str = target_date.strftime("%m/%d/%Y")
-                print(f"   [MTM] Scanning: {date_str}")
                 
-                if not self.process_date(date_str):
-                    print(f"      ⚠️ Load failed. Adding to 'Circle Back' list.")
-                    failed_dates.append(date_str)
-                
-                # Random pause between dates to look human
-                time.sleep(random.uniform(1.5, 3.0))
+                success = self.process_day(date_str)
+                if not success:
+                    print(f"      🔄 Adding {date_str} to Circle Back Queue.")
+                    self.retry_queue.append(date_str)
 
-            # PHASE 2: Circle Back
-            if failed_dates:
-                print(f"\n🔄 Circling back to retry {len(failed_dates)} dates...")
-                time.sleep(random.randint(3, 6))
-                for date_str in failed_dates:
-                    print(f"   [MTM] Retrying: {date_str}")
-                    if self.process_date(date_str):
-                        print("      ✅ Recovered!")
-                    else:
-                        print("      ❌ Still stuck. Skipping.")
+                time.sleep(random.uniform(2.0, 4.0)) 
+
+            if self.retry_queue:
+                print(f"\n🔄 CIRCLING BACK: Retrying {len(self.retry_queue)} failed dates...")
+                for date_str in self.retry_queue:
+                    print(f"   [RETRY] Scanning: {date_str}")
+                    self.process_day(date_str)
+                    time.sleep(3)
+            else:
+                print("\n✨ Clean Sweep: No dates needed retrying.")
 
         except Exception as e:
-            print(f"   ❌ MTM Critical Error: {e}")
-            self.page.screenshot(path="mtm_crash.png")
+            print(f"   ❌ Critical Error During Scan: {e}")
         
         self.close_browser()
         print("🔴 MTM SCAN COMPLETE.")
 
-    def process_date(self, date_str):
-        self.change_date(date_str)
-        self.human_wiggle() # Wiggle before clicking apply
-        self.click_apply_filter()
-        
-        if self.wait_for_results(15):
-            trips = self.scrape_all_pages(date_str)
-            if trips:
-                print(f"      💰 Found {len(trips)} MTM trips (Total).")
-                save_batch(pd.DataFrame(trips))
-            return True
-        else: 
-            return False
-
     def scrape_all_pages(self, date_str):
         all_trips = []
-        page_num = 1
-        
         while True:
-            print(f"      📖 Scraping MTM Page {page_num}...")
+            current = self.scrape_table(date_str)
+            all_trips.extend(current)
             
-            current_page_trips = self.scrape_table(date_str)
-            all_trips.extend(current_page_trips)
-            
-            next_btn_selector = 'li.ant-pagination-next[aria-disabled="false"]'
-            
-            if self.page.query_selector(next_btn_selector):
+            next_btn = self.page.locator('li.ant-pagination-next[aria-disabled="false"]').first
+            if next_btn.count() > 0:
                 try:
-                    self.human_wiggle() # Wiggle before clicking next
-                    self.page.click(next_btn_selector)
-                    time.sleep(random.uniform(3.0, 5.0)) 
-                    page_num += 1
-                except Exception as e:
-                    print(f"      ⚠️ Pagination Click Failed: {e}")
-                    break
-            else:
-                break
-                
+                    next_btn.click()
+                    time.sleep(2) 
+                except: break
+            else: break
         return all_trips
 
     def change_date(self, date_str):
         try:
-            sel = 'input[placeholder="Select date"]'
+            sel = 'input[placeholder="Select date"], input.ant-calendar-picker-input'
             self.page.click(sel, click_count=3)
             self.page.keyboard.press("Backspace")
-            self.page.type(sel, date_str, delay=random.randint(50, 100))
+            self.page.type(sel, date_str, delay=random.randint(50, 150))
             self.page.keyboard.press("Enter")
-            self.page.mouse.click(0,0)
+            self.page.mouse.click(0,0) 
         except: pass
-
-    def click_apply_filter(self):
-        try: 
-            self.page.click("button:has-text('Apply Filter')")
-            time.sleep(random.uniform(1.0, 2.0))
-        except: pass
-
-    def wait_for_results(self, t):
-        try:
-            self.page.wait_for_selector("tr.ant-table-row, .ant-empty-image", timeout=t*1000)
-            time.sleep(1)
-            return True
-        except: return False
 
     def scrape_table(self, d):
         trips = []
-        for row in self.page.query_selector_all("tr.ant-table-row"):
+        rows = self.page.query_selector_all("tr.ant-table-row")
+        for row in rows:
             try:
                 c = row.query_selector_all("td")
-                if len(c)<5: continue
+                if len(c) < 5: continue
                 
-                pickup = c[0].inner_text()
-                p_addr = c[2].inner_text().replace('\n', ', ')
-                trip_id = f"{d}-{pickup}-{p_addr[:5]}"
+                pickup_time = c[0].inner_text().strip()
+                p_addr = c[2].inner_text().replace('\n', ', ').strip()
+                d_addr = c[3].inner_text().replace('\n', ', ').strip()
                 
+                miles_txt = c[4].inner_text().lower().replace('mi','').strip()
+                miles = float(miles_txt) if miles_txt else 0.0
+                
+                payout = 0.0
+                for cell in c:
+                    if '$' in cell.inner_text():
+                        payout = float(cell.inner_text().replace('$','').replace(',','').strip())
+                        break
+
+                safe_date = d.replace('/', '')
+                safe_addr = p_addr.replace(' ', '').replace(',', '')[:6]
+                trip_id = f"{safe_date}-{pickup_time.replace(':', '')}-{safe_addr}"
+
                 trips.append({
                     "trip_id": trip_id,
                     "date": d,
-                    "pickup_time": pickup,
-                    "miles": float(c[4].inner_text().lower().replace('mi','').strip() or 0),
+                    "pickup_time": pickup_time,
                     "pickup_address": p_addr,
-                    "dropoff_address": c[3].inner_text().replace('\n', ', '),
-                    "broker": "MTM"
+                    "dropoff_address": d_addr,
+                    "miles": miles,
+                    "payout": payout,
+                    "broker": "MTM",
+                    "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 })
             except: continue
         return trips
 
 # --- MODIVCARE CONTROLLER ---
 def run_modivcare():
-    print("\n🔵 STARTING MODIVCARE SCAN (Invisible Mode)...")
-    bot = ModivcareScraper()
-    bot.start_browser() 
-    time.sleep(random.uniform(2, 5))
-    if bot.login():
-        if bot.navigate_to_marketplace():
-            trips = bot.scrape_trips()
-            if trips:
-                print(f"   💰 Found {len(trips)} Modivcare trips!")
-                save_batch(pd.DataFrame(trips))
-    bot.close_browser()
+    print("\n🔵 STARTING MODIVCARE SCAN...")
+    try:
+        bot = ModivcareScraper()
+        bot.start_browser() 
+        time.sleep(3)
+        if bot.login():
+            if bot.navigate_to_marketplace():
+                trips = bot.scrape_trips()
+                if trips:
+                    print(f"   💰 Found {len(trips)} Modivcare trips!")
+                    save_batch(pd.DataFrame(trips))
+        bot.close_browser()
+    except Exception as e:
+        print(f"   ⚠️ Modivcare Warning: {e}")
     print("🔴 MODIVCARE SCAN COMPLETE.")
 
 if __name__ == "__main__":
     mtm = MTMController()
     mtm.run_scan()
-    print("😴 Resting...")
-    time.sleep(random.randint(10, 20))
-    try: run_modivcare()
-    except Exception as e: print(f"❌ Modivcare Error: {e}")
+    
+    print("💤 Resting...")
+    time.sleep(5)
+    
+    run_modivcare()
 
-    # UPDATE MAP FIRST
-    try: generate_map()
-    except: pass
+    # --- PIPELINE ---
+    try: 
+        find_complex_routes()
+    except Exception as e: print(f"⚠️ Route Error: {e}")
 
-    # THEN SEND EMAIL
+    try: 
+        generate_map()
+    except Exception as e: print(f"⚠️ Map Error: {e}")
+
     analyze_and_report()
+
+    # 📈 DAILY MARKET PULSE CHART TRIGGER
+    now = datetime.now()
+    if now.hour == 23:
+        print("\n📊 End of day detected. Generating Market Pulse Chart...")
+        try:
+            generate_pulse_chart()
+        except Exception as e:
+            print(f"⚠️ Charting Error: {e}")
+
+    print(f"\n✅ PIPELINE COMPLETE [{now.strftime('%H:%M:%S')}]")

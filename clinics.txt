@@ -34,3 +34,71 @@
 95 N Research
 902 W Main
 904 MLK
+805 Bloomington
+202 S Bentley
+106 S Country
+303 Landmark Dr
+151 N Main St
+207 Arlington
+612 1/2 W Clark
+411 E Washington
+11090 Washington
+1227 S 9th
+1052 Eastview Dr
+605 S 2nd St
+120 N 11th
+915 W Webster
+806 W 7th
+111 Joplin
+1322 W Polk
+24 Ridge Dr
+509 E North
+2230 College
+106 S Country
+205 W Jackson
+52 Bismark
+1321 Sunset
+907 Fowler
+1020 Campbell
+503 Harvey
+1202 E Harding
+409 N George
+809 W Hill
+1139 E Seminary
+4117 IL-154
+274 Appletree
+801 W Harvard
+2627 Wescott
+114 Cronkhite
+2062 Bradley
+2613 Perrysville
+3101 County
+545 W Main
+1605 N Willow
+1755 N Main
+549 N Dunham
+976 N Woodford
+2007 Mattis
+403 Edgebrook
+708 E Market
+2727 N Monroe
+831 E Madison
+53 S Virginia
+1606 E Colorado
+804 Turnberry
+120 N 11th
+820 E Cleveland
+2615 Edwards
+199 Burdell
+1001 W Macon
+1115 N Park
+5727 Mooney
+602 W Jefferson
+118 S Main
+711 W Washington
+3101 White Timber
+1121 S 13th
+202 S Bentley
+310 Market
+112 Waymire
+1307 W Main

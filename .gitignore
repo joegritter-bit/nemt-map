@@ -3,3 +3,20 @@ nemt_env/
 __pycache__/
 *.log
 .DS_Store
+
+# Credentials - never commit these
+.env
+auth.json
+
+# Browser profile with session cookies
+user_data/
+
+# Generated output files
+*.html
+*.png
+*.db
+
+# Python cache
+*.pyc
+*.pyo
+.pytest_cache/

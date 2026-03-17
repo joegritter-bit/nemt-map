@@ -252,9 +252,10 @@ def find_complex_routes():
                     t['dt_start'] = pd.to_datetime(f"{day_str} {t['pickup_time']}")
                     dist = float(t.get('miles', 0)) if t.get('miles') else geodesic(t['coords_pu'], t['coords_do']).miles
                     t['est_revenue'] = estimate_revenue(t, county_pu)
-                    
-                    drive_hrs = (dist / AVG_MPH)
-                    t['dt_end'] = t['dt_start'] + timedelta(hours=(drive_hrs * 2) + 0.50)
+
+                    drive_hrs = dist / AVG_MPH
+                    # One-way trip: pickup time + drive to dropoff + 15 min load/unload buffer
+                    t['dt_end'] = t['dt_start'] + timedelta(hours=drive_hrs + 0.25)
                     
                     addr_parts = t['pickup_address'].split(',')
                     t['pickup_clean'] = ",".join(addr_parts[:2]).strip()

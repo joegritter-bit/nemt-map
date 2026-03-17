@@ -167,6 +167,46 @@ def analyze_and_report():
             body += f"<tr><td>{r['Date']}</td><td>{r['Hub']}</td><td><b>{r.get('Broker','MTM')}</b></td><td style='text-align:center;'>{r.get('Job Count','?')}</td><td>{r.get('Shift Length (Hrs)','0')}h</td><td style='color:green;'><b>${float(r['Revenue/Hour']):.2f}</b></td><td><b>${float(r['Total Revenue']):.2f}</b></td><td style='font-size:10px;'>{r.get('Route Description','N/A')}</td></tr>"
         body += '</table>'
 
+    # --- 📅 SECTION: FULL DAY ROUTES (5+ hrs, 3+ jobs) ---
+    full_day_routes = []
+    if os.path.exists(ROUTES_FILE):
+        try:
+            fd_df = pd.read_csv(ROUTES_FILE)
+            fd_df = fd_df[
+                (fd_df['Shift Length (Hrs)'] >= 5.0) &
+                (fd_df['Job Count'] >= 3) &
+                (fd_df['Revenue/Hour'] >= 39.0)
+            ]
+            fd_df['Date_Obj'] = pd.to_datetime(fd_df['Date'])
+            full_day_routes = fd_df.sort_values(
+                by=['Date_Obj', 'Hub', 'Total Revenue'], ascending=[True, True, False]
+            ).to_dict('records')
+        except: pass
+
+    if full_day_routes:
+        body += '<h3 style="color: #1a5276; border-bottom: 2px solid #1a5276; margin-top: 25px;">📅 Full Day Routes (Standalone Driver Day)</h3>'
+        body += '<p style="font-size: 11px; color: #555; margin-top: -10px;">Routes with 3+ jobs and 5+ hour shift a driver can run from scratch — grouped by hub.</p>'
+        body += '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%; font-size: 11px;">'
+        body += '<tr style="background-color: #1a5276; color: white;"><th>Date</th><th>Hub</th><th>Broker</th><th>Jobs</th><th>Shift</th><th>Rev/Hr</th><th>Total $</th><th>Route Flow</th></tr>'
+        current_hub = None
+        for r in full_day_routes:
+            hub = r.get('Hub', '')
+            row_bg = '#d6eaf8' if hub != current_hub else 'white'
+            current_hub = hub
+            body += (
+                f"<tr style='background-color:{row_bg};'>"
+                f"<td>{r['Date']}</td>"
+                f"<td><b>{hub}</b></td>"
+                f"<td>{r.get('Broker', 'MTM')}</td>"
+                f"<td style='text-align:center;'>{r.get('Job Count', '?')}</td>"
+                f"<td>{r.get('Shift Length (Hrs)', '0')}h</td>"
+                f"<td style='color:green;'><b>${float(r['Revenue/Hour']):.2f}</b></td>"
+                f"<td><b>${float(r['Total Revenue']):.2f}</b></td>"
+                f"<td style='font-size:10px;'>{r.get('Route Description', 'N/A')}</td>"
+                f"</tr>"
+            )
+        body += '</table>'
+
     # --- 🧩 SECTION: DRIVER EXTENSIONS (Always Visible) ---
     body += '<h3 style="color: #27ae60; border-bottom: 2px solid #27ae60; margin-top: 25px;">🧩 Driver Schedule Extensions</h3>'
     if brandy_matches:

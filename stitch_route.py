@@ -185,6 +185,40 @@ def analyze_driver_schedule():
             daily_candidates = market_df[market_df['dt_date'] == current_date].copy()
             day_name, date_str = current_date.strftime('%A'), current_date.strftime('%m/%d')
 
+            # --- PART 0: PRE-SHIFT (before first trip) ---
+            first_trip = todays_schedule[0]
+            if first_trip['pu_coords'] and first_trip['pu_coords'][0]:
+                must_arrive_by = first_trip['pu_dt'] - timedelta(minutes=15)
+                for _, opp in daily_candidates.iterrows():
+                    try:
+                        opp_ts = pd.to_datetime(str(opp['date']) + ' ' + opp['pickup_time'])
+                        if opp_ts >= first_trip['pu_dt']: continue
+                        opp_pu = get_lat_lon(conn, opp['pickup_address'])
+                        if not opp_pu or not opp_pu[0]: continue
+                        # Drive from depot to opp pickup
+                        drive_to_opp = geodesic(depot_coords, opp_pu).miles / AVG_MPH
+                        earliest_start = pd.Timestamp(f"{current_date} 05:00:00")
+                        if opp_ts < (earliest_start + timedelta(hours=drive_to_opp)): continue
+                        opp_do = get_lat_lon(conn, opp['dropoff_address'])
+                        if not opp_do or not opp_do[0]: continue
+                        # Time to complete trip + drive to first scheduled pickup
+                        drive_opp = geodesic(opp_pu, opp_do).miles / AVG_MPH
+                        drive_to_first = geodesic(opp_do, first_trip['pu_coords']).miles / AVG_MPH
+                        finish_time = opp_ts + timedelta(hours=drive_opp + drive_to_first + 0.25)
+                        if finish_time <= must_arrive_by:
+                            sort_val, display_price = safe_get_price(opp)
+                            opportunities.append({
+                                "Type": f"🌅 PRE-SHIFT ({driver})",
+                                "Broker": opp.get('broker', 'MTM'),
+                                "Day": f"{day_name} {date_str}",
+                                "Window": f"Before {first_trip['pu_dt'].strftime('%H:%M')}",
+                                "Trip Time": opp['pickup_time'],
+                                "Route": f"{opp['pickup_address'].split(',')[0]} ➡ {opp['dropoff_address'].split(',')[0]}",
+                                "Trip ID": opp.get('trip_id', 'N/A'),
+                                "Price": display_price, "SortValue": sort_val
+                            })
+                    except: continue
+
             # --- PART 1: GAPS ---
             for i in range(len(todays_schedule) - 1):
                 trip_a, trip_b = todays_schedule[i], todays_schedule[i+1]

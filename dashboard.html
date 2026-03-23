@@ -26,7 +26,10 @@
       margin-bottom: 16px; overflow: hidden;
       box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
-    .section-header { padding: 12px 16px; color: white; font-weight: bold; font-size: 14px; }
+    .section-header {
+      padding: 12px 16px; color: white;
+      font-weight: bold; font-size: 14px;
+    }
     table { width: 100%; border-collapse: collapse; font-size: 12px; }
     th {
       background: rgba(0,0,0,0.05);
@@ -58,7 +61,7 @@
 <div class="header">
   <div>
     <h1>🚗 NEMT Dispatch Dashboard</h1>
-    <div class="meta">Last updated: 03/22/2026 04:24 PM · Auto-refreshes every 30 min</div>
+    <div class="meta">Last updated: 03/23/2026 06:25 AM · Auto-refreshes every 30 min</div>
   </div>
   <a href="https://joegritter-bit.github.io/nemt-map/" class="map-btn" target="_blank">
     🗺️ Live Map
@@ -81,7 +84,7 @@
       <div class="lbl">Avg Rev/Hour</div>
     </div>
     <div class="stat">
-      <div class="val" style="color:#e74c3c">79</div>
+      <div class="val" style="color:#e74c3c">13</div>
       <div class="lbl">Regular Rider Alerts</div>
     </div>
   </div>
@@ -89,326 +92,130 @@
 
 <div class="section">
   <div class="section-header" style="background:#e67e22;">
-    ⚡ REGULAR RIDER ADDRESSES — ACCEPT IMMEDIATELY IF SEEN
+    ⚡ REGULAR RIDERS ON MARKETPLACE — ACCEPT NOW
   </div>
   <table>
-    <tr><th>Status</th><th>Pickup Address</th></tr>
+    <tr>
+      <th>Status</th><th>Date</th><th>Time</th>
+      <th>Pickup</th><th>Dropoff</th><th>Miles</th><th>Broker</th>
+    </tr>
 
     <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>503 Harvey St , Danville, IL 61832</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>1606 E Colorado Ave , Urbana, IL 61802</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>207 Arlington Dr , Danville, IL 61832</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>106 S COUNTRY FAIR DR STE C , CHAMPAIGN, IL 61821</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>509 E North St , Kansas, IL 61933</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>708 E Market St , Bloomington, IL 61701</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>1322 W Polk St , Danville, IL 61832</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>151 N Main St , Decatur, IL 62523</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>3101 White Timber Rd , Springfield, IL 62712</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>805 Bloomington Rd , Champaign, IL 61821</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>1052 Eastview Dr , Rantoul, IL 61866</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>106 S Country Fair Dr , Champaign, IL 61821</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>303 Landmark Dr , Normal, IL 61761</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>18304 Quarry Rd , Gillespie, IL 62033</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>202 S Bentley St , Marion, IL 62959</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>202 S BENTLEY ST , MARION, IL 62959</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>1813 W Kirby Ave , Champaign, IL 61821</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>2062 Bradley Ct apt e, Springfield, IL 62703</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>1227 S 9th St , Springfield, IL 62703</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>907 Fowler Ave , Danville, IL 61832</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>545 W Main St apt 2, Decatur, IL 62522</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>804 Turnberry Dr apt d, Bloomington, IL 61701</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>1001 W MACON ST , CLINTON, IL 61727</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>2615 Edwards St , Alton, IL 62002</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>612 1/2 W Clark St , Champaign, IL 61820</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>1020 Campbell Ln , Danville, IL 61832</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>53 S Virginia Ave , Danville, IL 61832</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>1321 Sunset Dr , Rantoul, IL 61866</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>111 Joplin St , Benton, IL 62812</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>806 W 7th St , West Frankfort, IL 62896</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>4117 IL-154 , Pinckneyville, IL 62274</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>2613 Perrysville Rd , Danville, IL 61834</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>805 Bloomington Rd , Champaign, IL 61820</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>2627 Wescott St , Mount Vernon, IL 62864</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>605 S 2nd St , Irvington, IL 62848</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>118 S Main St , Taylorville, IL 62568</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>52 Bismark St , Danville, IL 61832</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>112 Waymire Ln , Villa Grove, IL 61956</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>411 E Washington St , Urbana, IL 61801</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>274 Appletree Dr , Urbana, IL 61802</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>1605 N Willow Rd Apt 309, Urbana, IL 61801</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>199 Burdell Ln , Hillsboro, IL 62049</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>120 N 11th St , Springfield, IL 62703</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>24 Ridge Dr , Decatur, IL 62521</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>809 W Hill St , Urbana, IL 61801</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>108 Illinois Ave 108 Illinois Ave, South Roxana, IL 62087</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>2239 E Cook St , Springfield, IL 62703</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>404 W Beardsley Ave , Champaign, IL 61820</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>805 W Bloomington Rd , Champaign, IL 61821</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>11090 Washington Rd , Clinton, IL 61727</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>801 W Harvard St , Champaign, IL 61820</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>1907 N Cunningham Ave , Urbana, IL 61802</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>1302 Ave of Mid-America , Effingham, IL 62401</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>2313 S 14th St , Springfield, IL 62703</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>912 S 17th St Apt B, Mattoon, IL 61938</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>110 E Overton St , Tuscola, IL 61953</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>1207 N Merchant St , Effingham, IL 62401</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>1501 Shelby Ave Apt 2, Mattoon, IL 61938</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>5727 Mooney Rd , Niantic, IL 62551</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>464 W Prairie Ave , Decatur, IL 62522</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>310 Market St , Shumway, IL 62461</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>3319 Ridgewood Ave , Springfield, IL 62702</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>424 N 14th St , Springfield, IL 62702</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>201 N Hazel St APT 317, Danville, IL 61832</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>1905 W Springfield Ave , Champaign, IL 61821</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>821 S Neil St , Champaign, IL 61820</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>1625 W Main St , Decatur, IL 62522</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>913 N Diamond St , Jacksonville, IL 62650</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>1825 Maple Ave , Mattoon, IL 61938</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>1433 12th St , COTTAGE HILLS, IL 62018</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>1525 S Fairview Ave Lot 43, Decatur, IL 62521</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>304 Illinois Dr , Rantoul, IL 61866</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>800 N LOGAN AVE STE 204 , DANVILLE, IL 61832</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>101 W University Ave , Champaign, IL 61820</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>504 Wittenberg Ct , Normal, IL 61761</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>1405 W Park St , Urbana, IL 61801</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>3101 Fields S Dr , Champaign, IL 61822</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>1801 W Windsor Rd , Champaign, IL 61822</b></td>
-    </tr>
-    <tr class="alert-row">
-      <td><span class="priority">WATCH</span></td>
-      <td><b>406 NW Elm St , Atlanta, IL 61723</b></td>
+      <td>Upcoming</td>
+      <td>03/24/2026</td>
+      <td><b>11:45 AM</b></td>
+      <td><b>708 E Market St, , Bloomington Il, 61701</b></td>
+      <td>303 Landmark Dr, , Normal Il, 61761</td>
+      <td>3.5</td>
+      <td>MTM</td>
+    </tr>
+    <tr class="alert-row">
+      <td>Upcoming</td>
+      <td>03/24/2026</td>
+      <td><b>1:00 PM</b></td>
+      <td><b>201 N Hazel St, , Danville Il, 61832</b></td>
+      <td>34 E Jones St, , Milford Il, 60953</td>
+      <td>35.04</td>
+      <td>MTM</td>
+    </tr>
+    <tr class="alert-row">
+      <td>Upcoming</td>
+      <td>03/26/2026</td>
+      <td><b>7:00 AM</b></td>
+      <td><b>424 N 14th St, , Springfield Il, 62702</b></td>
+      <td>120 N 11th St, , Springfield Il, 62703</td>
+      <td>0.54</td>
+      <td>MTM</td>
+    </tr>
+    <tr class="alert-row">
+      <td>Upcoming</td>
+      <td>03/23/2026</td>
+      <td><b>8:00 AM</b></td>
+      <td><b>1001 W Macon St, , Clinton Il, 61727</b></td>
+      <td>303 Landmark Dr, , Normal Il, 61761</td>
+      <td>27.02</td>
+      <td>MTM</td>
+    </tr>
+    <tr class="alert-row">
+      <td>Upcoming</td>
+      <td>03/26/2026</td>
+      <td><b>8:00 AM</b></td>
+      <td><b>1001 W Macon St, , Clinton Il, 61727</b></td>
+      <td>303 Landmark Dr, , Normal Il, 61761</td>
+      <td>27.02</td>
+      <td>MTM</td>
+    </tr>
+    <tr class="alert-row">
+      <td>Upcoming</td>
+      <td>03/27/2026</td>
+      <td><b>8:00 AM</b></td>
+      <td><b>1001 W Macon St, , Clinton Il, 61727</b></td>
+      <td>303 Landmark Dr, , Normal Il, 61761</td>
+      <td>27.02</td>
+      <td>MTM</td>
+    </tr>
+    <tr class="alert-row">
+      <td>Upcoming</td>
+      <td>03/26/2026</td>
+      <td><b>8:30 AM</b></td>
+      <td><b>804 Turnberry Dr , apt d, , Bloomington Il, 61701</b></td>
+      <td>303 Landmark Dr, , Normal Il, 61761</td>
+      <td>3.94</td>
+      <td>MTM</td>
+    </tr>
+    <tr class="alert-row">
+      <td>Upcoming</td>
+      <td>03/23/2026</td>
+      <td><b>9:00 AM</b></td>
+      <td><b>11090 Washington Rd, , Clinton Il, 61727</b></td>
+      <td>303 Landmark Dr, , Normal Il, 61761</td>
+      <td>28.26</td>
+      <td>MTM</td>
+    </tr>
+    <tr class="alert-row">
+      <td>Upcoming</td>
+      <td>03/27/2026</td>
+      <td><b>9:00 AM</b></td>
+      <td><b>11090 Washington Rd, , Clinton Il, 61727</b></td>
+      <td>303 Landmark Dr, , Normal Il, 61761</td>
+      <td>28.26</td>
+      <td>MTM</td>
+    </tr>
+    <tr class="alert-row">
+      <td>Upcoming</td>
+      <td>03/23/2026</td>
+      <td><b>9:30 AM</b></td>
+      <td><b>406 Nw Elm St, , Atlanta Il, 61723</b></td>
+      <td>303 Landmark Dr, , Normal Il, 61761</td>
+      <td>24.84</td>
+      <td>MTM</td>
+    </tr>
+    <tr class="alert-row">
+      <td>Upcoming</td>
+      <td>03/24/2026</td>
+      <td><b>9:30 AM</b></td>
+      <td><b>406 Nw Elm St, , Atlanta Il, 61723</b></td>
+      <td>303 Landmark Dr, , Normal Il, 61761</td>
+      <td>24.84</td>
+      <td>MTM</td>
+    </tr>
+    <tr class="alert-row">
+      <td>Upcoming</td>
+      <td>03/26/2026</td>
+      <td><b>9:30 AM</b></td>
+      <td><b>406 Nw Elm St, , Atlanta Il, 61723</b></td>
+      <td>303 Landmark Dr, , Normal Il, 61761</td>
+      <td>24.84</td>
+      <td>MTM</td>
+    </tr>
+    <tr class="alert-row">
+      <td>Upcoming</td>
+      <td>03/27/2026</td>
+      <td><b>9:30 AM</b></td>
+      <td><b>406 Nw Elm St, , Atlanta Il, 61723</b></td>
+      <td>303 Landmark Dr, , Normal Il, 61761</td>
+      <td>24.84</td>
+      <td>MTM</td>
     </tr>
   </table>
 </div>
@@ -917,14 +724,6 @@
     </tr>
 
     <tr>
-      <td><b>Nancy Merritt</b></td>
-      <td>Wednesday 03/25</td>
-      <td>After 09:57</td>
-      <td>MTM</td>
-      <td>2502 E Main St ➡️ 516 W Madison St 🔄</td>
-      <td class="revenue"><b>$335.00</b></td>
-    </tr>
-    <tr>
       <td><b>7</b></td>
       <td>Tuesday 03/24</td>
       <td>Before 15:00</td>
@@ -957,15 +756,7 @@
       <td class="revenue"><b>$191.80</b></td>
     </tr>
     <tr>
-      <td><b>Steven Ray Cothern</b></td>
-      <td>Tuesday 03/24</td>
-      <td>After 12:42</td>
-      <td>MTM</td>
-      <td>104 E Oakland Ave ➡️ 1200 West Main Street 🔄</td>
-      <td class="revenue"><b>$186.50</b></td>
-    </tr>
-    <tr>
-      <td><b>Adam Scott Watkins</b></td>
+      <td><b>Jack Wiseman</b></td>
       <td>Tuesday 03/24</td>
       <td>After 12:42</td>
       <td>MTM</td>
@@ -989,7 +780,7 @@
       <td class="revenue"><b>$186.50</b></td>
     </tr>
     <tr>
-      <td><b>Jack Wiseman</b></td>
+      <td><b>Michael Schabbing</b></td>
       <td>Tuesday 03/24</td>
       <td>After 12:42</td>
       <td>MTM</td>
@@ -1005,7 +796,7 @@
       <td class="revenue"><b>$186.50</b></td>
     </tr>
     <tr>
-      <td><b>Michael Schabbing</b></td>
+      <td><b>Steven Ray Cothern</b></td>
       <td>Tuesday 03/24</td>
       <td>After 12:42</td>
       <td>MTM</td>
@@ -1015,15 +806,23 @@
     <tr>
       <td><b>Adam Scott Watkins</b></td>
       <td>Tuesday 03/24</td>
-      <td>Before 11:45</td>
+      <td>After 12:42</td>
       <td>MTM</td>
-      <td>1207 S Mattis Ave ➡️ 1120 N Melvin St 🔄</td>
-      <td class="revenue"><b>$185.48</b></td>
+      <td>104 E Oakland Ave ➡️ 1200 West Main Street 🔄</td>
+      <td class="revenue"><b>$186.50</b></td>
     </tr>
     <tr>
       <td><b>7</b></td>
       <td>Tuesday 03/24</td>
       <td>Before 15:00</td>
+      <td>MTM</td>
+      <td>1207 S Mattis Ave ➡️ 1120 N Melvin St 🔄</td>
+      <td class="revenue"><b>$185.48</b></td>
+    </tr>
+    <tr>
+      <td><b>Adam Scott Watkins</b></td>
+      <td>Tuesday 03/24</td>
+      <td>Before 11:45</td>
       <td>MTM</td>
       <td>1207 S Mattis Ave ➡️ 1120 N Melvin St 🔄</td>
       <td class="revenue"><b>$185.48</b></td>
@@ -1036,112 +835,13 @@
       <td>627 Autumn Fields Ln ➡️ 2200 E Washington St 🔄</td>
       <td class="revenue"><b>$180.01</b></td>
     </tr>
-  </table>
-</div>
-<div class="section">
-  <div class="section-header" style="background:#d35400;">
-    🔥 Active Hotspots
-  </div>
-  <table>
-    <tr><th>Location</th><th>Broker</th><th>Active Trips</th></tr>
-
     <tr>
-      <td>406 Nw Elm St</td>
-      <td><b>MTM</b></td>
-      <td class="revenue"><b>4 available</b></td>
-    </tr>
-    <tr>
-      <td>400 E Washington St</td>
-      <td><b>MTM</b></td>
-      <td class="revenue"><b>4 available</b></td>
-    </tr>
-    <tr>
-      <td>1700 Ontarioville Rd</td>
-      <td><b>MTM</b></td>
-      <td class="revenue"><b>3 available</b></td>
-    </tr>
-    <tr>
-      <td>1103 S Main St Sullivan 61951-2261</td>
-      <td><b>Modivcare</b></td>
-      <td class="revenue"><b>3 available</b></td>
-    </tr>
-    <tr>
-      <td>321 N Harrison Ave</td>
-      <td><b>MTM</b></td>
-      <td class="revenue"><b>3 available</b></td>
-    </tr>
-    <tr>
-      <td>2745 N Augusta Dr</td>
-      <td><b>MTM</b></td>
-      <td class="revenue"><b>3 available</b></td>
-    </tr>
-  </table>
-</div>
-<div class="section">
-  <div class="section-header" style="background:#34495e;">
-    🔄 Weekly Recurring Patterns
-  </div>
-  <table>
-    <tr>
-      <th>Day</th><th>Time</th><th>Broker</th>
-      <th>Pickup</th><th>Frequency</th>
-    </tr>
-
-    <tr>
-      <td>Wednesday</td>
-      <td>6:00 AM</td>
-      <td><b>MTM</b></td>
-      <td>4219 Prairie Ave</td>
-      <td><b>9x/week</b></td>
-    </tr>
-    <tr>
-      <td>Thursday</td>
-      <td>5:30 PM</td>
-      <td><b>MTM</b></td>
-      <td>493 Columbine Ln</td>
-      <td><b>9x/week</b></td>
-    </tr>
-    <tr>
-      <td>Sunday</td>
-      <td>7:30 AM</td>
-      <td><b>MTM</b></td>
-      <td>4n310 Klein Rd</td>
-      <td><b>9x/week</b></td>
-    </tr>
-    <tr>
-      <td>Tuesday</td>
-      <td>5:15 AM</td>
-      <td><b>MTM</b></td>
-      <td>35 Belle Crest Dr</td>
-      <td><b>9x/week</b></td>
-    </tr>
-    <tr>
-      <td>Tuesday</td>
-      <td>5:15 AM</td>
-      <td><b>MTM</b></td>
-      <td>1361 Imperial Ave</td>
-      <td><b>9x/week</b></td>
-    </tr>
-    <tr>
-      <td>Friday</td>
-      <td>5:50 AM</td>
-      <td><b>MTM</b></td>
-      <td>17711 Exchange Ave</td>
-      <td><b>9x/week</b></td>
-    </tr>
-    <tr>
-      <td>Monday</td>
-      <td>6:00 AM</td>
-      <td><b>MTM</b></td>
-      <td>4219 Prairie Ave</td>
-      <td><b>9x/week</b></td>
-    </tr>
-    <tr>
-      <td>Monday</td>
-      <td>5:50 AM</td>
-      <td><b>MTM</b></td>
-      <td>17711 Exchange Ave</td>
-      <td><b>9x/week</b></td>
+      <td><b>Michael Esker</b></td>
+      <td>Monday 03/23</td>
+      <td>After 10:27</td>
+      <td>MTM</td>
+      <td>627 Autumn Fields Ln ➡️ 2200 E Washington St 🔄</td>
+      <td class="revenue"><b>$180.01</b></td>
     </tr>
   </table>
 </div>

@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//tmp/**)",
+      "Bash(screen -dmS test_session echo \"screen works\")",
+      "Bash(screen -dmS nemt_bot bash /home/joegritter/nemt-scraper/run_bot.sh)",
+      "Bash(/home/joegritter/nemt_env/bin/python -c \"from scrape_marketplace import MTMController; print\\(''✅ Clean''\\)\")",
+      "Bash(screen -S 897.email_bot -X quit)",
+      "Bash(screen -S 895.market_bot -X quit)",
+      "Bash(screen -wipe)",
+      "Bash(find '/home/joegritter/School Email Synthesizer' -name *.sh -o -name *.py)",
+      "Bash(find '/home/joegritter/School Email Synthesizer' -maxdepth 2 -name *.sh -o -maxdepth 2 -name *.py)",
+      "Bash(screen -dmS nemt_bot env DISPLAY=:0 bash /home/joegritter/nemt-scraper/run_bot.sh)",
+      "Bash(screen -dmS email_bot bash \"/home/joegritter/School Email Synthesizer/run_digest.sh\")",
+      "Bash(screen -dmS market_bot bash /home/joegritter/pre-market-health-bot/run_bot.sh)",
+      "Bash(/home/joegritter/nemt_env/bin/python find_complex_routes.py)",
+      "Bash(/home/joegritter/nemt_env/bin/python springfield_dispatch.py)",
+      "Bash(/home/joegritter/nemt_env/bin/python generate_map.py)",
+      "Bash(/home/joegritter/nemt_env/bin/python analyze_patterns.py)"
+    ],
+    "additionalDirectories": [
+      "/home/joegritter"
+    ]
+  }
+}

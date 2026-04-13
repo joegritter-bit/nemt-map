@@ -20,3 +20,8 @@ user_data/
 *.pyc
 *.pyo
 .pytest_cache/
+drive_token.json
+drive_credentials.json
+drive-credentials.json
+drive_file_id.txt
+bot.lock

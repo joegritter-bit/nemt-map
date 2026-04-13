@@ -1,0 +1,5 @@
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+*/15 * * * * cd /home/joegritter/nemt-scraper && DISPLAY=:0 bash run_bot.sh >> /home/joegritter/nemt-scraper/cron.log 2>&1
+0 17 * * * /home/joegritter/School\ Email\ Synthesizer/run_digest.sh
+30 8 * * 1-5 /home/joegritter/pre-market-health-bot/run_bot.sh

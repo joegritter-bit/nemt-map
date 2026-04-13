@@ -13,6 +13,25 @@ ENV_PATH="/home/joegritter/nemt_env"
 TIMESTAMP=$(date +"%Y-%m-%d_%H-%M")
 
 # ==========================================
+# 🔒 PHASE 0: LOCKFILE (Prevent stacking)
+# ==========================================
+LOCKFILE="$SOURCE_DIR/bot.lock"
+
+if [ -f "$LOCKFILE" ]; then
+    LOCKED_PID=$(cat "$LOCKFILE")
+    if kill -0 "$LOCKED_PID" 2>/dev/null; then
+        echo "⏭️  Previous run (PID $LOCKED_PID) still active — skipping this cycle."
+        exit 0
+    else
+        echo "🧹 Stale lockfile found (PID $LOCKED_PID gone) — clearing and continuing."
+        rm -f "$LOCKFILE"
+    fi
+fi
+
+echo $$ > "$LOCKFILE"
+trap "rm -f '$LOCKFILE'" EXIT
+
+# ==========================================
 # 🎭 PHASE 1: HUMAN JITTER (Anti-Detection)
 # ==========================================
 # Sleep for a random time between 0 and 300 seconds (5 mins)
@@ -36,19 +55,27 @@ else
 fi
 
 # ==========================================
+# 🌐 PHASE 2b: ROUTE BUILDER SERVER
+# ==========================================
+if ! pgrep -f "route_server.py" > /dev/null; then
+    echo "🌐 Starting Route Builder server..."
+    nohup python "$SOURCE_DIR/route_server.py" \
+        > "$SOURCE_DIR/logs/route_server.log" 2>&1 &
+    echo "✅ Route Builder server started (PID $!)"
+else
+    echo "✅ Route Builder server already running"
+fi
+
+# ==========================================
 # 🕸️ PHASE 3: RUN THE SCRAPER & ANALYSIS
 # ==========================================
 # We use 'main.py' as the primary script. 
 # It returns a success code (0) if it works, or error (1) if it crashes.
 
-if python3 scrape_marketplace.py; then
-    echo "✅ Scrape completed successfully."
+if python3 run_pipeline.py; then
+    echo "✅ Pipeline completed successfully."
 
-    # 1. Run the Analysis Report (Email)
-    echo "📊 Generating Market Report..."
-    python3 analyze_patterns.py
-
-    # 2. Ping the Dead Man's Switch (Watchdog)
+    # Ping the Dead Man's Switch (Watchdog)
     # This tells Healthchecks.io "I'm alive, reset the timer."
     # We allow 10 seconds for the ping to connect (-m 10)
     curl -fsS -m 10 --retry 5 -o /dev/null "$PING_URL"

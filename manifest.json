@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "Barrier-Free PDF Filler",
+  "version": "1.0",
+  "permissions": [
+    "storage"
+  ],
+  "action": {
+    "default_popup": "editor.html"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' https://cdnjs.cloudflare.com https://unpkg.com; object-src 'self'"
+  }
+}

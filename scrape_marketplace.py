@@ -9,12 +9,8 @@ from playwright.sync_api import sync_playwright
 # Import Custom Modules
 from src.scrapers.broker_a import MTMScraper
 from src.scrapers.broker_b import ModivcareScraper
-from analyze_patterns import analyze_and_report
-from generate_map import generate_map
-from email_handler import EmailHandler  
+from email_handler import EmailHandler
 from database import save_batch
-from find_complex_routes import find_complex_routes 
-from visualize_pulse import generate_pulse_chart # 📈 NEW IMPORT
 
 load_dotenv(override=True)
 
@@ -414,32 +410,4 @@ def run_modivcare():
     print("🔴 MODIVCARE SCAN COMPLETE.")
 
 if __name__ == "__main__":
-    mtm = MTMController()
-    mtm.run_scan()
-    
-    print("💤 Resting...")
-    time.sleep(5)
-    
-    run_modivcare()
-
-    # --- PIPELINE ---
-    try: 
-        find_complex_routes()
-    except Exception as e: print(f"⚠️ Route Error: {e}")
-
-    try: 
-        generate_map()
-    except Exception as e: print(f"⚠️ Map Error: {e}")
-
-    analyze_and_report()
-
-    # 📈 DAILY MARKET PULSE CHART TRIGGER
-    now = datetime.now()
-    if now.hour == 23:
-        print("\n📊 End of day detected. Generating Market Pulse Chart...")
-        try:
-            generate_pulse_chart()
-        except Exception as e:
-            print(f"⚠️ Charting Error: {e}")
-
-    print(f"\n✅ PIPELINE COMPLETE [{now.strftime('%H:%M:%S')}]")
+    print("Run run_pipeline.py to execute the full pipeline.")

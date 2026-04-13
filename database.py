@@ -21,6 +21,7 @@ def get_connection():
     conn = sqlite3.connect(DB_PATH, timeout=30)
     # WAL Mode helps with 'Database Locked' errors
     conn.execute('PRAGMA journal_mode=WAL;')
+    conn.execute('PRAGMA synchronous = OFF;')
     return conn
 
 def init_db():

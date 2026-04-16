@@ -1,0 +1,47 @@
+Type,Driver,Broker,Day,Window,Trip Time,Route,Trip ID,Price,SortValue
+➕ EXTENSION RT (Bradford Thoele),Bradford Thoele,MTM,Friday 04/17,After 09:57,10:45 AM,2502 E Main St ➡️ 5731 Park Dr 🔄,04172026-1045 AM-2502EM,$242.36,242.36
+➕ EXTENSION RT (Debbie Reddish),Debbie Reddish,MTM,Friday 04/17,After 12:42,2:00 PM,1402 E College Ave ➡️ 600 Ne Water St 🔄,04172026-200 PM-1402EC,$144.19,144.19
+➕ EXTENSION RT (Steven Ray Cothern),Steven Ray Cothern,MTM,Friday 04/17,After 12:42,2:00 PM,1402 E College Ave ➡️ 600 Ne Water St 🔄,04172026-200 PM-1402EC,$144.19,144.19
+➕ EXTENSION RT (Adam Scott Watkins),Adam Scott Watkins,MTM,Friday 04/17,After 12:42,2:00 PM,1402 E College Ave ➡️ 600 Ne Water St 🔄,04172026-200 PM-1402EC,$144.19,144.19
+➕ EXTENSION RT (Jill O'Bryan),Jill O'Bryan,MTM,Friday 04/17,After 07:57,10:00 AM,301 N Cross St ➡️ 8 Doctors Park Rd 🔄,04172026-1000 AM-301NCr,$64.36,64.36
+➕ EXTENSION RT (Bradford Thoele),Bradford Thoele,MTM,Friday 04/17,After 09:57,11:45 AM,708 E Market St ➡️ 303 Landmark Dr 🔄,04172026-1145 AM-708EMa,$40.00,40.0
+➕ EXTENSION RT (Bradford Thoele),Bradford Thoele,MTM,Friday 04/17,After 09:57,1:20 PM,203 Lindell Dr  ➡️ 2205 E Empire St  🔄,04172026-120 PM-203Lin,$40.00,40.0
+➕ EXTENSION RT (Debbie Reddish),Debbie Reddish,MTM,Friday 04/17,After 12:42,1:20 PM,203 Lindell Dr  ➡️ 2205 E Empire St  🔄,04172026-120 PM-203Lin,$40.00,40.0
+➕ EXTENSION RT (Robert McGee),Robert McGee,MTM,Friday 04/17,After 12:42,1:20 PM,203 Lindell Dr  ➡️ 2205 E Empire St  🔄,04172026-120 PM-203Lin,$40.00,40.0
+➕ EXTENSION RT (Gary D Davis),Gary D Davis,MTM,Friday 04/17,After 12:12,1:20 PM,203 Lindell Dr  ➡️ 2205 E Empire St  🔄,04172026-120 PM-203Lin,$40.00,40.0
+➕ EXTENSION RT (Michael Schabbing),Michael Schabbing,MTM,Friday 04/17,After 12:42,1:20 PM,203 Lindell Dr  ➡️ 2205 E Empire St  🔄,04172026-120 PM-203Lin,$40.00,40.0
+➕ EXTENSION RT (Steven Ray Cothern),Steven Ray Cothern,MTM,Friday 04/17,After 12:42,1:20 PM,203 Lindell Dr  ➡️ 2205 E Empire St  🔄,04172026-120 PM-203Lin,$40.00,40.0
+➕ EXTENSION RT (Adam Scott Watkins),Adam Scott Watkins,MTM,Friday 04/17,After 12:42,1:20 PM,203 Lindell Dr  ➡️ 2205 E Empire St  🔄,04172026-120 PM-203Lin,$40.00,40.0
+➕ EXTENSION RT (Steven Ray Cothern),Steven Ray Cothern,MTM,Monday 04/20,After 12:42,4:00 PM,1706 Springfield Rd  ➡️ 1003 Martin Luther King Dr 🔄,04202026-400 PM-1706Sp,$130.00,130.0
+➕ EXTENSION RT (Adam Scott Watkins),Adam Scott Watkins,MTM,Monday 04/20,After 12:42,4:00 PM,1706 Springfield Rd  ➡️ 1003 Martin Luther King Dr 🔄,04202026-400 PM-1706Sp,$130.00,130.0
+➕ EXTENSION RT (Jill O'Bryan),Jill O'Bryan,MTM,Thursday 04/16,After 07:57,8:30 AM,99 Rome Mdws  ➡️ 1400 W Main St 🔄,04162026-830 AM-99Rome,$192.61,192.61
+➕ EXTENSION RT (Jill O'Bryan),Jill O'Bryan,MTM,Thursday 04/16,After 07:57,10:00 AM,4106 Oak Grove Rd ➡️ 209 Crossroads Pl 🔄,04162026-1000 AM-4106Oa,$118.87,118.87
+🌅 PRE-SHIFT RT (7),7,MTM,Tuesday 04/21,Before 15:00,8:00 AM,156 N Commercial St ➡️ 120 N 11th St 🔄,04212026-800 AM-156NCo,$177.07,177.07
+➕ EXTENSION RT (Steven Schumacher),Steven Schumacher,MTM,Tuesday 04/21,After 10:27,1:15 PM,2320 N Vermilion St  ➡️ 511 W Fairchild St 🔄,04212026-115 PM-2320NV,$130.00,130.0
+🌅 PRE-SHIFT RT (7),7,MTM,Tuesday 04/21,Before 15:00,10:15 AM,7 Manor Ct ➡️ 2239 E Cook St 🔄,04212026-1015 AM-7Manor,$130.00,130.0
+➕ EXTENSION RT (Shannon Henderson),Shannon Henderson,MTM,Tuesday 04/21,After 10:27,1:15 PM,2320 N Vermilion St  ➡️ 511 W Fairchild St 🔄,04212026-115 PM-2320NV,$130.00,130.0
+🌅 PRE-SHIFT RT (7),7,MTM,Tuesday 04/21,Before 15:00,7:45 AM,524 S Main St ➡️ 617 Ne Glendale Ave 🔄,04212026-745 AM-524SMa,$118.78,118.78
+🌅 PRE-SHIFT RT (Adam Scott Watkins),Adam Scott Watkins,MTM,Tuesday 04/21,Before 11:45,7:45 AM,524 S Main St ➡️ 617 Ne Glendale Ave 🔄,04212026-745 AM-524SMa,$118.78,118.78
+➕ EXTENSION RT (DERRON JENKINS),DERRON JENKINS,MTM,Tuesday 04/21,After 09:27,10:00 AM,106 E Willard St ➡️ 1120 N Melvin St 🔄,04212026-1000 AM-106EWi,$117.07,117.07
+🌅 PRE-SHIFT RT (7),7,MTM,Tuesday 04/21,Before 15:00,10:00 AM,106 E Willard St ➡️ 1120 N Melvin St 🔄,04212026-1000 AM-106EWi,$117.07,117.07
+🌅 PRE-SHIFT RT (7),7,MTM,Tuesday 04/21,Before 15:00,10:30 AM,508 S Union St ➡️ 25259 W Reed St 🔄,04212026-1030 AM-508SUn,$116.89,116.89
+➕ EXTENSION RT (DERRON JENKINS),DERRON JENKINS,MTM,Tuesday 04/21,After 09:27,10:00 AM,2508 Prairie Green Dr ➡️ 1818 E Windsor Rd 🔄,04212026-1000 AM-2508Pr,$110.00,110.0
+🌅 PRE-SHIFT RT (7),7,MTM,Tuesday 04/21,Before 15:00,10:00 AM,2508 Prairie Green Dr ➡️ 1818 E Windsor Rd 🔄,04212026-1000 AM-2508Pr,$110.00,110.0
+🌅 PRE-SHIFT RT (7),7,MTM,Tuesday 04/21,Before 15:00,9:30 AM,222 N State St ➡️ 509 W University Ave 🔄,04212026-930 AM-222NSt,$110.00,110.0
+🌅 PRE-SHIFT RT (7),7,MTM,Tuesday 04/21,Before 15:00,8:00 AM,800 N Promenade St  ➡️ 340 S Ave B 🔄,04212026-800 AM-800NPr,$92.71,92.71
+🌅 PRE-SHIFT RT (Adam Scott Watkins),Adam Scott Watkins,MTM,Tuesday 04/21,Before 11:45,8:00 AM,800 N Promenade St  ➡️ 340 S Ave B 🔄,04212026-800 AM-800NPr,$92.71,92.71
+🌅 PRE-SHIFT RT (7),7,MTM,Tuesday 04/21,Before 15:00,8:30 AM,1305 Bailey Ln  ➡️ 220 S Park Ave 🔄,04212026-830 AM-1305Ba,$85.12,85.12
+🌅 PRE-SHIFT RT (7),7,MTM,Tuesday 04/21,Before 15:00,9:00 AM,9450 Booster Station Rd ➡️ 4700 Memorial Dr 🔄,04212026-900 AM-9450Bo,$68.92,68.92
+🌅 PRE-SHIFT RT (7),7,MTM,Tuesday 04/21,Before 15:00,9:00 AM,17568 Us-67 ➡️ 2615 Edwards St 🔄,04212026-900 AM-17568U,$61.36,61.36
+➕ EXTENSION RT (Debbie Reddish),Debbie Reddish,Modivcare,Tuesday 04/21,After 09:27,12:15 pm,108 S 12th St Herrin 62948-3622 ➡️ 400 S Lewis Ln Carbondale 62901-3547 🔄,MOD-67580,$57.20,57.2
+🌅 PRE-SHIFT RT (7),7,MTM,Tuesday 04/21,Before 15:00,9:00 AM,1441 N Shore Dr ➡️ 2720 W Locust St 🔄,04212026-900 AM-1441NS,$55.36,55.36
+🌅 PRE-SHIFT RT (7),7,MTM,Tuesday 04/21,Before 15:00,9:00 AM,2708 Harvey Pl ➡️ 6800 🔄,04212026-900 AM-2708Ha,$52.99,52.99
+🌅 PRE-SHIFT RT (7),7,MTM,Tuesday 04/21,Before 15:00,9:25 AM,11 N Pine Ave  ➡️ 1520 W Harrison St  🔄,04212026-925 AM-11NPin,$41.98,41.98
+➕ EXTENSION RT (Debbie Reddish),Debbie Reddish,MTM,Tuesday 04/21,After 09:27,12:00 PM,2511 S Illinois Ave  ➡️ 400 S Lewis Ln 🔄,04212026-1200 PM-2511SI,$40.00,40.0
+🌅 PRE-SHIFT RT (7),7,MTM,Tuesday 04/21,Before 15:00,10:30 AM,111 Evergreen Ave  ➡️ 1546 N Mannheim Rd 🔄,04212026-1030 AM-111Eve,$40.00,40.0
+🌅 PRE-SHIFT RT (7),7,MTM,Tuesday 04/21,Before 15:00,8:30 AM,1986 Spruce St ➡️ 400 S Kennedy Dr 🔄,04212026-830 AM-1986Sp,$40.00,40.0
+🌅 PRE-SHIFT RT (Adam Scott Watkins),Adam Scott Watkins,MTM,Tuesday 04/21,Before 11:45,8:30 AM,1986 Spruce St ➡️ 400 S Kennedy Dr 🔄,04212026-830 AM-1986Sp,$40.00,40.0
+➕ EXTENSION RT (Jack Wiseman),Jack Wiseman,MTM,Wednesday 04/22,After 11:27,12:55 PM,2505 Prairie Green Dr  ➡️ 3101 Fields S Dr 🔄,04222026-1255 PM-2505Pr,$123.14,123.14
+➕ EXTENSION RT (TREVER FLOYD),TREVER FLOYD,MTM,Wednesday 04/22,After 10:27,12:55 PM,2505 Prairie Green Dr  ➡️ 3101 Fields S Dr 🔄,04222026-1255 PM-2505Pr,$123.14,123.14
+➕ EXTENSION RT (Robert McGee),Robert McGee,MTM,Wednesday 04/22,After 11:27,12:55 PM,2505 Prairie Green Dr  ➡️ 3101 Fields S Dr 🔄,04222026-1255 PM-2505Pr,$123.14,123.14
+➕ EXTENSION RT (Shannon Henderson),Shannon Henderson,MTM,Wednesday 04/22,After 10:27,12:55 PM,2505 Prairie Green Dr  ➡️ 3101 Fields S Dr 🔄,04222026-1255 PM-2505Pr,$123.14,123.14

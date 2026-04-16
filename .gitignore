@@ -25,3 +25,10 @@ drive_credentials.json
 drive-credentials.json
 drive_file_id.txt
 bot.lock
+!driver_schedule.csv
+!master_schedule.csv
+!daily_schedule.csv
+!proposed_clinics.csv
+!springfield_routes.csv
+!routegenie.csv
+!brandy_overtime.csv

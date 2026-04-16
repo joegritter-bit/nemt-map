@@ -1,0 +1,11 @@
+Date,Driver,Priority,Hub,Model,Job Count,Shift Length (Hrs),Revenue/Hour,Total Revenue,Top County,Route Description,Start Address
+04/16/2026,Unassigned,✅ GOOD,Springfield,Traditional,1,1.4,110.66,149.5,Unknown,----- (900 N 1st St),"900 N 1st St,"
+04/17/2026,Unassigned,✅ GOOD,Springfield,Clinic,2,6.7,54.5,364.26,Unknown,9:00 AM (11090 Washingto) ➡ 10:45 AM (2502 E Main St),"11090 Washington Rd,"
+04/20/2026,Unassigned,📋 STANDARD,Springfield,Clinic,3,6.3,40.52,255.84,Unknown,🚌 2x to 303 landma ➡ 11:45 AM (708 E Market St),"1001 W Macon St,"
+04/20/2026,Unassigned,📋 STANDARD,Springfield,Traditional,1,2.9,40.03,115.5,Unknown,9:30 AM (1660 E Grand Av),"1660 E Grand Ave,"
+04/21/2026,Unassigned,✅ GOOD,Springfield,Traditional,1,1.4,109.01,149.5,Unknown,10:15 AM (7 Manor Ct),"7 Manor Ct,"
+04/21/2026,Unassigned,📋 STANDARD,Springfield,Clinic,1,4.1,43.04,177.07,Unknown,8:00 AM (156 N Commercia),"156 N Commercial St,"
+04/22/2026,Unassigned,✅ GOOD,Springfield,Traditional,1,10.2,50.87,519.1,Unknown,12:30 PM (609 W Empire St),"609 W Empire St,"
+04/22/2026,Unassigned,✅ GOOD,Springfield,Traditional,2,4.9,46.52,229.64,Unknown,🚌 2x to 1403 w gle,"102 E Beech St,"
+04/22/2026,Unassigned,📋 STANDARD,Springfield,Traditional,1,3.7,40.7,149.5,Unknown,4:00 PM (1706 Springfiel),"1706 Springfield Rd , APT 5"
+04/23/2026,Unassigned,✅ GOOD,Springfield,Traditional,2,10.6,46.3,491.78,Unknown,6:30 AM (246 Bowles St) ➡ 11:00 AM (421 Kern St),"246 Bowles St,"

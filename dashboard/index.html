@@ -230,14 +230,37 @@
       const plMonths      = COMBINED_MONTHLY.filter(m => m.mtmRevenue > 0);
 
       return (
-        <div style={{ minHeight: "100vh", background: SURFACE, fontFamily: "'DM Sans', sans-serif", color: "#e2e8f0" }}>
+        <div style={{ minHeight: "100vh", background: SURFACE, fontFamily: "'DM Sans', sans-serif", color: "#e2e8f0", paddingTop: 40 }}>
+
+          {/* Site nav */}
+          <div style={{
+            position: "fixed", top: 0, left: 0, right: 0, height: 40, zIndex: 20,
+            background: "#091422", borderBottom: `1px solid ${BORDER}`,
+            display: "flex", alignItems: "center", padding: "0 16px", gap: 8,
+          }}>
+            <span style={{ flex: 1, color: MUTED, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.15em", fontFamily: "monospace" }}>Effingham Transport</span>
+            <a href="/nemt-map/" style={{
+              display: "inline-block", padding: "4px 12px", borderRadius: 6,
+              fontFamily: "monospace", fontSize: 11, fontWeight: 700, textDecoration: "none",
+              border: `1px solid ${BORDER}`, background: CARD, color: MUTED,
+            }}
+              onMouseOver={e => { e.currentTarget.style.background = BORDER; e.currentTarget.style.color = "#e2e8f0"; }}
+              onMouseOut={e => { e.currentTarget.style.background = CARD; e.currentTarget.style.color = MUTED; }}
+            >Live Map</a>
+            <span style={{
+              display: "inline-block", padding: "4px 12px", borderRadius: 6,
+              fontFamily: "monospace", fontSize: 11, fontWeight: 700,
+              border: `1px solid ${ACCENT}`, borderTop: `2px solid ${ACCENT}`,
+              background: CARD, color: "#e2e8f0", cursor: "default",
+            }}>Analytics Dashboard</span>
+          </div>
 
           {/* Header */}
           <div style={{
             background: "linear-gradient(180deg, #091422 0%, #0d1b2a 100%)",
             borderBottom: `1px solid ${BORDER}`,
             padding: "20px 28px 0",
-            position: "sticky", top: 0, zIndex: 10,
+            position: "sticky", top: 40, zIndex: 10,
           }}>
             <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: 16 }}>
               <div>
@@ -253,11 +276,6 @@
                 </div>
               </div>
               <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-                <a href="../" style={{
-                  background: CARD, border: `1px solid ${BORDER}`, borderRadius: 8,
-                  padding: "6px 14px", textAlign: "center", textDecoration: "none",
-                  color: MUTED, fontSize: 11, fontFamily: "monospace", whiteSpace: "nowrap",
-                }}>← Dispatch Map</a>
                 <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 8, padding: "6px 14px", textAlign: "center" }}>
                   <div style={{ color: MUTED, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.1em", fontFamily: "monospace" }}>MTM Revenue</div>
                   <div style={{ color: BLUE, fontSize: 14, fontWeight: 800, fontFamily: "monospace" }}>{fmtK(mtmTotalRev)}</div>

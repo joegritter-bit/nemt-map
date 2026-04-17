@@ -44,6 +44,66 @@
                 }
             </style>
 
+            <style>
+                #nemt-nav {
+                    position: fixed;
+                    top: 0; left: 0; right: 0;
+                    height: 40px;
+                    z-index: 9999;
+                    background: #091422;
+                    border-bottom: 1px solid #1e3348;
+                    display: flex;
+                    align-items: center;
+                    padding: 0 16px;
+                    gap: 8px;
+                    font-family: monospace;
+                }
+                .nemt-nav-brand {
+                    color: #64748b;
+                    font-size: 10px;
+                    text-transform: uppercase;
+                    letter-spacing: 0.15em;
+                    flex: 1;
+                }
+                .nemt-nav-btn {
+                    display: inline-block;
+                    padding: 4px 12px;
+                    border-radius: 6px;
+                    font-family: monospace;
+                    font-size: 11px;
+                    font-weight: 700;
+                    text-decoration: none;
+                    border: 1px solid #1e3348;
+                    background: #111f30;
+                    color: #64748b;
+                    cursor: default;
+                    transition: background 0.15s;
+                }
+                .nemt-nav-btn.active {
+                    color: #e2e8f0;
+                    border-color: #f97316;
+                    border-top: 2px solid #f97316;
+                    cursor: default;
+                }
+                .nemt-nav-btn[href]:not(.active) {
+                    cursor: pointer;
+                }
+                .nemt-nav-btn[href]:not(.active):hover {
+                    background: #1e3348;
+                    color: #e2e8f0;
+                }
+                /* Push map below nav */
+                #map_acfe0313ff8da64e49073b1325e5b057 {
+                    position: fixed !important;
+                    top: 40px !important;
+                    bottom: 0 !important;
+                    left: 0 !important;
+                    right: 0 !important;
+                    width: auto !important;
+                    height: auto !important;
+                }
+            </style>
+
             <script>
                 L_NO_TOUCH = false;
                 L_DISABLE_3D = false;
@@ -57,31 +117,14 @@
 </head>
 <body>
 
+            <nav id="nemt-nav">
+                <span class="nemt-nav-brand">Effingham Transport</span>
+                <a class="nemt-nav-btn active">Live Map</a>
+                <a href="/nemt-map/dashboard/" class="nemt-nav-btn">Analytics Dashboard →</a>
+            </nav>
 
             <div class="folium-map" id="map_acfe0313ff8da64e49073b1325e5b057" ></div>
 
-            <a href="dashboard/" style="
-                position: fixed;
-                top: 14px;
-                right: 14px;
-                z-index: 9999;
-                background: #111f30;
-                color: #e2e8f0;
-                border: 1px solid #1e3348;
-                border-top: 2px solid #f97316;
-                border-radius: 8px;
-                padding: 7px 14px;
-                font-family: 'DM Sans', sans-serif;
-                font-size: 12px;
-                font-weight: 700;
-                text-decoration: none;
-                box-shadow: 0 4px 16px rgba(0,0,0,0.4);
-                letter-spacing: 0.02em;
-                transition: background 0.15s;
-            " onmouseover="this.style.background='#1e3348'" onmouseout="this.style.background='#111f30'">
-                Analytics Dashboard →
-            </a>
-        
 <script>document.addEventListener("DOMContentLoaded", function() { setTimeout(function() { var c = document.querySelector(".leaflet-control-layers-list"); if (!c) return; var d = document.createElement("div"); d.style.cssText = "padding:8px; text-align:center; border-bottom:1px solid #ccc; margin-bottom:5px;"; var h = document.createElement("a"); h.innerHTML = "❌ Hide Trips"; h.href = "#"; h.style.cssText = "cursor:pointer; margin-right:15px; text-decoration:none; color:#c0392b; font-weight:bold;"; h.onclick = function(e) { e.preventDefault(); document.querySelectorAll(".leaflet-control-layers-selector").forEach(i => { if(i.nextSibling.innerText.includes('📅') && i.checked) i.click(); }); }; var s = document.createElement("a"); s.innerHTML = "✅ Show Trips"; s.href = "#"; s.style.cssText = "cursor:pointer; text-decoration:none; color:#27ae60; font-weight:bold;"; s.onclick = function(e) { e.preventDefault(); document.querySelectorAll(".leaflet-control-layers-selector").forEach(i => { if(i.nextSibling.innerText.includes('📅') && !i.checked) i.click(); }); }; d.appendChild(h); d.appendChild(s); c.insertBefore(d, c.firstChild); }, 1000); });</script></body>
 <script>
     

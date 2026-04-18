@@ -86,10 +86,11 @@ def run_pipeline():
     # ─── STAGE 6b: Sync Route Builder to Extension (non-critical) ────────────
     def sync_route_builder():
         import shutil
+        _home = os.path.expanduser('~')
         files = ['route_builder.html', 'route_builder_main.js', 'route_builder_loader.js']
         for f in files:
-            src = f'/home/joegritter/nemt-scraper/{f}'
-            dst = f'/home/joegritter/nemt-extension/{f}'
+            src = os.path.join(_home, 'nemt-scraper', f)
+            dst = os.path.join(_home, 'nemt-extension', f)
             if os.path.exists(src):
                 shutil.copy2(src, dst)
         print("   🔧 Route builder synced to extension")

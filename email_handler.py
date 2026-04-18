@@ -13,12 +13,11 @@ load_dotenv()
 
 # --- 🔧 CREDENTIAL LOADING (Roboust) ---
 GMAIL_USER = os.getenv("GMAIL_USER")
-# Try both names to ensure it finds the password
-GMAIL_PASS = os.getenv("GMAIL_PASS") or os.getenv("GMAIL_APP_PASSWORD")
+GMAIL_PASS = os.getenv("GMAIL_APP_PASS")
 
 if not GMAIL_USER or not GMAIL_PASS:
     print("❌ CRITICAL ERROR: Google Credentials not found in .env file.")
-    print("   Please ensure 'GMAIL_USER' and 'GMAIL_APP_PASSWORD' are set.")
+    print("   Please ensure 'GMAIL_USER' and 'GMAIL_APP_PASS' are set.")
 
 def send_email(subject, body, to_email=None, is_html=False, attachment_path=None):
     if not GMAIL_USER or not GMAIL_PASS:

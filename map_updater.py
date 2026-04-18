@@ -5,11 +5,12 @@ from config import get_logger
 
 log = get_logger(__name__)
 
-MAP_SOURCE     = '/home/joegritter/nemt-scraper/nemt_war_room.html'
-MAP_REPO       = '/home/joegritter/nemt-map'
+_HOME          = os.path.expanduser('~')
+MAP_SOURCE     = os.path.join(_HOME, 'nemt-scraper', 'nemt_war_room.html')
+MAP_REPO       = os.path.join(_HOME, 'nemt-map')
 MAP_DEST       = os.path.join(MAP_REPO, 'index.html')
 MAP_URL        = 'https://joegritter-bit.github.io/nemt-map/'
-RIDERS_SOURCE  = '/home/joegritter/nemt-map/regular_riders.json'
+RIDERS_SOURCE  = os.path.join(MAP_REPO, 'regular_riders.json')
 
 def publish_map():
     """Copy latest map to GitHub Pages repo and push."""
@@ -29,7 +30,7 @@ def publish_map():
                 ['git', '-C', MAP_REPO, 'add', 'regular_riders.json'],
                 capture_output=True, text=True)
 
-        dashboard_path = '/home/joegritter/nemt-map/dashboard.html'
+        dashboard_path = os.path.join(_HOME, 'nemt-map', 'dashboard.html')
         if os.path.exists(dashboard_path):
             subprocess.run(
                 ['git', '-C', MAP_REPO, 'add', 'dashboard.html'],

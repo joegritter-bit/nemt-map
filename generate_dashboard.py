@@ -7,9 +7,10 @@ from datetime import datetime
 
 log = get_logger(__name__)
 
-DASHBOARD_OUTPUT    = '/home/joegritter/nemt-map/dashboard.html'
-SPRINGFIELD_CSV     = '/home/joegritter/nemt-scraper/springfield_routes.csv'
-EXTENSIONS_CSV      = '/home/joegritter/nemt-scraper/brandy_overtime.csv'
+_HOME               = os.path.expanduser('~')
+DASHBOARD_OUTPUT    = os.path.join(_HOME, 'nemt-map', 'dashboard.html')
+SPRINGFIELD_CSV     = os.path.join(_HOME, 'nemt-scraper', 'springfield_routes.csv')
+EXTENSIONS_CSV      = os.path.join(_HOME, 'nemt-scraper', 'brandy_overtime.csv')
 
 ACTIVE_WINDOW_MINUTES = 150
 

@@ -3,7 +3,7 @@ import socketserver
 import os
 
 PORT = 8765
-DIRECTORY = '/home/joegritter/nemt-scraper'
+DIRECTORY = os.path.join(os.path.expanduser('~'), 'nemt-scraper')
 
 
 class RouteHandler(http.server.SimpleHTTPRequestHandler):

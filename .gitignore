@@ -15,6 +15,9 @@ user_data/
 *.html
 *.png
 *.db
+*.db-shm
+*.db-wal
+data/email_state.json
 
 # Python cache
 *.pyc

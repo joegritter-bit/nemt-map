@@ -8,6 +8,7 @@ from regular_riders import get_regular_rider_alerts
 from springfield_dispatch import get_springfield_dispatch, get_springfield_summary
 import warnings
 import os
+import json
 
 warnings.filterwarnings('ignore')
 
@@ -21,6 +22,46 @@ MAP_FILE_PATH = 'nemt_war_room.html'
 PULSE_FILE = 'data/market_pulse.csv'
 STRICT_MAX_HOURS = MAX_SHIFT_HOURS  # local alias
 from mtm_rates import MTM_MILEAGE_RATE, MILEAGE_BAND_LIMIT, STANDARD_BASE_RATE, AFTER_HOURS_BASE_RATE, COUNTY_BASE_RATES
+
+EMAIL_STATE_FILE = 'data/email_state.json'
+EMAIL_MIN_INTERVAL_HOURS = 2
+
+
+def _load_email_state():
+    try:
+        with open(EMAIL_STATE_FILE, 'r') as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {"last_sent": None, "last_new_trip_time": None}
+
+
+def _save_email_state(last_sent, last_new_trip_time):
+    os.makedirs('data', exist_ok=True)
+    with open(EMAIL_STATE_FILE, 'w') as f:
+        json.dump({
+            "last_sent": last_sent.isoformat() if last_sent else None,
+            "last_new_trip_time": last_new_trip_time.isoformat() if last_new_trip_time else None,
+        }, f)
+
+
+def _should_send_email(newest_trip_time, has_routes, has_rider_alerts):
+    state = _load_email_state()
+    now = datetime.now()
+
+    last_sent = datetime.fromisoformat(state["last_sent"]) if state["last_sent"] else None
+    last_new_trip_time = datetime.fromisoformat(state["last_new_trip_time"]) if state["last_new_trip_time"] else None
+
+    has_new_trips = (newest_trip_time is not None) and (
+        last_new_trip_time is None or newest_trip_time > last_new_trip_time
+    )
+    time_ok = last_sent is None or (now - last_sent) >= timedelta(hours=EMAIL_MIN_INTERVAL_HOURS)
+
+    if has_rider_alerts:
+        return True, has_new_trips, newest_trip_time
+    if (has_new_trips or has_routes) and time_ok:
+        return True, has_new_trips, newest_trip_time
+    return False, has_new_trips, newest_trip_time
+
 
 def get_db_connection():
     if os.path.exists(DB_PATH): return sqlite3.connect(DB_PATH, timeout=30)
@@ -90,7 +131,7 @@ def analyze_and_report():
     print("📊 Generating COMPREHENSIVE Strategic Report v12.4 (Phase 1 Clean)...")
     
     # 🛠 SELF-HEALING: Clear stuck browser locks
-    os.system("rm -rf /home/joegritter/nemt-scraper/user_data/Default/SingletonLock 2>/dev/null")
+    os.system(f"rm -rf {os.path.expanduser('~')}/nemt-scraper/user_data/Default/SingletonLock 2>/dev/null")
     
     map_link = MAP_URL
 
@@ -275,7 +316,20 @@ def analyze_and_report():
         body += '</table>'
 
     body += '</body></html>'
-    
-    send_email(subject, body, is_html=True)
+
+    # --- 📬 SEND GATE: only email when there is something actionable ---
+    newest_trip_time = latest_scan_time if not pd.isnull(latest_scan_time) else None
+    should_send, has_new_trips, newest_trip_time = _should_send_email(
+        newest_trip_time, bool(top_routes), bool(regular_rider_alerts)
+    )
+
+    if should_send:
+        send_email(subject, body, is_html=True)
+        _save_email_state(
+            last_sent=datetime.now(),
+            last_new_trip_time=newest_trip_time,
+        )
+    else:
+        print("📭 Email skipped: no new trips, no routes, no rider alerts, or within 2-hour cooldown.")
 
 if __name__ == "__main__": analyze_and_report()

@@ -137,7 +137,7 @@ def get_regular_rider_alerts():
     alerts.sort(key=lambda x: (0 if x['urgency'] == 'TODAY' else 1, x['pickup_time']))
 
     # Export regular pickup addresses to JSON for GitHub Pages (served to Chrome extension)
-    export_path = '/home/joegritter/nemt-map/regular_riders.json'
+    export_path = os.path.join(os.path.expanduser('~'), 'nemt-map', 'regular_riders.json')
     try:
         with open(export_path, 'w') as f:
             json.dump({

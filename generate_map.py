@@ -454,7 +454,7 @@ def _generate_map_inner(conn):
         ).add_to(rates_group)
 
     # --- 4. REGULAR RIDER MARKERS ---
-    REGULAR_RIDERS_JSON = '/home/joegritter/nemt-map/regular_riders.json'
+    REGULAR_RIDERS_JSON = os.path.join(os.path.expanduser('~'), 'nemt-map', 'regular_riders.json')
     try:
         # Load full watchlist
         watchlist = []

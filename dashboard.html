@@ -58,7 +58,7 @@
 <div class="header">
   <div>
     <h1>🚗 NEMT Dispatch Dashboard</h1>
-    <div class="meta">Last updated: 04/18/2026 06:05 AM · Auto-refreshes every 30 min</div>
+    <div class="meta">Last updated: 04/18/2026 10:16 AM · Auto-refreshes every 30 min</div>
   </div>
   <a href="https://joegritter-bit.github.io/nemt-map/" class="map-btn" target="_blank">
     🗺️ Live Map
@@ -69,15 +69,15 @@
 <div class="section">
   <div class="stats-bar">
     <div class="stat">
-      <div class="val">14</div>
+      <div class="val">0</div>
       <div class="lbl">Available Shifts</div>
     </div>
     <div class="stat">
-      <div class="val" style="color:#27ae60">$4,326</div>
+      <div class="val" style="color:#27ae60">$0</div>
       <div class="lbl">Total Opportunity</div>
     </div>
     <div class="stat">
-      <div class="val">$60/hr</div>
+      <div class="val">$0/hr</div>
       <div class="lbl">Avg Rev/Hour</div>
     </div>
     <div class="stat">
@@ -205,6 +205,9 @@
   <div class="section-header" style="background:#1a6b3c;">
     🏙️ Springfield Dispatch
   </div>
+  <div style="background:#fff3cd; color:#856404; padding:8px 16px; font-size:12px; font-weight:bold; border-bottom:1px solid #ffc107;">
+    ⚠️ Data from previous run — Stage 4 may have failed
+  </div>
   <table>
     <tr>
       <th>Date</th><th>Priority</th><th>Model</th>
@@ -212,7 +215,7 @@
       <th>Total</th><th>Top County</th><th>Route</th>
     </tr>
 
-    <tr>
+    <tr style="opacity:0.7;">
       <td>04/18/2026</td>
       <td>✅ GOOD</td>
       <td>Clinic</td>
@@ -223,7 +226,7 @@
       <td>Unknown</td>
       <td style="font-size:11px;">🚌 3x to 2615 edwar ➡ 9:00 AM (2840 Harding Av)</td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td>04/20/2026</td>
       <td>✅ GOOD</td>
       <td>Traditional</td>
@@ -234,7 +237,7 @@
       <td>Unknown</td>
       <td style="font-size:11px;">8:15 AM (2200 Shale St) ➡ 10:00 AM (409 N 13th St)</td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td>04/21/2026</td>
       <td>✅ GOOD</td>
       <td>Traditional</td>
@@ -245,7 +248,7 @@
       <td>Unknown</td>
       <td style="font-size:11px;">10:15 AM (7 Manor Ct)</td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td>04/21/2026</td>
       <td>✅ GOOD</td>
       <td>Traditional</td>
@@ -256,7 +259,7 @@
       <td>Unknown</td>
       <td style="font-size:11px;">9:15 AM (2070 N Church S)</td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td>04/21/2026</td>
       <td>📋 STANDARD</td>
       <td>Clinic</td>
@@ -267,7 +270,7 @@
       <td>Unknown</td>
       <td style="font-size:11px;">8:00 AM (156 N Commercia)</td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td>04/22/2026</td>
       <td>✅ GOOD</td>
       <td>Traditional</td>
@@ -278,7 +281,7 @@
       <td>Unknown</td>
       <td style="font-size:11px;">12:30 PM (609 W Empire St)</td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td>04/22/2026</td>
       <td>✅ GOOD</td>
       <td>Traditional</td>
@@ -289,7 +292,7 @@
       <td>Unknown</td>
       <td style="font-size:11px;">🚌 2x to 1403 w gle</td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td>04/22/2026</td>
       <td>📋 STANDARD</td>
       <td>Traditional</td>
@@ -300,7 +303,7 @@
       <td>Unknown</td>
       <td style="font-size:11px;">4:00 PM (1706 Springfiel)</td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td>04/23/2026</td>
       <td>✅ GOOD</td>
       <td>Traditional</td>
@@ -311,7 +314,7 @@
       <td>Unknown</td>
       <td style="font-size:11px;">9:45 AM (2123 E Capitol )</td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td>04/24/2026</td>
       <td>✅ GOOD</td>
       <td>Traditional</td>
@@ -325,18 +328,19 @@
   </table>
 </div>
 <div class="section">
-  <div class="section-header" style="background:#e67e22;">
-    💊 Clinic Routes (Multi-Load)
+  <div class="section-header" style="background:#7f8c8d;">
+    🕐 Historical Routes (data older than 150 minutes — pipeline may not have run)
   </div>
   <table>
     <tr>
-      <th>Date</th><th>Hub</th><th>Jobs</th>
+      <th>Date</th><th>Model</th><th>Hub</th><th>Jobs</th>
       <th>Shift</th><th>Rev/Hr</th><th>Total</th>
       <th>Top County</th><th>Route</th>
     </tr>
 
-    <tr>
+    <tr style="opacity:0.7;">
       <td>04/18/2026</td>
+      <td>Clinic</td>
       <td><b>Springfield</b></td>
       <td>4</td>
       <td>5.5h</td>
@@ -345,8 +349,9 @@
       <td>Unknown</td>
       <td style="font-size:11px;">🚌 3x to 2615 edwar ➡ 9:00 AM (2840 Harding Av)</td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td>04/21/2026</td>
+      <td>Clinic</td>
       <td><b>Springfield</b></td>
       <td>1</td>
       <td>4.1h</td>
@@ -355,21 +360,9 @@
       <td>Unknown</td>
       <td style="font-size:11px;">8:00 AM (156 N Commercia)</td>
     </tr>
-  </table>
-</div>
-<div class="section">
-  <div class="section-header" style="background:#8e44ad;">
-    🏆 Traditional Routes
-  </div>
-  <table>
-    <tr>
-      <th>Date</th><th>Hub</th><th>Jobs</th>
-      <th>Shift</th><th>Rev/Hr</th><th>Total</th>
-      <th>Top County</th><th>Route</th>
-    </tr>
-
-    <tr>
+    <tr style="opacity:0.7;">
       <td>04/20/2026</td>
+      <td>Traditional</td>
       <td><b>Springfield</b></td>
       <td>2</td>
       <td>3.3h</td>
@@ -378,8 +371,9 @@
       <td>Unknown</td>
       <td style="font-size:11px;">8:15 AM (2200 Shale St) ➡ 10:00 AM (409 N 13th St)</td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td>04/21/2026</td>
+      <td>Traditional</td>
       <td><b>Springfield</b></td>
       <td>1</td>
       <td>1.4h</td>
@@ -388,8 +382,9 @@
       <td>Unknown</td>
       <td style="font-size:11px;">10:15 AM (7 Manor Ct)</td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td>04/21/2026</td>
+      <td>Traditional</td>
       <td><b>Springfield</b></td>
       <td>1</td>
       <td>7.7h</td>
@@ -398,8 +393,9 @@
       <td>Unknown</td>
       <td style="font-size:11px;">9:15 AM (2070 N Church S)</td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td>04/21/2026</td>
+      <td>Traditional</td>
       <td><b>Effingham</b></td>
       <td>1</td>
       <td>8.2h</td>
@@ -408,8 +404,9 @@
       <td>Unknown</td>
       <td style="font-size:11px;">8:00 AM (621 Polk Ave)</td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td>04/22/2026</td>
+      <td>Traditional</td>
       <td><b>Effingham</b></td>
       <td>1</td>
       <td>2.3h</td>
@@ -418,8 +415,9 @@
       <td>Unknown</td>
       <td style="font-size:11px;">8:00 AM (503 Interstate )</td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td>04/22/2026</td>
+      <td>Traditional</td>
       <td><b>Springfield</b></td>
       <td>1</td>
       <td>10.2h</td>
@@ -428,8 +426,9 @@
       <td>Unknown</td>
       <td style="font-size:11px;">12:30 PM (609 W Empire St)</td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td>04/22/2026</td>
+      <td>Traditional</td>
       <td><b>Effingham</b></td>
       <td>1</td>
       <td>8.7h</td>
@@ -438,8 +437,9 @@
       <td>Unknown</td>
       <td style="font-size:11px;">1:00 PM (132 W Walnut St)</td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td>04/22/2026</td>
+      <td>Traditional</td>
       <td><b>Springfield</b></td>
       <td>2</td>
       <td>4.9h</td>
@@ -448,8 +448,9 @@
       <td>Unknown</td>
       <td style="font-size:11px;">🚌 2x to 1403 w gle</td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td>04/22/2026</td>
+      <td>Traditional</td>
       <td><b>Springfield</b></td>
       <td>1</td>
       <td>3.7h</td>
@@ -458,8 +459,9 @@
       <td>Unknown</td>
       <td style="font-size:11px;">4:00 PM (1706 Springfiel)</td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td>04/23/2026</td>
+      <td>Traditional</td>
       <td><b>Springfield</b></td>
       <td>1</td>
       <td>4.3h</td>
@@ -468,8 +470,9 @@
       <td>Unknown</td>
       <td style="font-size:11px;">9:45 AM (2123 E Capitol )</td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td>04/24/2026</td>
+      <td>Traditional</td>
       <td><b>Effingham</b></td>
       <td>1</td>
       <td>8.2h</td>
@@ -478,8 +481,9 @@
       <td>Unknown</td>
       <td style="font-size:11px;">10:00 AM (4 Mills Terrace)</td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td>04/24/2026</td>
+      <td>Traditional</td>
       <td><b>Springfield</b></td>
       <td>2</td>
       <td>5.2h</td>
@@ -494,13 +498,16 @@
   <div class="section-header" style="background:#27ae60;">
     🧩 Driver Schedule Extensions
   </div>
+  <div style="background:#fff3cd; color:#856404; padding:8px 16px; font-size:12px; font-weight:bold; border-bottom:1px solid #ffc107;">
+    ⚠️ Data from previous run — Stage 5 may have failed
+  </div>
   <table>
     <tr>
       <th>Driver</th><th>Day</th><th>Window</th>
       <th>Broker</th><th>Route</th><th>Price</th>
     </tr>
 
-    <tr>
+    <tr style="opacity:0.7;">
       <td><b>7</b></td>
       <td>Tuesday 04/21</td>
       <td>Before 15:00</td>
@@ -508,7 +515,7 @@
       <td>108 Water St ➡️ 420 Ne Glen Oak Ave 🔄</td>
       <td class="revenue"><b>$205.60</b></td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td><b>7</b></td>
       <td>Tuesday 04/21</td>
       <td>Before 15:00</td>
@@ -516,7 +523,7 @@
       <td>301 Briar Ln ➡️ 1120 N Melvin St 🔄</td>
       <td class="revenue"><b>$185.30</b></td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td><b>7</b></td>
       <td>Tuesday 04/21</td>
       <td>Before 15:00</td>
@@ -524,7 +531,7 @@
       <td>156 N Commercial St ➡️ 120 N 11th St 🔄</td>
       <td class="revenue"><b>$177.07</b></td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td><b>7</b></td>
       <td>Tuesday 04/21</td>
       <td>Before 15:00</td>
@@ -532,7 +539,7 @@
       <td>2900 W Farmington Rd  ➡️ 303 Landmark Dr 🔄</td>
       <td class="revenue"><b>$154.00</b></td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td><b>Steven Ray Cothern</b></td>
       <td>Friday 04/24</td>
       <td>After 12:42</td>
@@ -540,7 +547,7 @@
       <td>1402 E College Ave ➡️ 600 Ne Water St 🔄</td>
       <td class="revenue"><b>$144.19</b></td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td><b>Debbie Reddish</b></td>
       <td>Friday 04/24</td>
       <td>After 12:42</td>
@@ -548,7 +555,7 @@
       <td>1402 E College Ave ➡️ 600 Ne Water St 🔄</td>
       <td class="revenue"><b>$144.19</b></td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td><b>Adam Scott Watkins</b></td>
       <td>Friday 04/24</td>
       <td>After 12:42</td>
@@ -556,7 +563,7 @@
       <td>1402 E College Ave ➡️ 600 Ne Water St 🔄</td>
       <td class="revenue"><b>$144.19</b></td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td><b>7</b></td>
       <td>Tuesday 04/21</td>
       <td>Before 15:00</td>
@@ -564,7 +571,7 @@
       <td>1015 Sable Dr ➡️ 1630 Gateway Dr 🔄</td>
       <td class="revenue"><b>$142.66</b></td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td><b>Steven Ray Cothern</b></td>
       <td>Monday 04/20</td>
       <td>After 12:42</td>
@@ -572,7 +579,7 @@
       <td>119 Valley View Cir ➡️ 303 N William Kumpf Blvd 🔄</td>
       <td class="revenue"><b>$134.92</b></td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td><b>Adam Scott Watkins</b></td>
       <td>Monday 04/20</td>
       <td>After 12:42</td>
@@ -580,7 +587,7 @@
       <td>119 Valley View Cir ➡️ 303 N William Kumpf Blvd 🔄</td>
       <td class="revenue"><b>$134.92</b></td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td><b>Debbie Reddish</b></td>
       <td>Monday 04/20</td>
       <td>After 09:42</td>
@@ -588,7 +595,7 @@
       <td>409 N 13th St ➡️ 2633 Chatham Rd 🔄</td>
       <td class="revenue"><b>$130.00</b></td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td><b>7</b></td>
       <td>Tuesday 04/21</td>
       <td>Before 15:00</td>
@@ -596,7 +603,7 @@
       <td>7 Manor Ct ➡️ 2239 E Cook St 🔄</td>
       <td class="revenue"><b>$130.00</b></td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td><b>Shannon Henderson</b></td>
       <td>Wednesday 04/22</td>
       <td>After 10:27</td>
@@ -604,7 +611,7 @@
       <td>2505 Prairie Green Dr  ➡️ 3101 Fields S Dr 🔄</td>
       <td class="revenue"><b>$123.14</b></td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td><b>Robert McGee</b></td>
       <td>Wednesday 04/22</td>
       <td>After 11:27</td>
@@ -612,7 +619,7 @@
       <td>2505 Prairie Green Dr  ➡️ 3101 Fields S Dr 🔄</td>
       <td class="revenue"><b>$123.14</b></td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td><b>TREVER FLOYD</b></td>
       <td>Wednesday 04/22</td>
       <td>After 10:27</td>
@@ -640,6 +647,11 @@
       <td class="revenue"><b>6 available</b></td>
     </tr>
     <tr>
+      <td>17568 Us-67</td>
+      <td><b>MTM</b></td>
+      <td class="revenue"><b>5 available</b></td>
+    </tr>
+    <tr>
       <td>395 E 2nd Ave</td>
       <td><b>MTM</b></td>
       <td class="revenue"><b>5 available</b></td>
@@ -651,11 +663,6 @@
     </tr>
     <tr>
       <td>1441 N Shore Dr</td>
-      <td><b>MTM</b></td>
-      <td class="revenue"><b>5 available</b></td>
-    </tr>
-    <tr>
-      <td>17568 Us-67</td>
       <td><b>MTM</b></td>
       <td class="revenue"><b>5 available</b></td>
     </tr>

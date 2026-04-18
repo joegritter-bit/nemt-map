@@ -7,7 +7,7 @@
 PING_URL="https://hc-ping.com/7adc3d36-274a-4002-838d-4b26174b3a0d"
 
 # 2. PATHS (Do not change unless you move folders)
-BACKUP_DIR="/mnt/chromeos/GoogleDrive/MyDrive/NEMT_Bot_Backup"
+BACKUP_DIR="$HOME/Library/CloudStorage/GoogleDrive-owner@effinghamtransport.com/My Drive/NEMT_Bot_Backup"
 SOURCE_DIR="$HOME/nemt-scraper"
 ENV_PATH="$HOME/nemt-scraper/nemt_env"
 TIMESTAMP=$(date +"%Y-%m-%d_%H-%M")

@@ -4,192 +4,154 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Effingham Transport — Analytics Dashboard</title>
-<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-<script src="https://unpkg.com/recharts@2.12.7/umd/Recharts.js"></script>
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f4f6f9;color:#1a1a2e;min-height:100vh}
-#root{max-width:1200px;margin:0 auto;padding:20px}
-.header{background:linear-gradient(135deg,#1F3864,#2563a8);color:#fff;border-radius:12px;padding:24px 28px;margin-bottom:20px}
-.header h1{font-size:22px;font-weight:600;margin-bottom:4px}
-.header p{font-size:13px;opacity:0.8}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px}
-.card{background:#fff;border-radius:10px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,0.08)}
-.card-label{font-size:11px;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
-.card-value{font-size:22px;font-weight:700;color:#1F3864}
-.card-sub{font-size:11px;color:#9ca3af;margin-top:3px}
-.chart-box{background:#fff;border-radius:10px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,0.08);margin-bottom:20px}
-.chart-title{font-size:14px;font-weight:600;color:#374151;margin-bottom:4px}
-.chart-sub{font-size:12px;color:#9ca3af;margin-bottom:16px}
-.tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
-.tab{background:transparent;border:1px solid #d1d5db;border-radius:6px;padding:5px 14px;font-size:12px;cursor:pointer;color:#6b7280;transition:all .15s}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f4f6f9;color:#1a1a2e;min-height:100vh;padding:20px}
+.wrap{max-width:1100px;margin:0 auto}
+.header{background:linear-gradient(135deg,#1F3864,#2563a8);color:#fff;border-radius:12px;padding:22px 28px;margin-bottom:18px}
+.header h1{font-size:20px;font-weight:600;margin-bottom:4px}
+.header p{font-size:12px;opacity:.8}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:12px;margin-bottom:18px}
+.card{background:#fff;border-radius:10px;padding:14px 16px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.cl{font-size:11px;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.cv{font-size:21px;font-weight:700;color:#1F3864}
+.cs{font-size:11px;color:#9ca3af;margin-top:3px}
+.box{background:#fff;border-radius:10px;padding:18px 20px;box-shadow:0 1px 4px rgba(0,0,0,.08);margin-bottom:18px}
+.box-title{font-size:14px;font-weight:600;color:#374151;margin-bottom:3px}
+.box-sub{font-size:12px;color:#9ca3af;margin-bottom:14px}
+.tabs{display:flex;gap:7px;margin-bottom:12px;flex-wrap:wrap}
+.tab{background:transparent;border:1px solid #d1d5db;border-radius:6px;padding:4px 13px;font-size:12px;cursor:pointer;color:#6b7280}
 .tab.active{background:#1F3864;color:#fff;border-color:#1F3864}
-.legend{display:flex;gap:16px;margin-bottom:12px;flex-wrap:wrap}
-.legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:#6b7280}
-.legend-dot{width:10px;height:10px;border-radius:2px}
-.back-link{display:inline-block;margin-bottom:16px;font-size:13px;color:#2563a8;text-decoration:none}
-.back-link:hover{text-decoration:underline}
-.data-note{font-size:11px;color:#9ca3af;text-align:center;margin-top:8px}
+.legend{display:flex;gap:14px;margin-bottom:10px;flex-wrap:wrap}
+.li{display:flex;align-items:center;gap:5px;font-size:12px;color:#6b7280}
+.ld{width:10px;height:10px;border-radius:2px;display:inline-block}
+.back{display:inline-block;margin-bottom:14px;font-size:13px;color:#2563a8;text-decoration:none}
+.back:hover{text-decoration:underline}
+.note{font-size:11px;color:#9ca3af;text-align:center;margin-top:8px}
 </style>
 </head>
 <body>
-<div id="root"></div>
-<script type="text/babel">
-const { useState } = React;
-const { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line } = Recharts;
+<div class="wrap">
+  <a href="../index.html" class="back">← Back to Map</a>
+  <div class="header">
+    <h1>Effingham Transport — Analytics Dashboard</h1>
+    <p>Dec 2, 2024 – Apr 18, 2026 &nbsp;·&nbsp; MTM + Modivcare (Direct + RouteGenie) &nbsp;·&nbsp; Complete dataset · 9 source files</p>
+  </div>
 
-const WEEKLY_DATA = [{"week": "Dec 02, 2024", "mtmTrips": 361, "modTrips": 31, "totalTrips": 392, "mtmRevenue": 29545.99, "modRevenue": 2480.92, "totalRevenue": 32026.91, "avgRevPerTrip": 81.7}, {"week": "Dec 09, 2024", "mtmTrips": 351, "modTrips": 40, "totalTrips": 391, "mtmRevenue": 28620.91, "modRevenue": 4090.0, "totalRevenue": 32710.91, "avgRevPerTrip": 83.66}, {"week": "Dec 16, 2024", "mtmTrips": 387, "modTrips": 34, "totalTrips": 421, "mtmRevenue": 31351.34, "modRevenue": 3424.91, "totalRevenue": 34776.25, "avgRevPerTrip": 82.6}, {"week": "Dec 23, 2024", "mtmTrips": 329, "modTrips": 26, "totalTrips": 355, "mtmRevenue": 26857.59, "modRevenue": 2525.0, "totalRevenue": 29382.59, "avgRevPerTrip": 82.77}, {"week": "Dec 30, 2024", "mtmTrips": 280, "modTrips": 29, "totalTrips": 309, "mtmRevenue": 23258.29, "modRevenue": 2898.38, "totalRevenue": 26156.67, "avgRevPerTrip": 84.65}, {"week": "Jan 06, 2025", "mtmTrips": 406, "modTrips": 22, "totalTrips": 428, "mtmRevenue": 32742.45, "modRevenue": 2284.35, "totalRevenue": 35026.8, "avgRevPerTrip": 81.84}, {"week": "Jan 13, 2025", "mtmTrips": 366, "modTrips": 25, "totalTrips": 391, "mtmRevenue": 29625.47, "modRevenue": 2460.63, "totalRevenue": 32086.1, "avgRevPerTrip": 82.06}, {"week": "Jan 20, 2025", "mtmTrips": 392, "modTrips": 50, "totalTrips": 442, "mtmRevenue": 32123.94, "modRevenue": 3797.95, "totalRevenue": 35921.89, "avgRevPerTrip": 81.27}, {"week": "Jan 27, 2025", "mtmTrips": 389, "modTrips": 42, "totalTrips": 431, "mtmRevenue": 32018.19, "modRevenue": 3405.0, "totalRevenue": 35423.19, "avgRevPerTrip": 82.19}, {"week": "Feb 03, 2025", "mtmTrips": 375, "modTrips": 18, "totalTrips": 393, "mtmRevenue": 29061.15, "modRevenue": 1773.86, "totalRevenue": 30835.01, "avgRevPerTrip": 78.46}, {"week": "Feb 10, 2025", "mtmTrips": 345, "modTrips": 19, "totalTrips": 364, "mtmRevenue": 27124.39, "modRevenue": 1523.98, "totalRevenue": 28648.37, "avgRevPerTrip": 78.7}, {"week": "Feb 17, 2025", "mtmTrips": 351, "modTrips": 26, "totalTrips": 377, "mtmRevenue": 27786.09, "modRevenue": 2257.48, "totalRevenue": 30043.57, "avgRevPerTrip": 79.69}, {"week": "Feb 24, 2025", "mtmTrips": 377, "modTrips": 28, "totalTrips": 405, "mtmRevenue": 29846.85, "modRevenue": 2224.0, "totalRevenue": 32070.85, "avgRevPerTrip": 79.19}, {"week": "Mar 03, 2025", "mtmTrips": 354, "modTrips": 27, "totalTrips": 381, "mtmRevenue": 27833.86, "modRevenue": 2480.98, "totalRevenue": 30314.84, "avgRevPerTrip": 79.57}, {"week": "Mar 10, 2025", "mtmTrips": 379, "modTrips": 23, "totalTrips": 402, "mtmRevenue": 28879.51, "modRevenue": 2158.76, "totalRevenue": 31038.27, "avgRevPerTrip": 77.21}, {"week": "Mar 17, 2025", "mtmTrips": 405, "modTrips": 38, "totalTrips": 443, "mtmRevenue": 31343.15, "modRevenue": 3562.93, "totalRevenue": 34906.08, "avgRevPerTrip": 78.79}, {"week": "Mar 24, 2025", "mtmTrips": 409, "modTrips": 69, "totalTrips": 478, "mtmRevenue": 31469.7, "modRevenue": 6464.25, "totalRevenue": 37933.95, "avgRevPerTrip": 79.36}, {"week": "Mar 31, 2025", "mtmTrips": 376, "modTrips": 54, "totalTrips": 430, "mtmRevenue": 29322.0, "modRevenue": 5639.37, "totalRevenue": 34961.37, "avgRevPerTrip": 81.31}, {"week": "Apr 07, 2025", "mtmTrips": 351, "modTrips": 63, "totalTrips": 414, "mtmRevenue": 27922.07, "modRevenue": 6553.21, "totalRevenue": 34475.28, "avgRevPerTrip": 83.27}, {"week": "Apr 14, 2025", "mtmTrips": 366, "modTrips": 52, "totalTrips": 418, "mtmRevenue": 29263.18, "modRevenue": 5931.91, "totalRevenue": 35195.09, "avgRevPerTrip": 84.2}, {"week": "Apr 21, 2025", "mtmTrips": 355, "modTrips": 85, "totalTrips": 440, "mtmRevenue": 27873.75, "modRevenue": 9427.34, "totalRevenue": 37301.09, "avgRevPerTrip": 84.78}, {"week": "Apr 28, 2025", "mtmTrips": 340, "modTrips": 57, "totalTrips": 397, "mtmRevenue": 26745.67, "modRevenue": 6747.92, "totalRevenue": 33493.59, "avgRevPerTrip": 84.37}, {"week": "May 05, 2025", "mtmTrips": 354, "modTrips": 63, "totalTrips": 417, "mtmRevenue": 27251.43, "modRevenue": 7323.92, "totalRevenue": 34575.35, "avgRevPerTrip": 82.91}, {"week": "May 12, 2025", "mtmTrips": 392, "modTrips": 44, "totalTrips": 436, "mtmRevenue": 29496.95, "modRevenue": 5229.0, "totalRevenue": 34725.95, "avgRevPerTrip": 79.65}, {"week": "May 19, 2025", "mtmTrips": 366, "modTrips": 20, "totalTrips": 386, "mtmRevenue": 27789.27, "modRevenue": 2421.0, "totalRevenue": 30210.27, "avgRevPerTrip": 78.26}, {"week": "May 26, 2025", "mtmTrips": 322, "modTrips": 15, "totalTrips": 337, "mtmRevenue": 24410.66, "modRevenue": 2049.4, "totalRevenue": 26460.06, "avgRevPerTrip": 78.52}, {"week": "Jun 02, 2025", "mtmTrips": 323, "modTrips": 49, "totalTrips": 372, "mtmRevenue": 24471.11, "modRevenue": 2177.5, "totalRevenue": 26648.61, "avgRevPerTrip": 71.64}, {"week": "Jun 09, 2025", "mtmTrips": 350, "modTrips": 48, "totalTrips": 398, "mtmRevenue": 26119.53, "modRevenue": 1793.85, "totalRevenue": 27913.38, "avgRevPerTrip": 70.13}, {"week": "Jun 16, 2025", "mtmTrips": 346, "modTrips": 46, "totalTrips": 392, "mtmRevenue": 26090.74, "modRevenue": 1780.54, "totalRevenue": 27871.28, "avgRevPerTrip": 71.1}, {"week": "Jun 23, 2025", "mtmTrips": 363, "modTrips": 32, "totalTrips": 395, "mtmRevenue": 27264.18, "modRevenue": 1253.72, "totalRevenue": 28517.9, "avgRevPerTrip": 72.2}, {"week": "Jun 30, 2025", "mtmTrips": 196, "modTrips": 12, "totalTrips": 208, "mtmRevenue": 14760.63, "modRevenue": 661.44, "totalRevenue": 15422.07, "avgRevPerTrip": 74.14}, {"week": "Jul 07, 2025", "mtmTrips": 304, "modTrips": 50, "totalTrips": 354, "mtmRevenue": 23213.54, "modRevenue": 2999.02, "totalRevenue": 26212.56, "avgRevPerTrip": 74.05}, {"week": "Jul 14, 2025", "mtmTrips": 342, "modTrips": 46, "totalTrips": 388, "mtmRevenue": 26042.3, "modRevenue": 2754.95, "totalRevenue": 28797.25, "avgRevPerTrip": 74.22}, {"week": "Jul 21, 2025", "mtmTrips": 345, "modTrips": 54, "totalTrips": 399, "mtmRevenue": 25905.91, "modRevenue": 2896.16, "totalRevenue": 28802.07, "avgRevPerTrip": 72.19}, {"week": "Jul 28, 2025", "mtmTrips": 340, "modTrips": 63, "totalTrips": 403, "mtmRevenue": 25768.48, "modRevenue": 4027.57, "totalRevenue": 29796.05, "avgRevPerTrip": 73.94}, {"week": "Aug 04, 2025", "mtmTrips": 314, "modTrips": 50, "totalTrips": 364, "mtmRevenue": 24379.35, "modRevenue": 2835.5, "totalRevenue": 27214.85, "avgRevPerTrip": 74.77}, {"week": "Aug 11, 2025", "mtmTrips": 309, "modTrips": 64, "totalTrips": 373, "mtmRevenue": 24001.81, "modRevenue": 3458.71, "totalRevenue": 27460.52, "avgRevPerTrip": 73.62}, {"week": "Aug 18, 2025", "mtmTrips": 298, "modTrips": 58, "totalTrips": 356, "mtmRevenue": 22108.12, "modRevenue": 2950.51, "totalRevenue": 25058.63, "avgRevPerTrip": 70.39}, {"week": "Aug 25, 2025", "mtmTrips": 280, "modTrips": 61, "totalTrips": 341, "mtmRevenue": 20703.83, "modRevenue": 3527.63, "totalRevenue": 24231.46, "avgRevPerTrip": 71.06}, {"week": "Sep 01, 2025", "mtmTrips": 270, "modTrips": 62, "totalTrips": 332, "mtmRevenue": 20986.62, "modRevenue": 4427.37, "totalRevenue": 25413.99, "avgRevPerTrip": 76.55}, {"week": "Sep 08, 2025", "mtmTrips": 268, "modTrips": 63, "totalTrips": 331, "mtmRevenue": 20877.57, "modRevenue": 3245.17, "totalRevenue": 24122.74, "avgRevPerTrip": 72.88}, {"week": "Sep 15, 2025", "mtmTrips": 308, "modTrips": 66, "totalTrips": 374, "mtmRevenue": 23835.2, "modRevenue": 3541.54, "totalRevenue": 27376.74, "avgRevPerTrip": 73.2}, {"week": "Sep 22, 2025", "mtmTrips": 318, "modTrips": 61, "totalTrips": 379, "mtmRevenue": 23806.19, "modRevenue": 3762.1, "totalRevenue": 27568.29, "avgRevPerTrip": 72.74}, {"week": "Sep 29, 2025", "mtmTrips": 292, "modTrips": 58, "totalTrips": 350, "mtmRevenue": 22014.65, "modRevenue": 3178.48, "totalRevenue": 25193.13, "avgRevPerTrip": 71.98}, {"week": "Oct 06, 2025", "mtmTrips": 314, "modTrips": 57, "totalTrips": 371, "mtmRevenue": 24302.9, "modRevenue": 3261.76, "totalRevenue": 27564.66, "avgRevPerTrip": 74.3}, {"week": "Oct 13, 2025", "mtmTrips": 312, "modTrips": 60, "totalTrips": 372, "mtmRevenue": 23525.98, "modRevenue": 3726.0, "totalRevenue": 27251.98, "avgRevPerTrip": 73.26}, {"week": "Oct 20, 2025", "mtmTrips": 317, "modTrips": 66, "totalTrips": 383, "mtmRevenue": 23948.26, "modRevenue": 3951.0, "totalRevenue": 27899.26, "avgRevPerTrip": 72.84}, {"week": "Oct 27, 2025", "mtmTrips": 303, "modTrips": 64, "totalTrips": 367, "mtmRevenue": 22789.34, "modRevenue": 3866.0, "totalRevenue": 26655.34, "avgRevPerTrip": 72.63}, {"week": "Nov 03, 2025", "mtmTrips": 303, "modTrips": 60, "totalTrips": 363, "mtmRevenue": 23223.25, "modRevenue": 3784.5, "totalRevenue": 27007.75, "avgRevPerTrip": 74.4}, {"week": "Nov 10, 2025", "mtmTrips": 287, "modTrips": 75, "totalTrips": 362, "mtmRevenue": 22939.48, "modRevenue": 4677.0, "totalRevenue": 27616.48, "avgRevPerTrip": 76.29}, {"week": "Nov 17, 2025", "mtmTrips": 301, "modTrips": 59, "totalTrips": 360, "mtmRevenue": 22961.6, "modRevenue": 3482.5, "totalRevenue": 26444.1, "avgRevPerTrip": 73.46}, {"week": "Nov 24, 2025", "mtmTrips": 294, "modTrips": 43, "totalTrips": 337, "mtmRevenue": 22698.41, "modRevenue": 3159.5, "totalRevenue": 25857.91, "avgRevPerTrip": 76.73}, {"week": "Dec 01, 2025", "mtmTrips": 214, "modTrips": 71, "totalTrips": 285, "mtmRevenue": 17474.0, "modRevenue": 4334.5, "totalRevenue": 21808.5, "avgRevPerTrip": 76.52}, {"week": "Dec 08, 2025", "mtmTrips": 240, "modTrips": 72, "totalTrips": 312, "mtmRevenue": 18794.76, "modRevenue": 4579.5, "totalRevenue": 23374.26, "avgRevPerTrip": 74.92}, {"week": "Dec 15, 2025", "mtmTrips": 271, "modTrips": 81, "totalTrips": 352, "mtmRevenue": 21387.52, "modRevenue": 4543.5, "totalRevenue": 25931.02, "avgRevPerTrip": 73.67}, {"week": "Dec 22, 2025", "mtmTrips": 194, "modTrips": 62, "totalTrips": 256, "mtmRevenue": 14636.4, "modRevenue": 3533.5, "totalRevenue": 18169.9, "avgRevPerTrip": 70.98}, {"week": "Dec 29, 2025", "mtmTrips": 252, "modTrips": 61, "totalTrips": 313, "mtmRevenue": 18930.87, "modRevenue": 2930.0, "totalRevenue": 21860.87, "avgRevPerTrip": 69.84}, {"week": "Jan 05, 2026", "mtmTrips": 209, "modTrips": 79, "totalTrips": 288, "mtmRevenue": 15494.23, "modRevenue": 4662.5, "totalRevenue": 20156.73, "avgRevPerTrip": 69.99}, {"week": "Jan 12, 2026", "mtmTrips": 267, "modTrips": 67, "totalTrips": 334, "mtmRevenue": 20388.43, "modRevenue": 4242.5, "totalRevenue": 24630.93, "avgRevPerTrip": 73.75}, {"week": "Jan 19, 2026", "mtmTrips": 259, "modTrips": 45, "totalTrips": 304, "mtmRevenue": 18951.34, "modRevenue": 3066.0, "totalRevenue": 22017.34, "avgRevPerTrip": 72.43}, {"week": "Jan 26, 2026", "mtmTrips": 255, "modTrips": 51, "totalTrips": 306, "mtmRevenue": 19033.01, "modRevenue": 3354.0, "totalRevenue": 22387.01, "avgRevPerTrip": 73.16}, {"week": "Feb 02, 2026", "mtmTrips": 247, "modTrips": 69, "totalTrips": 316, "mtmRevenue": 18537.66, "modRevenue": 3639.0, "totalRevenue": 22176.66, "avgRevPerTrip": 70.18}, {"week": "Feb 09, 2026", "mtmTrips": 262, "modTrips": 60, "totalTrips": 322, "mtmRevenue": 20214.79, "modRevenue": 2964.0, "totalRevenue": 23178.79, "avgRevPerTrip": 71.98}, {"week": "Feb 16, 2026", "mtmTrips": 245, "modTrips": 76, "totalTrips": 321, "mtmRevenue": 20287.25, "modRevenue": 3599.0, "totalRevenue": 23886.25, "avgRevPerTrip": 74.41}, {"week": "Feb 23, 2026", "mtmTrips": 269, "modTrips": 69, "totalTrips": 338, "mtmRevenue": 21581.3, "modRevenue": 3243.0, "totalRevenue": 24824.3, "avgRevPerTrip": 73.44}, {"week": "Mar 02, 2026", "mtmTrips": 237, "modTrips": 15, "totalTrips": 252, "mtmRevenue": 19372.12, "modRevenue": 350.5, "totalRevenue": 19722.62, "avgRevPerTrip": 78.26}, {"week": "Mar 09, 2026", "mtmTrips": 262, "modTrips": 4, "totalTrips": 266, "mtmRevenue": 20976.16, "modRevenue": 253.63, "totalRevenue": 21229.79, "avgRevPerTrip": 79.81}, {"week": "Mar 16, 2026", "mtmTrips": 238, "modTrips": 14, "totalTrips": 252, "mtmRevenue": 20229.59, "modRevenue": 621.68, "totalRevenue": 20851.27, "avgRevPerTrip": 82.74}, {"week": "Mar 23, 2026", "mtmTrips": 230, "modTrips": 55, "totalTrips": 285, "mtmRevenue": 20032.64, "modRevenue": 1534.48, "totalRevenue": 21567.12, "avgRevPerTrip": 75.67}, {"week": "Mar 30, 2026", "mtmTrips": 176, "modTrips": 71, "totalTrips": 247, "mtmRevenue": 14374.55, "modRevenue": 1987.6, "totalRevenue": 16362.15, "avgRevPerTrip": 66.24}, {"week": "Apr 06, 2026", "mtmTrips": 190, "modTrips": 92, "totalTrips": 282, "mtmRevenue": 16098.37, "modRevenue": 3620.95, "totalRevenue": 19719.32, "avgRevPerTrip": 69.93}, {"week": "Apr 13, 2026", "mtmTrips": 207, "modTrips": 101, "totalTrips": 308, "mtmRevenue": 16528.15, "modRevenue": 5089.22, "totalRevenue": 21617.37, "avgRevPerTrip": 70.19}];
-const MONTHLY_DATA = [{"month": "Dec 2024", "mtmTrips": 1521, "modTrips": 141, "totalTrips": 1662, "mtmRevenue": 124268.84, "modRevenue": 13570.83, "totalRevenue": 137839.67}, {"month": "Jan 2025", "mtmTrips": 1681, "modTrips": 150, "totalTrips": 1831, "mtmRevenue": 136890.94, "modRevenue": 13066.31, "totalRevenue": 149957.25}, {"month": "Feb 2025", "mtmTrips": 1454, "modTrips": 96, "totalTrips": 1550, "mtmRevenue": 114586.14, "modRevenue": 8194.32, "totalRevenue": 122780.46}, {"month": "Mar 2025", "mtmTrips": 1663, "modTrips": 172, "totalTrips": 1835, "mtmRevenue": 128585.81, "modRevenue": 16282.59, "totalRevenue": 144868.4}, {"month": "Apr 2025", "mtmTrips": 1564, "modTrips": 277, "totalTrips": 1841, "mtmRevenue": 123424.83, "modRevenue": 30438.08, "totalRevenue": 153862.91}, {"month": "May 2025", "mtmTrips": 1595, "modTrips": 164, "totalTrips": 1759, "mtmRevenue": 121807.29, "modRevenue": 19584.32, "totalRevenue": 141391.61}, {"month": "Jun 2025", "mtmTrips": 1390, "modTrips": 175, "totalTrips": 1565, "mtmRevenue": 104516.9, "modRevenue": 7005.61, "totalRevenue": 111522.51}, {"month": "Jul 2025", "mtmTrips": 1414, "modTrips": 205, "totalTrips": 1619, "mtmRevenue": 107272.91, "modRevenue": 12080.36, "totalRevenue": 119353.27}, {"month": "Aug 2025", "mtmTrips": 1306, "modTrips": 253, "totalTrips": 1559, "mtmRevenue": 99039.72, "modRevenue": 14031.13, "totalRevenue": 113070.85}, {"month": "Sep 2025", "mtmTrips": 1266, "modTrips": 280, "totalTrips": 1546, "mtmRevenue": 97305.52, "modRevenue": 16297.76, "totalRevenue": 113603.28}, {"month": "Oct 2025", "mtmTrips": 1400, "modTrips": 271, "totalTrips": 1671, "mtmRevenue": 106397.39, "modRevenue": 16328.66, "totalRevenue": 122726.05}, {"month": "Nov 2025", "mtmTrips": 1221, "modTrips": 243, "totalTrips": 1464, "mtmRevenue": 94206.54, "modRevenue": 15436.5, "totalRevenue": 109643.04}, {"month": "Dec 2025", "mtmTrips": 1085, "modTrips": 331, "totalTrips": 1416, "mtmRevenue": 84917.63, "modRevenue": 18924.5, "totalRevenue": 103842.13}, {"month": "Jan 2026", "mtmTrips": 1076, "modTrips": 258, "totalTrips": 1334, "mtmRevenue": 80172.93, "modRevenue": 16321.5, "totalRevenue": 96494.43}, {"month": "Feb 2026", "mtmTrips": 1023, "modTrips": 274, "totalTrips": 1297, "mtmRevenue": 80621.0, "modRevenue": 13445.0, "totalRevenue": 94066.0}, {"month": "Mar 2026", "mtmTrips": 1037, "modTrips": 114, "totalTrips": 1151, "mtmRevenue": 86410.2, "modRevenue": 3500.65, "totalRevenue": 89910.85}, {"month": "Apr 2026", "mtmTrips": 503, "modTrips": 238, "totalTrips": 741, "mtmRevenue": 41201.38, "modRevenue": 9957.41, "totalRevenue": 51158.79}];
+  <div class="cards">
+    <div class="card"><div class="cl">Total Revenue</div><div class="cv">$1,976K</div><div class="cs">All time</div></div>
+    <div class="card"><div class="cl">Total Trips</div><div class="cv">25,841</div><div class="cs">All time</div></div>
+    <div class="card"><div class="cl">MTM Revenue</div><div class="cv">$1,732K</div><div class="cs">22,199 trips · 88%</div></div>
+    <div class="card"><div class="cl">Modivcare Revenue</div><div class="cv">$244K</div><div class="cs">3,642 trips · 12%</div></div>
+    <div class="card"><div class="cl">Peak Month</div><div class="cv">$154K</div><div class="cs">Apr 2025</div></div>
+    <div class="card"><div class="cl">Avg $/Trip MTM</div><div class="cv">$78</div><div class="cs">vs $67 Modivcare</div></div>
+  </div>
 
-const fmt$ = v => '$' + Math.round(v).toLocaleString();
+  <div class="box">
+    <div class="box-title">Revenue &amp; Trips by Broker</div>
+    <div class="box-sub">Stacked by MTM and Modivcare</div>
+    <div class="tabs">
+      <button class="tab active" onclick="setView('revenue',this)">Revenue</button>
+      <button class="tab" onclick="setView('trips',this)">Trips</button>
+      <span style="flex:1"></span>
+      <button class="tab active" onclick="setPeriod('monthly',this)" id="tab-monthly">Monthly</button>
+      <button class="tab" onclick="setPeriod('weekly',this)" id="tab-weekly">Weekly</button>
+    </div>
+    <div class="legend">
+      <div class="li"><div class="ld" style="background:#1F3864"></div>MTM</div>
+      <div class="li"><div class="ld" style="background:#1D9E75"></div>Modivcare</div>
+    </div>
+    <div style="position:relative;width:100%;height:300px">
+      <canvas id="mainChart" role="img" aria-label="Stacked bar chart of MTM and Modivcare revenue or trips by month or week"></canvas>
+    </div>
+    <p class="note" id="mainNote">17 months · Dec 2024 – Apr 2026</p>
+  </div>
+
+  <div class="box">
+    <div class="box-title">Avg Revenue per Trip</div>
+    <div class="box-sub">Monthly — MTM vs Modivcare</div>
+    <div style="position:relative;width:100%;height:240px">
+      <canvas id="avgChart" role="img" aria-label="Line chart of average revenue per trip by month for MTM and Modivcare"></canvas>
+    </div>
+    <div class="legend" style="margin-top:8px">
+      <div class="li"><div class="ld" style="background:#1F3864"></div>MTM avg $/trip</div>
+      <div class="li"><div class="ld" style="background:#1D9E75"></div>Modivcare avg $/trip</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const WEEKLY = [{"week": "Dec 02, 2024", "mtmTrips": 361, "modTrips": 31, "totalTrips": 392, "mtmRevenue": 29545.99, "modRevenue": 2480.92, "totalRevenue": 32026.91, "avgRevPerTrip": 81.7}, {"week": "Dec 09, 2024", "mtmTrips": 351, "modTrips": 40, "totalTrips": 391, "mtmRevenue": 28620.91, "modRevenue": 4090.0, "totalRevenue": 32710.91, "avgRevPerTrip": 83.66}, {"week": "Dec 16, 2024", "mtmTrips": 387, "modTrips": 34, "totalTrips": 421, "mtmRevenue": 31351.34, "modRevenue": 3424.91, "totalRevenue": 34776.25, "avgRevPerTrip": 82.6}, {"week": "Dec 23, 2024", "mtmTrips": 329, "modTrips": 26, "totalTrips": 355, "mtmRevenue": 26857.59, "modRevenue": 2525.0, "totalRevenue": 29382.59, "avgRevPerTrip": 82.77}, {"week": "Dec 30, 2024", "mtmTrips": 280, "modTrips": 29, "totalTrips": 309, "mtmRevenue": 23258.29, "modRevenue": 2898.38, "totalRevenue": 26156.67, "avgRevPerTrip": 84.65}, {"week": "Jan 06, 2025", "mtmTrips": 406, "modTrips": 22, "totalTrips": 428, "mtmRevenue": 32742.45, "modRevenue": 2284.35, "totalRevenue": 35026.8, "avgRevPerTrip": 81.84}, {"week": "Jan 13, 2025", "mtmTrips": 366, "modTrips": 25, "totalTrips": 391, "mtmRevenue": 29625.47, "modRevenue": 2460.63, "totalRevenue": 32086.1, "avgRevPerTrip": 82.06}, {"week": "Jan 20, 2025", "mtmTrips": 392, "modTrips": 50, "totalTrips": 442, "mtmRevenue": 32123.94, "modRevenue": 3797.95, "totalRevenue": 35921.89, "avgRevPerTrip": 81.27}, {"week": "Jan 27, 2025", "mtmTrips": 389, "modTrips": 42, "totalTrips": 431, "mtmRevenue": 32018.19, "modRevenue": 3405.0, "totalRevenue": 35423.19, "avgRevPerTrip": 82.19}, {"week": "Feb 03, 2025", "mtmTrips": 375, "modTrips": 18, "totalTrips": 393, "mtmRevenue": 29061.15, "modRevenue": 1773.86, "totalRevenue": 30835.01, "avgRevPerTrip": 78.46}, {"week": "Feb 10, 2025", "mtmTrips": 345, "modTrips": 19, "totalTrips": 364, "mtmRevenue": 27124.39, "modRevenue": 1523.98, "totalRevenue": 28648.37, "avgRevPerTrip": 78.7}, {"week": "Feb 17, 2025", "mtmTrips": 351, "modTrips": 26, "totalTrips": 377, "mtmRevenue": 27786.09, "modRevenue": 2257.48, "totalRevenue": 30043.57, "avgRevPerTrip": 79.69}, {"week": "Feb 24, 2025", "mtmTrips": 377, "modTrips": 28, "totalTrips": 405, "mtmRevenue": 29846.85, "modRevenue": 2224.0, "totalRevenue": 32070.85, "avgRevPerTrip": 79.19}, {"week": "Mar 03, 2025", "mtmTrips": 354, "modTrips": 27, "totalTrips": 381, "mtmRevenue": 27833.86, "modRevenue": 2480.98, "totalRevenue": 30314.84, "avgRevPerTrip": 79.57}, {"week": "Mar 10, 2025", "mtmTrips": 379, "modTrips": 23, "totalTrips": 402, "mtmRevenue": 28879.51, "modRevenue": 2158.76, "totalRevenue": 31038.27, "avgRevPerTrip": 77.21}, {"week": "Mar 17, 2025", "mtmTrips": 405, "modTrips": 38, "totalTrips": 443, "mtmRevenue": 31343.15, "modRevenue": 3562.93, "totalRevenue": 34906.08, "avgRevPerTrip": 78.79}, {"week": "Mar 24, 2025", "mtmTrips": 409, "modTrips": 69, "totalTrips": 478, "mtmRevenue": 31469.7, "modRevenue": 6464.25, "totalRevenue": 37933.95, "avgRevPerTrip": 79.36}, {"week": "Mar 31, 2025", "mtmTrips": 376, "modTrips": 54, "totalTrips": 430, "mtmRevenue": 29322.0, "modRevenue": 5639.37, "totalRevenue": 34961.37, "avgRevPerTrip": 81.31}, {"week": "Apr 07, 2025", "mtmTrips": 351, "modTrips": 63, "totalTrips": 414, "mtmRevenue": 27922.07, "modRevenue": 6553.21, "totalRevenue": 34475.28, "avgRevPerTrip": 83.27}, {"week": "Apr 14, 2025", "mtmTrips": 366, "modTrips": 52, "totalTrips": 418, "mtmRevenue": 29263.18, "modRevenue": 5931.91, "totalRevenue": 35195.09, "avgRevPerTrip": 84.2}, {"week": "Apr 21, 2025", "mtmTrips": 355, "modTrips": 85, "totalTrips": 440, "mtmRevenue": 27873.75, "modRevenue": 9427.34, "totalRevenue": 37301.09, "avgRevPerTrip": 84.78}, {"week": "Apr 28, 2025", "mtmTrips": 340, "modTrips": 57, "totalTrips": 397, "mtmRevenue": 26745.67, "modRevenue": 6747.92, "totalRevenue": 33493.59, "avgRevPerTrip": 84.37}, {"week": "May 05, 2025", "mtmTrips": 354, "modTrips": 63, "totalTrips": 417, "mtmRevenue": 27251.43, "modRevenue": 7323.92, "totalRevenue": 34575.35, "avgRevPerTrip": 82.91}, {"week": "May 12, 2025", "mtmTrips": 392, "modTrips": 44, "totalTrips": 436, "mtmRevenue": 29496.95, "modRevenue": 5229.0, "totalRevenue": 34725.95, "avgRevPerTrip": 79.65}, {"week": "May 19, 2025", "mtmTrips": 366, "modTrips": 20, "totalTrips": 386, "mtmRevenue": 27789.27, "modRevenue": 2421.0, "totalRevenue": 30210.27, "avgRevPerTrip": 78.26}, {"week": "May 26, 2025", "mtmTrips": 322, "modTrips": 15, "totalTrips": 337, "mtmRevenue": 24410.66, "modRevenue": 2049.4, "totalRevenue": 26460.06, "avgRevPerTrip": 78.52}, {"week": "Jun 02, 2025", "mtmTrips": 323, "modTrips": 49, "totalTrips": 372, "mtmRevenue": 24471.11, "modRevenue": 2177.5, "totalRevenue": 26648.61, "avgRevPerTrip": 71.64}, {"week": "Jun 09, 2025", "mtmTrips": 350, "modTrips": 48, "totalTrips": 398, "mtmRevenue": 26119.53, "modRevenue": 1793.85, "totalRevenue": 27913.38, "avgRevPerTrip": 70.13}, {"week": "Jun 16, 2025", "mtmTrips": 346, "modTrips": 46, "totalTrips": 392, "mtmRevenue": 26090.74, "modRevenue": 1780.54, "totalRevenue": 27871.28, "avgRevPerTrip": 71.1}, {"week": "Jun 23, 2025", "mtmTrips": 363, "modTrips": 32, "totalTrips": 395, "mtmRevenue": 27264.18, "modRevenue": 1253.72, "totalRevenue": 28517.9, "avgRevPerTrip": 72.2}, {"week": "Jun 30, 2025", "mtmTrips": 196, "modTrips": 12, "totalTrips": 208, "mtmRevenue": 14760.63, "modRevenue": 661.44, "totalRevenue": 15422.07, "avgRevPerTrip": 74.14}, {"week": "Jul 07, 2025", "mtmTrips": 304, "modTrips": 50, "totalTrips": 354, "mtmRevenue": 23213.54, "modRevenue": 2999.02, "totalRevenue": 26212.56, "avgRevPerTrip": 74.05}, {"week": "Jul 14, 2025", "mtmTrips": 342, "modTrips": 46, "totalTrips": 388, "mtmRevenue": 26042.3, "modRevenue": 2754.95, "totalRevenue": 28797.25, "avgRevPerTrip": 74.22}, {"week": "Jul 21, 2025", "mtmTrips": 345, "modTrips": 54, "totalTrips": 399, "mtmRevenue": 25905.91, "modRevenue": 2896.16, "totalRevenue": 28802.07, "avgRevPerTrip": 72.19}, {"week": "Jul 28, 2025", "mtmTrips": 340, "modTrips": 63, "totalTrips": 403, "mtmRevenue": 25768.48, "modRevenue": 4027.57, "totalRevenue": 29796.05, "avgRevPerTrip": 73.94}, {"week": "Aug 04, 2025", "mtmTrips": 314, "modTrips": 50, "totalTrips": 364, "mtmRevenue": 24379.35, "modRevenue": 2835.5, "totalRevenue": 27214.85, "avgRevPerTrip": 74.77}, {"week": "Aug 11, 2025", "mtmTrips": 309, "modTrips": 64, "totalTrips": 373, "mtmRevenue": 24001.81, "modRevenue": 3458.71, "totalRevenue": 27460.52, "avgRevPerTrip": 73.62}, {"week": "Aug 18, 2025", "mtmTrips": 298, "modTrips": 58, "totalTrips": 356, "mtmRevenue": 22108.12, "modRevenue": 2950.51, "totalRevenue": 25058.63, "avgRevPerTrip": 70.39}, {"week": "Aug 25, 2025", "mtmTrips": 280, "modTrips": 61, "totalTrips": 341, "mtmRevenue": 20703.83, "modRevenue": 3527.63, "totalRevenue": 24231.46, "avgRevPerTrip": 71.06}, {"week": "Sep 01, 2025", "mtmTrips": 270, "modTrips": 62, "totalTrips": 332, "mtmRevenue": 20986.62, "modRevenue": 4427.37, "totalRevenue": 25413.99, "avgRevPerTrip": 76.55}, {"week": "Sep 08, 2025", "mtmTrips": 268, "modTrips": 63, "totalTrips": 331, "mtmRevenue": 20877.57, "modRevenue": 3245.17, "totalRevenue": 24122.74, "avgRevPerTrip": 72.88}, {"week": "Sep 15, 2025", "mtmTrips": 308, "modTrips": 66, "totalTrips": 374, "mtmRevenue": 23835.2, "modRevenue": 3541.54, "totalRevenue": 27376.74, "avgRevPerTrip": 73.2}, {"week": "Sep 22, 2025", "mtmTrips": 318, "modTrips": 61, "totalTrips": 379, "mtmRevenue": 23806.19, "modRevenue": 3762.1, "totalRevenue": 27568.29, "avgRevPerTrip": 72.74}, {"week": "Sep 29, 2025", "mtmTrips": 292, "modTrips": 58, "totalTrips": 350, "mtmRevenue": 22014.65, "modRevenue": 3178.48, "totalRevenue": 25193.13, "avgRevPerTrip": 71.98}, {"week": "Oct 06, 2025", "mtmTrips": 314, "modTrips": 57, "totalTrips": 371, "mtmRevenue": 24302.9, "modRevenue": 3261.76, "totalRevenue": 27564.66, "avgRevPerTrip": 74.3}, {"week": "Oct 13, 2025", "mtmTrips": 312, "modTrips": 60, "totalTrips": 372, "mtmRevenue": 23525.98, "modRevenue": 3726.0, "totalRevenue": 27251.98, "avgRevPerTrip": 73.26}, {"week": "Oct 20, 2025", "mtmTrips": 317, "modTrips": 66, "totalTrips": 383, "mtmRevenue": 23948.26, "modRevenue": 3951.0, "totalRevenue": 27899.26, "avgRevPerTrip": 72.84}, {"week": "Oct 27, 2025", "mtmTrips": 303, "modTrips": 64, "totalTrips": 367, "mtmRevenue": 22789.34, "modRevenue": 3866.0, "totalRevenue": 26655.34, "avgRevPerTrip": 72.63}, {"week": "Nov 03, 2025", "mtmTrips": 303, "modTrips": 60, "totalTrips": 363, "mtmRevenue": 23223.25, "modRevenue": 3784.5, "totalRevenue": 27007.75, "avgRevPerTrip": 74.4}, {"week": "Nov 10, 2025", "mtmTrips": 287, "modTrips": 75, "totalTrips": 362, "mtmRevenue": 22939.48, "modRevenue": 4677.0, "totalRevenue": 27616.48, "avgRevPerTrip": 76.29}, {"week": "Nov 17, 2025", "mtmTrips": 301, "modTrips": 59, "totalTrips": 360, "mtmRevenue": 22961.6, "modRevenue": 3482.5, "totalRevenue": 26444.1, "avgRevPerTrip": 73.46}, {"week": "Nov 24, 2025", "mtmTrips": 294, "modTrips": 43, "totalTrips": 337, "mtmRevenue": 22698.41, "modRevenue": 3159.5, "totalRevenue": 25857.91, "avgRevPerTrip": 76.73}, {"week": "Dec 01, 2025", "mtmTrips": 214, "modTrips": 71, "totalTrips": 285, "mtmRevenue": 17474.0, "modRevenue": 4334.5, "totalRevenue": 21808.5, "avgRevPerTrip": 76.52}, {"week": "Dec 08, 2025", "mtmTrips": 240, "modTrips": 72, "totalTrips": 312, "mtmRevenue": 18794.76, "modRevenue": 4579.5, "totalRevenue": 23374.26, "avgRevPerTrip": 74.92}, {"week": "Dec 15, 2025", "mtmTrips": 271, "modTrips": 81, "totalTrips": 352, "mtmRevenue": 21387.52, "modRevenue": 4543.5, "totalRevenue": 25931.02, "avgRevPerTrip": 73.67}, {"week": "Dec 22, 2025", "mtmTrips": 194, "modTrips": 62, "totalTrips": 256, "mtmRevenue": 14636.4, "modRevenue": 3533.5, "totalRevenue": 18169.9, "avgRevPerTrip": 70.98}, {"week": "Dec 29, 2025", "mtmTrips": 252, "modTrips": 61, "totalTrips": 313, "mtmRevenue": 18930.87, "modRevenue": 2930.0, "totalRevenue": 21860.87, "avgRevPerTrip": 69.84}, {"week": "Jan 05, 2026", "mtmTrips": 209, "modTrips": 79, "totalTrips": 288, "mtmRevenue": 15494.23, "modRevenue": 4662.5, "totalRevenue": 20156.73, "avgRevPerTrip": 69.99}, {"week": "Jan 12, 2026", "mtmTrips": 267, "modTrips": 67, "totalTrips": 334, "mtmRevenue": 20388.43, "modRevenue": 4242.5, "totalRevenue": 24630.93, "avgRevPerTrip": 73.75}, {"week": "Jan 19, 2026", "mtmTrips": 259, "modTrips": 45, "totalTrips": 304, "mtmRevenue": 18951.34, "modRevenue": 3066.0, "totalRevenue": 22017.34, "avgRevPerTrip": 72.43}, {"week": "Jan 26, 2026", "mtmTrips": 255, "modTrips": 51, "totalTrips": 306, "mtmRevenue": 19033.01, "modRevenue": 3354.0, "totalRevenue": 22387.01, "avgRevPerTrip": 73.16}, {"week": "Feb 02, 2026", "mtmTrips": 247, "modTrips": 69, "totalTrips": 316, "mtmRevenue": 18537.66, "modRevenue": 3639.0, "totalRevenue": 22176.66, "avgRevPerTrip": 70.18}, {"week": "Feb 09, 2026", "mtmTrips": 262, "modTrips": 60, "totalTrips": 322, "mtmRevenue": 20214.79, "modRevenue": 2964.0, "totalRevenue": 23178.79, "avgRevPerTrip": 71.98}, {"week": "Feb 16, 2026", "mtmTrips": 245, "modTrips": 76, "totalTrips": 321, "mtmRevenue": 20287.25, "modRevenue": 3599.0, "totalRevenue": 23886.25, "avgRevPerTrip": 74.41}, {"week": "Feb 23, 2026", "mtmTrips": 269, "modTrips": 69, "totalTrips": 338, "mtmRevenue": 21581.3, "modRevenue": 3243.0, "totalRevenue": 24824.3, "avgRevPerTrip": 73.44}, {"week": "Mar 02, 2026", "mtmTrips": 237, "modTrips": 15, "totalTrips": 252, "mtmRevenue": 19372.12, "modRevenue": 350.5, "totalRevenue": 19722.62, "avgRevPerTrip": 78.26}, {"week": "Mar 09, 2026", "mtmTrips": 262, "modTrips": 4, "totalTrips": 266, "mtmRevenue": 20976.16, "modRevenue": 253.63, "totalRevenue": 21229.79, "avgRevPerTrip": 79.81}, {"week": "Mar 16, 2026", "mtmTrips": 238, "modTrips": 14, "totalTrips": 252, "mtmRevenue": 20229.59, "modRevenue": 621.68, "totalRevenue": 20851.27, "avgRevPerTrip": 82.74}, {"week": "Mar 23, 2026", "mtmTrips": 230, "modTrips": 55, "totalTrips": 285, "mtmRevenue": 20032.64, "modRevenue": 1534.48, "totalRevenue": 21567.12, "avgRevPerTrip": 75.67}, {"week": "Mar 30, 2026", "mtmTrips": 176, "modTrips": 71, "totalTrips": 247, "mtmRevenue": 14374.55, "modRevenue": 1987.6, "totalRevenue": 16362.15, "avgRevPerTrip": 66.24}, {"week": "Apr 06, 2026", "mtmTrips": 190, "modTrips": 92, "totalTrips": 282, "mtmRevenue": 16098.37, "modRevenue": 3620.95, "totalRevenue": 19719.32, "avgRevPerTrip": 69.93}, {"week": "Apr 13, 2026", "mtmTrips": 207, "modTrips": 101, "totalTrips": 308, "mtmRevenue": 16528.15, "modRevenue": 5089.22, "totalRevenue": 21617.37, "avgRevPerTrip": 70.19}];
+const MONTHLY = [{"month": "Dec 2024", "mtmTrips": 1521, "modTrips": 141, "totalTrips": 1662, "mtmRevenue": 124268.84, "modRevenue": 13570.83, "totalRevenue": 137839.67}, {"month": "Jan 2025", "mtmTrips": 1681, "modTrips": 150, "totalTrips": 1831, "mtmRevenue": 136890.94, "modRevenue": 13066.31, "totalRevenue": 149957.25}, {"month": "Feb 2025", "mtmTrips": 1454, "modTrips": 96, "totalTrips": 1550, "mtmRevenue": 114586.14, "modRevenue": 8194.32, "totalRevenue": 122780.46}, {"month": "Mar 2025", "mtmTrips": 1663, "modTrips": 172, "totalTrips": 1835, "mtmRevenue": 128585.81, "modRevenue": 16282.59, "totalRevenue": 144868.4}, {"month": "Apr 2025", "mtmTrips": 1564, "modTrips": 277, "totalTrips": 1841, "mtmRevenue": 123424.83, "modRevenue": 30438.08, "totalRevenue": 153862.91}, {"month": "May 2025", "mtmTrips": 1595, "modTrips": 164, "totalTrips": 1759, "mtmRevenue": 121807.29, "modRevenue": 19584.32, "totalRevenue": 141391.61}, {"month": "Jun 2025", "mtmTrips": 1390, "modTrips": 175, "totalTrips": 1565, "mtmRevenue": 104516.9, "modRevenue": 7005.61, "totalRevenue": 111522.51}, {"month": "Jul 2025", "mtmTrips": 1414, "modTrips": 205, "totalTrips": 1619, "mtmRevenue": 107272.91, "modRevenue": 12080.36, "totalRevenue": 119353.27}, {"month": "Aug 2025", "mtmTrips": 1306, "modTrips": 253, "totalTrips": 1559, "mtmRevenue": 99039.72, "modRevenue": 14031.13, "totalRevenue": 113070.85}, {"month": "Sep 2025", "mtmTrips": 1266, "modTrips": 280, "totalTrips": 1546, "mtmRevenue": 97305.52, "modRevenue": 16297.76, "totalRevenue": 113603.28}, {"month": "Oct 2025", "mtmTrips": 1400, "modTrips": 271, "totalTrips": 1671, "mtmRevenue": 106397.39, "modRevenue": 16328.66, "totalRevenue": 122726.05}, {"month": "Nov 2025", "mtmTrips": 1221, "modTrips": 243, "totalTrips": 1464, "mtmRevenue": 94206.54, "modRevenue": 15436.5, "totalRevenue": 109643.04}, {"month": "Dec 2025", "mtmTrips": 1085, "modTrips": 331, "totalTrips": 1416, "mtmRevenue": 84917.63, "modRevenue": 18924.5, "totalRevenue": 103842.13}, {"month": "Jan 2026", "mtmTrips": 1076, "modTrips": 258, "totalTrips": 1334, "mtmRevenue": 80172.93, "modRevenue": 16321.5, "totalRevenue": 96494.43}, {"month": "Feb 2026", "mtmTrips": 1023, "modTrips": 274, "totalTrips": 1297, "mtmRevenue": 80621.0, "modRevenue": 13445.0, "totalRevenue": 94066.0}, {"month": "Mar 2026", "mtmTrips": 1037, "modTrips": 114, "totalTrips": 1151, "mtmRevenue": 86410.2, "modRevenue": 3500.65, "totalRevenue": 89910.85}, {"month": "Apr 2026", "mtmTrips": 503, "modTrips": 238, "totalTrips": 741, "mtmRevenue": 41201.38, "modRevenue": 9957.41, "totalRevenue": 51158.79}];
+
+let curView = 'revenue';
+let curPeriod = 'monthly';
+let mainChart;
+
 const fmtK = v => '$' + (v >= 1000 ? Math.round(v/1000) + 'k' : Math.round(v));
 const fmtN = v => Math.round(v).toLocaleString();
 
-function CustomTooltip({ active, payload, label, view }) {
-  if (!active || !payload?.length) return null;
-  return (
-    <div style={{background:'#fff',border:'1px solid #e5e7eb',borderRadius:8,padding:'10px 14px',fontSize:12,boxShadow:'0 4px 12px rgba(0,0,0,0.1)'}}>
-      <p style={{fontWeight:600,marginBottom:6,color:'#374151'}}>{label}</p>
-      {payload.map((p,i) => (
-        <p key={i} style={{color:p.color,margin:'2px 0'}}>
-          {p.name}: {view==='trips' ? fmtN(p.value) : fmt$(p.value)}
-        </p>
-      ))}
-    </div>
-  );
+function buildMain() {
+  if (mainChart) mainChart.destroy();
+  const src = curPeriod === 'monthly' ? MONTHLY : WEEKLY;
+  const labels = src.map(d => curPeriod === 'monthly' ? d.month : d.week);
+  const d1 = src.map(d => curView === 'revenue' ? d.mtmRevenue : d.mtmTrips);
+  const d2 = src.map(d => curView === 'revenue' ? d.modRevenue : d.modTrips);
+  const isWeekly = curPeriod === 'weekly';
+  mainChart = new Chart(document.getElementById('mainChart'), {
+    type: 'bar',
+    data: { labels, datasets: [
+      { label:'MTM', data:d1, backgroundColor:'#1F3864', borderWidth:0 },
+      { label:'Modivcare', data:d2, backgroundColor:'#1D9E75', borderWidth:0, borderRadius:{topLeft:3,topRight:3} }
+    ]},
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label: ctx => curView==='revenue' ? '$'+Math.round(ctx.parsed.y).toLocaleString() : Math.round(ctx.parsed.y).toLocaleString()+' trips' } } },
+      scales:{
+        x:{ stacked:true, ticks:{ font:{size: isWeekly?8:11}, maxRotation:isWeekly?45:0, autoSkip:true, maxTicksLimit:isWeekly?24:17 }, grid:{display:false} },
+        y:{ stacked:true, ticks:{ callback: curView==='revenue'?fmtK:fmtN, font:{size:11} }, grid:{color:'rgba(0,0,0,0.05)'} }
+      }
+    }
+  });
+  document.getElementById('mainNote').textContent = curPeriod==='weekly' ? '72 weeks · Dec 2024 – Apr 2026' : '17 months · Dec 2024 – Apr 2026';
 }
 
-function Dashboard() {
-  const [view, setView] = useState('revenue');
-  const [period, setPeriod] = useState('monthly');
-
-  const totalMTMRev = MONTHLY_DATA.reduce((s,r)=>s+r.mtmRevenue,0);
-  const totalModRev = MONTHLY_DATA.reduce((s,r)=>s+r.modRevenue,0);
-  const totalRev = totalMTMRev + totalModRev;
-  const totalTrips = MONTHLY_DATA.reduce((s,r)=>s+r.totalTrips,0);
-  const totalMTMTrips = MONTHLY_DATA.reduce((s,r)=>s+r.mtmTrips,0);
-  const totalModTrips = MONTHLY_DATA.reduce((s,r)=>s+r.modTrips,0);
-  const peakMonth = MONTHLY_DATA.reduce((a,b)=>a.totalRevenue>b.totalRevenue?a:b);
-
-  const chartData = period === 'monthly' ? MONTHLY_DATA.map(d => ({
-    name: d.month,
-    MTM: view==='trips' ? d.mtmTrips : d.mtmRevenue,
-    Modivcare: view==='trips' ? d.modTrips : d.modRevenue,
-  })) : WEEKLY_DATA.map(d => ({
-    name: d.week,
-    MTM: view==='trips' ? d.mtmTrips : d.mtmRevenue,
-    Modivcare: view==='trips' ? d.modTrips : d.modRevenue,
-  }));
-
-  const avgData = MONTHLY_DATA.map(d => ({
-    name: d.month,
-    'MTM avg': d.mtmTrips > 0 ? Math.round(d.mtmRevenue/d.mtmTrips*100)/100 : 0,
-    'Modivcare avg': d.modTrips > 0 ? Math.round(d.modRevenue/d.modTrips*100)/100 : 0,
-  }));
-
-  const chartHeight = period === 'weekly' ? 280 : 300;
-  const tickCount = period === 'weekly' ? 72 : 17;
-
-  return (
-    <div id="root">
-      <a href="../index.html" className="back-link">← Back to Map</a>
-
-      <div className="header">
-        <h1>Effingham Transport — Analytics Dashboard</h1>
-        <p>Dec 2, 2024 – Apr 18, 2026 &nbsp;·&nbsp; MTM + Modivcare (Direct + RouteGenie) &nbsp;·&nbsp; Complete dataset</p>
-      </div>
-
-      <div className="cards">
-        <div className="card">
-          <div className="card-label">Total Revenue</div>
-          <div className="card-value">${Math.round(totalRev/1000).toLocaleString()}K</div>
-          <div className="card-sub">All time</div>
-        </div>
-        <div className="card">
-          <div className="card-label">Total Trips</div>
-          <div className="card-value">{totalTrips.toLocaleString()}</div>
-          <div className="card-sub">All time</div>
-        </div>
-        <div className="card">
-          <div className="card-label">MTM Revenue</div>
-          <div className="card-value">${Math.round(totalMTMRev/1000).toLocaleString()}K</div>
-          <div className="card-sub">{totalMTMTrips.toLocaleString()} trips · {Math.round(totalMTMRev/totalRev*100)}%</div>
-        </div>
-        <div className="card">
-          <div className="card-label">Modivcare Revenue</div>
-          <div className="card-value">${Math.round(totalModRev/1000).toLocaleString()}K</div>
-          <div className="card-sub">{totalModTrips.toLocaleString()} trips · {Math.round(totalModRev/totalRev*100)}%</div>
-        </div>
-        <div className="card">
-          <div className="card-label">Peak Month</div>
-          <div className="card-value">{fmtK(peakMonth.totalRevenue)}</div>
-          <div className="card-sub">{peakMonth.month}</div>
-        </div>
-        <div className="card">
-          <div className="card-label">Avg $/Trip (MTM)</div>
-          <div className="card-value">${Math.round(totalMTMRev/totalMTMTrips)}</div>
-          <div className="card-sub">vs ${Math.round(totalModRev/totalModTrips)} Modivcare</div>
-        </div>
-      </div>
-
-      <div className="chart-box">
-        <div className="chart-title">Trips & Revenue by Broker</div>
-        <div className="chart-sub">Stacked by MTM and Modivcare</div>
-        <div className="tabs">
-          {['revenue','trips'].map(v => (
-            <button key={v} className={`tab${view===v?' active':''}`} onClick={()=>setView(v)}>
-              {v.charAt(0).toUpperCase()+v.slice(1)}
-            </button>
-          ))}
-          <div style={{flex:1}}/>
-          {['monthly','weekly'].map(p => (
-            <button key={p} className={`tab${period===p?' active':''}`} onClick={()=>setPeriod(p)}>
-              {p.charAt(0).toUpperCase()+p.slice(1)}
-            </button>
-          ))}
-        </div>
-        <div className="legend">
-          <div className="legend-item"><div className="legend-dot" style={{background:'#1F3864'}}/> MTM</div>
-          <div className="legend-item"><div className="legend-dot" style={{background:'#1D9E75'}}/> Modivcare</div>
-        </div>
-        <ResponsiveContainer width="100%" height={chartHeight}>
-          <BarChart data={chartData} margin={{top:4,right:8,left:8,bottom:period==='weekly'?50:30}}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0"/>
-            <XAxis dataKey="name" tick={{fontSize: period==='weekly'?8:11}} angle={period==='weekly'?-45:0} textAnchor={period==='weekly'?"end":"middle"} interval={period==='weekly'?3:0}/>
-            <YAxis tickFormatter={view==='trips'?fmtN:fmtK} tick={{fontSize:11}} width={55}/>
-            <Tooltip content={<CustomTooltip view={view}/>}/>
-            <Bar dataKey="MTM" stackId="a" fill="#1F3864" radius={[0,0,0,0]}/>
-            <Bar dataKey="Modivcare" stackId="a" fill="#1D9E75" radius={[3,3,0,0]}/>
-          </BarChart>
-        </ResponsiveContainer>
-        <p className="data-note">{period==='weekly' ? '72 weeks' : '17 months'} · Dec 2024 – Apr 2026</p>
-      </div>
-
-      <div className="chart-box">
-        <div className="chart-title">Avg Revenue per Trip</div>
-        <div className="chart-sub">Monthly comparison: MTM vs Modivcare</div>
-        <ResponsiveContainer width="100%" height={240}>
-          <LineChart data={avgData} margin={{top:4,right:8,left:8,bottom:30}}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0"/>
-            <XAxis dataKey="name" tick={{fontSize:10}} angle={-30} textAnchor="end" interval={0}/>
-            <YAxis tickFormatter={v=>'$'+v} tick={{fontSize:11}} width={45}/>
-            <Tooltip formatter={v=>'$'+Number(v).toFixed(2)}/>
-            <Line type="monotone" dataKey="MTM avg" stroke="#1F3864" strokeWidth={2} dot={{r:3}}/>
-            <Line type="monotone" dataKey="Modivcare avg" stroke="#1D9E75" strokeWidth={2} dot={{r:3}} strokeDasharray="4 2"/>
-          </LineChart>
-        </ResponsiveContainer>
-        <div className="legend" style={{marginTop:8}}>
-          <div className="legend-item"><div className="legend-dot" style={{background:'#1F3864'}}/> MTM avg $/trip</div>
-          <div className="legend-item"><div className="legend-dot" style={{background:'#1D9E75',borderBottom:'2px dashed #1D9E75'}}/> Modivcare avg $/trip</div>
-        </div>
-      </div>
-    </div>
-  );
+function setView(v, btn) {
+  curView = v;
+  document.querySelectorAll('.tabs .tab').forEach(b => { if(b.textContent==='Revenue'||b.textContent==='Trips') b.classList.remove('active'); });
+  btn.classList.add('active');
+  buildMain();
 }
 
-ReactDOM.createRoot(document.getElementById('root')).render(<Dashboard/>);
+function setPeriod(p, btn) {
+  curPeriod = p;
+  document.getElementById('tab-monthly').classList.toggle('active', p==='monthly');
+  document.getElementById('tab-weekly').classList.toggle('active', p==='weekly');
+  buildMain();
+}
+
+// Avg per trip line chart
+const avgLabels = MONTHLY.map(d => d.month);
+const avgMTM = MONTHLY.map(d => d.mtmTrips > 0 ? Math.round(d.mtmRevenue/d.mtmTrips*100)/100 : null);
+const avgMod = MONTHLY.map(d => d.modTrips > 0 ? Math.round(d.modRevenue/d.modTrips*100)/100 : null);
+new Chart(document.getElementById('avgChart'), {
+  type: 'line',
+  data: { labels: avgLabels, datasets: [
+    { label:'MTM avg', data:avgMTM, borderColor:'#1F3864', backgroundColor:'transparent', borderWidth:2, pointRadius:3, tension:0.3 },
+    { label:'Modivcare avg', data:avgMod, borderColor:'#1D9E75', backgroundColor:'transparent', borderWidth:2, borderDash:[4,3], pointRadius:3, tension:0.3 }
+  ]},
+  options: {
+    responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label: ctx => '$'+Number(ctx.parsed.y).toFixed(2) } } },
+    scales:{
+      x:{ ticks:{ font:{size:10}, maxRotation:30 }, grid:{display:false} },
+      y:{ ticks:{ callback: v=>'$'+v, font:{size:11} }, grid:{color:'rgba(0,0,0,0.05)'} }
+    }
+  }
+});
+
+buildMain();
 </script>
 </body>
 </html>

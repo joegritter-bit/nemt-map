@@ -1,826 +1,195 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NEMT Analytics Dashboard — Effingham Transport</title>
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/prop-types/prop-types.min.js" crossorigin></script>
-  <script src="https://unpkg.com/recharts@2.12.7/umd/Recharts.js" crossorigin></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js" crossorigin></script>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;0,9..40,800&display=swap" rel="stylesheet" />
-  <style>
-    *, *::before, *::after { box-sizing: border-box; }
-    body { margin: 0; padding: 0; background: #0d1b2a; }
-    #root { min-height: 100vh; }
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: #0d1b2a; }
-    ::-webkit-scrollbar-thumb { background: #1e3348; border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: #2a4a6b; }
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Effingham Transport — Analytics Dashboard</title>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/recharts@2.12.7/umd/Recharts.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f4f6f9;color:#1a1a2e;min-height:100vh}
+#root{max-width:1200px;margin:0 auto;padding:20px}
+.header{background:linear-gradient(135deg,#1F3864,#2563a8);color:#fff;border-radius:12px;padding:24px 28px;margin-bottom:20px}
+.header h1{font-size:22px;font-weight:600;margin-bottom:4px}
+.header p{font-size:13px;opacity:0.8}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px}
+.card{background:#fff;border-radius:10px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,0.08)}
+.card-label{font-size:11px;color:#6b7280;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.card-value{font-size:22px;font-weight:700;color:#1F3864}
+.card-sub{font-size:11px;color:#9ca3af;margin-top:3px}
+.chart-box{background:#fff;border-radius:10px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,0.08);margin-bottom:20px}
+.chart-title{font-size:14px;font-weight:600;color:#374151;margin-bottom:4px}
+.chart-sub{font-size:12px;color:#9ca3af;margin-bottom:16px}
+.tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.tab{background:transparent;border:1px solid #d1d5db;border-radius:6px;padding:5px 14px;font-size:12px;cursor:pointer;color:#6b7280;transition:all .15s}
+.tab.active{background:#1F3864;color:#fff;border-color:#1F3864}
+.legend{display:flex;gap:16px;margin-bottom:12px;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:#6b7280}
+.legend-dot{width:10px;height:10px;border-radius:2px}
+.back-link{display:inline-block;margin-bottom:16px;font-size:13px;color:#2563a8;text-decoration:none}
+.back-link:hover{text-decoration:underline}
+.data-note{font-size:11px;color:#9ca3af;text-align:center;margin-top:8px}
+</style>
 </head>
 <body>
-  <div id="root"></div>
+<div id="root"></div>
+<script type="text/babel">
+const { useState } = React;
+const { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line } = Recharts;
 
-  <script type="text/babel" data-presets="react">
-    const { useState } = React;
-    const {
-      BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid,
-      Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend,
-      ComposedChart, ReferenceLine
-    } = Recharts;
+const WEEKLY_DATA = [{"week": "Dec 02, 2024", "mtmTrips": 361, "modTrips": 31, "totalTrips": 392, "mtmRevenue": 29545.99, "modRevenue": 2480.92, "totalRevenue": 32026.91, "avgRevPerTrip": 81.7}, {"week": "Dec 09, 2024", "mtmTrips": 351, "modTrips": 40, "totalTrips": 391, "mtmRevenue": 28620.91, "modRevenue": 4090.0, "totalRevenue": 32710.91, "avgRevPerTrip": 83.66}, {"week": "Dec 16, 2024", "mtmTrips": 387, "modTrips": 34, "totalTrips": 421, "mtmRevenue": 31351.34, "modRevenue": 3424.91, "totalRevenue": 34776.25, "avgRevPerTrip": 82.6}, {"week": "Dec 23, 2024", "mtmTrips": 329, "modTrips": 26, "totalTrips": 355, "mtmRevenue": 26857.59, "modRevenue": 2525.0, "totalRevenue": 29382.59, "avgRevPerTrip": 82.77}, {"week": "Dec 30, 2024", "mtmTrips": 280, "modTrips": 29, "totalTrips": 309, "mtmRevenue": 23258.29, "modRevenue": 2898.38, "totalRevenue": 26156.67, "avgRevPerTrip": 84.65}, {"week": "Jan 06, 2025", "mtmTrips": 406, "modTrips": 22, "totalTrips": 428, "mtmRevenue": 32742.45, "modRevenue": 2284.35, "totalRevenue": 35026.8, "avgRevPerTrip": 81.84}, {"week": "Jan 13, 2025", "mtmTrips": 366, "modTrips": 25, "totalTrips": 391, "mtmRevenue": 29625.47, "modRevenue": 2460.63, "totalRevenue": 32086.1, "avgRevPerTrip": 82.06}, {"week": "Jan 20, 2025", "mtmTrips": 392, "modTrips": 50, "totalTrips": 442, "mtmRevenue": 32123.94, "modRevenue": 3797.95, "totalRevenue": 35921.89, "avgRevPerTrip": 81.27}, {"week": "Jan 27, 2025", "mtmTrips": 389, "modTrips": 42, "totalTrips": 431, "mtmRevenue": 32018.19, "modRevenue": 3405.0, "totalRevenue": 35423.19, "avgRevPerTrip": 82.19}, {"week": "Feb 03, 2025", "mtmTrips": 375, "modTrips": 18, "totalTrips": 393, "mtmRevenue": 29061.15, "modRevenue": 1773.86, "totalRevenue": 30835.01, "avgRevPerTrip": 78.46}, {"week": "Feb 10, 2025", "mtmTrips": 345, "modTrips": 19, "totalTrips": 364, "mtmRevenue": 27124.39, "modRevenue": 1523.98, "totalRevenue": 28648.37, "avgRevPerTrip": 78.7}, {"week": "Feb 17, 2025", "mtmTrips": 351, "modTrips": 26, "totalTrips": 377, "mtmRevenue": 27786.09, "modRevenue": 2257.48, "totalRevenue": 30043.57, "avgRevPerTrip": 79.69}, {"week": "Feb 24, 2025", "mtmTrips": 377, "modTrips": 28, "totalTrips": 405, "mtmRevenue": 29846.85, "modRevenue": 2224.0, "totalRevenue": 32070.85, "avgRevPerTrip": 79.19}, {"week": "Mar 03, 2025", "mtmTrips": 354, "modTrips": 27, "totalTrips": 381, "mtmRevenue": 27833.86, "modRevenue": 2480.98, "totalRevenue": 30314.84, "avgRevPerTrip": 79.57}, {"week": "Mar 10, 2025", "mtmTrips": 379, "modTrips": 23, "totalTrips": 402, "mtmRevenue": 28879.51, "modRevenue": 2158.76, "totalRevenue": 31038.27, "avgRevPerTrip": 77.21}, {"week": "Mar 17, 2025", "mtmTrips": 405, "modTrips": 38, "totalTrips": 443, "mtmRevenue": 31343.15, "modRevenue": 3562.93, "totalRevenue": 34906.08, "avgRevPerTrip": 78.79}, {"week": "Mar 24, 2025", "mtmTrips": 409, "modTrips": 69, "totalTrips": 478, "mtmRevenue": 31469.7, "modRevenue": 6464.25, "totalRevenue": 37933.95, "avgRevPerTrip": 79.36}, {"week": "Mar 31, 2025", "mtmTrips": 376, "modTrips": 54, "totalTrips": 430, "mtmRevenue": 29322.0, "modRevenue": 5639.37, "totalRevenue": 34961.37, "avgRevPerTrip": 81.31}, {"week": "Apr 07, 2025", "mtmTrips": 351, "modTrips": 63, "totalTrips": 414, "mtmRevenue": 27922.07, "modRevenue": 6553.21, "totalRevenue": 34475.28, "avgRevPerTrip": 83.27}, {"week": "Apr 14, 2025", "mtmTrips": 366, "modTrips": 52, "totalTrips": 418, "mtmRevenue": 29263.18, "modRevenue": 5931.91, "totalRevenue": 35195.09, "avgRevPerTrip": 84.2}, {"week": "Apr 21, 2025", "mtmTrips": 355, "modTrips": 85, "totalTrips": 440, "mtmRevenue": 27873.75, "modRevenue": 9427.34, "totalRevenue": 37301.09, "avgRevPerTrip": 84.78}, {"week": "Apr 28, 2025", "mtmTrips": 340, "modTrips": 57, "totalTrips": 397, "mtmRevenue": 26745.67, "modRevenue": 6747.92, "totalRevenue": 33493.59, "avgRevPerTrip": 84.37}, {"week": "May 05, 2025", "mtmTrips": 354, "modTrips": 63, "totalTrips": 417, "mtmRevenue": 27251.43, "modRevenue": 7323.92, "totalRevenue": 34575.35, "avgRevPerTrip": 82.91}, {"week": "May 12, 2025", "mtmTrips": 392, "modTrips": 44, "totalTrips": 436, "mtmRevenue": 29496.95, "modRevenue": 5229.0, "totalRevenue": 34725.95, "avgRevPerTrip": 79.65}, {"week": "May 19, 2025", "mtmTrips": 366, "modTrips": 20, "totalTrips": 386, "mtmRevenue": 27789.27, "modRevenue": 2421.0, "totalRevenue": 30210.27, "avgRevPerTrip": 78.26}, {"week": "May 26, 2025", "mtmTrips": 322, "modTrips": 15, "totalTrips": 337, "mtmRevenue": 24410.66, "modRevenue": 2049.4, "totalRevenue": 26460.06, "avgRevPerTrip": 78.52}, {"week": "Jun 02, 2025", "mtmTrips": 323, "modTrips": 49, "totalTrips": 372, "mtmRevenue": 24471.11, "modRevenue": 2177.5, "totalRevenue": 26648.61, "avgRevPerTrip": 71.64}, {"week": "Jun 09, 2025", "mtmTrips": 350, "modTrips": 48, "totalTrips": 398, "mtmRevenue": 26119.53, "modRevenue": 1793.85, "totalRevenue": 27913.38, "avgRevPerTrip": 70.13}, {"week": "Jun 16, 2025", "mtmTrips": 346, "modTrips": 46, "totalTrips": 392, "mtmRevenue": 26090.74, "modRevenue": 1780.54, "totalRevenue": 27871.28, "avgRevPerTrip": 71.1}, {"week": "Jun 23, 2025", "mtmTrips": 363, "modTrips": 32, "totalTrips": 395, "mtmRevenue": 27264.18, "modRevenue": 1253.72, "totalRevenue": 28517.9, "avgRevPerTrip": 72.2}, {"week": "Jun 30, 2025", "mtmTrips": 196, "modTrips": 12, "totalTrips": 208, "mtmRevenue": 14760.63, "modRevenue": 661.44, "totalRevenue": 15422.07, "avgRevPerTrip": 74.14}, {"week": "Jul 07, 2025", "mtmTrips": 304, "modTrips": 50, "totalTrips": 354, "mtmRevenue": 23213.54, "modRevenue": 2999.02, "totalRevenue": 26212.56, "avgRevPerTrip": 74.05}, {"week": "Jul 14, 2025", "mtmTrips": 342, "modTrips": 46, "totalTrips": 388, "mtmRevenue": 26042.3, "modRevenue": 2754.95, "totalRevenue": 28797.25, "avgRevPerTrip": 74.22}, {"week": "Jul 21, 2025", "mtmTrips": 345, "modTrips": 54, "totalTrips": 399, "mtmRevenue": 25905.91, "modRevenue": 2896.16, "totalRevenue": 28802.07, "avgRevPerTrip": 72.19}, {"week": "Jul 28, 2025", "mtmTrips": 340, "modTrips": 63, "totalTrips": 403, "mtmRevenue": 25768.48, "modRevenue": 4027.57, "totalRevenue": 29796.05, "avgRevPerTrip": 73.94}, {"week": "Aug 04, 2025", "mtmTrips": 314, "modTrips": 50, "totalTrips": 364, "mtmRevenue": 24379.35, "modRevenue": 2835.5, "totalRevenue": 27214.85, "avgRevPerTrip": 74.77}, {"week": "Aug 11, 2025", "mtmTrips": 309, "modTrips": 64, "totalTrips": 373, "mtmRevenue": 24001.81, "modRevenue": 3458.71, "totalRevenue": 27460.52, "avgRevPerTrip": 73.62}, {"week": "Aug 18, 2025", "mtmTrips": 298, "modTrips": 58, "totalTrips": 356, "mtmRevenue": 22108.12, "modRevenue": 2950.51, "totalRevenue": 25058.63, "avgRevPerTrip": 70.39}, {"week": "Aug 25, 2025", "mtmTrips": 280, "modTrips": 61, "totalTrips": 341, "mtmRevenue": 20703.83, "modRevenue": 3527.63, "totalRevenue": 24231.46, "avgRevPerTrip": 71.06}, {"week": "Sep 01, 2025", "mtmTrips": 270, "modTrips": 62, "totalTrips": 332, "mtmRevenue": 20986.62, "modRevenue": 4427.37, "totalRevenue": 25413.99, "avgRevPerTrip": 76.55}, {"week": "Sep 08, 2025", "mtmTrips": 268, "modTrips": 63, "totalTrips": 331, "mtmRevenue": 20877.57, "modRevenue": 3245.17, "totalRevenue": 24122.74, "avgRevPerTrip": 72.88}, {"week": "Sep 15, 2025", "mtmTrips": 308, "modTrips": 66, "totalTrips": 374, "mtmRevenue": 23835.2, "modRevenue": 3541.54, "totalRevenue": 27376.74, "avgRevPerTrip": 73.2}, {"week": "Sep 22, 2025", "mtmTrips": 318, "modTrips": 61, "totalTrips": 379, "mtmRevenue": 23806.19, "modRevenue": 3762.1, "totalRevenue": 27568.29, "avgRevPerTrip": 72.74}, {"week": "Sep 29, 2025", "mtmTrips": 292, "modTrips": 58, "totalTrips": 350, "mtmRevenue": 22014.65, "modRevenue": 3178.48, "totalRevenue": 25193.13, "avgRevPerTrip": 71.98}, {"week": "Oct 06, 2025", "mtmTrips": 314, "modTrips": 57, "totalTrips": 371, "mtmRevenue": 24302.9, "modRevenue": 3261.76, "totalRevenue": 27564.66, "avgRevPerTrip": 74.3}, {"week": "Oct 13, 2025", "mtmTrips": 312, "modTrips": 60, "totalTrips": 372, "mtmRevenue": 23525.98, "modRevenue": 3726.0, "totalRevenue": 27251.98, "avgRevPerTrip": 73.26}, {"week": "Oct 20, 2025", "mtmTrips": 317, "modTrips": 66, "totalTrips": 383, "mtmRevenue": 23948.26, "modRevenue": 3951.0, "totalRevenue": 27899.26, "avgRevPerTrip": 72.84}, {"week": "Oct 27, 2025", "mtmTrips": 303, "modTrips": 64, "totalTrips": 367, "mtmRevenue": 22789.34, "modRevenue": 3866.0, "totalRevenue": 26655.34, "avgRevPerTrip": 72.63}, {"week": "Nov 03, 2025", "mtmTrips": 303, "modTrips": 60, "totalTrips": 363, "mtmRevenue": 23223.25, "modRevenue": 3784.5, "totalRevenue": 27007.75, "avgRevPerTrip": 74.4}, {"week": "Nov 10, 2025", "mtmTrips": 287, "modTrips": 75, "totalTrips": 362, "mtmRevenue": 22939.48, "modRevenue": 4677.0, "totalRevenue": 27616.48, "avgRevPerTrip": 76.29}, {"week": "Nov 17, 2025", "mtmTrips": 301, "modTrips": 59, "totalTrips": 360, "mtmRevenue": 22961.6, "modRevenue": 3482.5, "totalRevenue": 26444.1, "avgRevPerTrip": 73.46}, {"week": "Nov 24, 2025", "mtmTrips": 294, "modTrips": 43, "totalTrips": 337, "mtmRevenue": 22698.41, "modRevenue": 3159.5, "totalRevenue": 25857.91, "avgRevPerTrip": 76.73}, {"week": "Dec 01, 2025", "mtmTrips": 214, "modTrips": 71, "totalTrips": 285, "mtmRevenue": 17474.0, "modRevenue": 4334.5, "totalRevenue": 21808.5, "avgRevPerTrip": 76.52}, {"week": "Dec 08, 2025", "mtmTrips": 240, "modTrips": 72, "totalTrips": 312, "mtmRevenue": 18794.76, "modRevenue": 4579.5, "totalRevenue": 23374.26, "avgRevPerTrip": 74.92}, {"week": "Dec 15, 2025", "mtmTrips": 271, "modTrips": 81, "totalTrips": 352, "mtmRevenue": 21387.52, "modRevenue": 4543.5, "totalRevenue": 25931.02, "avgRevPerTrip": 73.67}, {"week": "Dec 22, 2025", "mtmTrips": 194, "modTrips": 62, "totalTrips": 256, "mtmRevenue": 14636.4, "modRevenue": 3533.5, "totalRevenue": 18169.9, "avgRevPerTrip": 70.98}, {"week": "Dec 29, 2025", "mtmTrips": 252, "modTrips": 61, "totalTrips": 313, "mtmRevenue": 18930.87, "modRevenue": 2930.0, "totalRevenue": 21860.87, "avgRevPerTrip": 69.84}, {"week": "Jan 05, 2026", "mtmTrips": 209, "modTrips": 79, "totalTrips": 288, "mtmRevenue": 15494.23, "modRevenue": 4662.5, "totalRevenue": 20156.73, "avgRevPerTrip": 69.99}, {"week": "Jan 12, 2026", "mtmTrips": 267, "modTrips": 67, "totalTrips": 334, "mtmRevenue": 20388.43, "modRevenue": 4242.5, "totalRevenue": 24630.93, "avgRevPerTrip": 73.75}, {"week": "Jan 19, 2026", "mtmTrips": 259, "modTrips": 45, "totalTrips": 304, "mtmRevenue": 18951.34, "modRevenue": 3066.0, "totalRevenue": 22017.34, "avgRevPerTrip": 72.43}, {"week": "Jan 26, 2026", "mtmTrips": 255, "modTrips": 51, "totalTrips": 306, "mtmRevenue": 19033.01, "modRevenue": 3354.0, "totalRevenue": 22387.01, "avgRevPerTrip": 73.16}, {"week": "Feb 02, 2026", "mtmTrips": 247, "modTrips": 69, "totalTrips": 316, "mtmRevenue": 18537.66, "modRevenue": 3639.0, "totalRevenue": 22176.66, "avgRevPerTrip": 70.18}, {"week": "Feb 09, 2026", "mtmTrips": 262, "modTrips": 60, "totalTrips": 322, "mtmRevenue": 20214.79, "modRevenue": 2964.0, "totalRevenue": 23178.79, "avgRevPerTrip": 71.98}, {"week": "Feb 16, 2026", "mtmTrips": 245, "modTrips": 76, "totalTrips": 321, "mtmRevenue": 20287.25, "modRevenue": 3599.0, "totalRevenue": 23886.25, "avgRevPerTrip": 74.41}, {"week": "Feb 23, 2026", "mtmTrips": 269, "modTrips": 69, "totalTrips": 338, "mtmRevenue": 21581.3, "modRevenue": 3243.0, "totalRevenue": 24824.3, "avgRevPerTrip": 73.44}, {"week": "Mar 02, 2026", "mtmTrips": 237, "modTrips": 15, "totalTrips": 252, "mtmRevenue": 19372.12, "modRevenue": 350.5, "totalRevenue": 19722.62, "avgRevPerTrip": 78.26}, {"week": "Mar 09, 2026", "mtmTrips": 262, "modTrips": 4, "totalTrips": 266, "mtmRevenue": 20976.16, "modRevenue": 253.63, "totalRevenue": 21229.79, "avgRevPerTrip": 79.81}, {"week": "Mar 16, 2026", "mtmTrips": 238, "modTrips": 14, "totalTrips": 252, "mtmRevenue": 20229.59, "modRevenue": 621.68, "totalRevenue": 20851.27, "avgRevPerTrip": 82.74}, {"week": "Mar 23, 2026", "mtmTrips": 230, "modTrips": 55, "totalTrips": 285, "mtmRevenue": 20032.64, "modRevenue": 1534.48, "totalRevenue": 21567.12, "avgRevPerTrip": 75.67}, {"week": "Mar 30, 2026", "mtmTrips": 176, "modTrips": 71, "totalTrips": 247, "mtmRevenue": 14374.55, "modRevenue": 1987.6, "totalRevenue": 16362.15, "avgRevPerTrip": 66.24}, {"week": "Apr 06, 2026", "mtmTrips": 190, "modTrips": 92, "totalTrips": 282, "mtmRevenue": 16098.37, "modRevenue": 3620.95, "totalRevenue": 19719.32, "avgRevPerTrip": 69.93}, {"week": "Apr 13, 2026", "mtmTrips": 207, "modTrips": 101, "totalTrips": 308, "mtmRevenue": 16528.15, "modRevenue": 5089.22, "totalRevenue": 21617.37, "avgRevPerTrip": 70.19}];
+const MONTHLY_DATA = [{"month": "Dec 2024", "mtmTrips": 1521, "modTrips": 141, "totalTrips": 1662, "mtmRevenue": 124268.84, "modRevenue": 13570.83, "totalRevenue": 137839.67}, {"month": "Jan 2025", "mtmTrips": 1681, "modTrips": 150, "totalTrips": 1831, "mtmRevenue": 136890.94, "modRevenue": 13066.31, "totalRevenue": 149957.25}, {"month": "Feb 2025", "mtmTrips": 1454, "modTrips": 96, "totalTrips": 1550, "mtmRevenue": 114586.14, "modRevenue": 8194.32, "totalRevenue": 122780.46}, {"month": "Mar 2025", "mtmTrips": 1663, "modTrips": 172, "totalTrips": 1835, "mtmRevenue": 128585.81, "modRevenue": 16282.59, "totalRevenue": 144868.4}, {"month": "Apr 2025", "mtmTrips": 1564, "modTrips": 277, "totalTrips": 1841, "mtmRevenue": 123424.83, "modRevenue": 30438.08, "totalRevenue": 153862.91}, {"month": "May 2025", "mtmTrips": 1595, "modTrips": 164, "totalTrips": 1759, "mtmRevenue": 121807.29, "modRevenue": 19584.32, "totalRevenue": 141391.61}, {"month": "Jun 2025", "mtmTrips": 1390, "modTrips": 175, "totalTrips": 1565, "mtmRevenue": 104516.9, "modRevenue": 7005.61, "totalRevenue": 111522.51}, {"month": "Jul 2025", "mtmTrips": 1414, "modTrips": 205, "totalTrips": 1619, "mtmRevenue": 107272.91, "modRevenue": 12080.36, "totalRevenue": 119353.27}, {"month": "Aug 2025", "mtmTrips": 1306, "modTrips": 253, "totalTrips": 1559, "mtmRevenue": 99039.72, "modRevenue": 14031.13, "totalRevenue": 113070.85}, {"month": "Sep 2025", "mtmTrips": 1266, "modTrips": 280, "totalTrips": 1546, "mtmRevenue": 97305.52, "modRevenue": 16297.76, "totalRevenue": 113603.28}, {"month": "Oct 2025", "mtmTrips": 1400, "modTrips": 271, "totalTrips": 1671, "mtmRevenue": 106397.39, "modRevenue": 16328.66, "totalRevenue": 122726.05}, {"month": "Nov 2025", "mtmTrips": 1221, "modTrips": 243, "totalTrips": 1464, "mtmRevenue": 94206.54, "modRevenue": 15436.5, "totalRevenue": 109643.04}, {"month": "Dec 2025", "mtmTrips": 1085, "modTrips": 331, "totalTrips": 1416, "mtmRevenue": 84917.63, "modRevenue": 18924.5, "totalRevenue": 103842.13}, {"month": "Jan 2026", "mtmTrips": 1076, "modTrips": 258, "totalTrips": 1334, "mtmRevenue": 80172.93, "modRevenue": 16321.5, "totalRevenue": 96494.43}, {"month": "Feb 2026", "mtmTrips": 1023, "modTrips": 274, "totalTrips": 1297, "mtmRevenue": 80621.0, "modRevenue": 13445.0, "totalRevenue": 94066.0}, {"month": "Mar 2026", "mtmTrips": 1037, "modTrips": 114, "totalTrips": 1151, "mtmRevenue": 86410.2, "modRevenue": 3500.65, "totalRevenue": 89910.85}, {"month": "Apr 2026", "mtmTrips": 503, "modTrips": 238, "totalTrips": 741, "mtmRevenue": 41201.38, "modRevenue": 9957.41, "totalRevenue": 51158.79}];
 
-    const MONTHLY_EXPENSES = 95000;
+const fmt$ = v => '$' + Math.round(v).toLocaleString();
+const fmtK = v => '$' + (v >= 1000 ? Math.round(v/1000) + 'k' : Math.round(v));
+const fmtN = v => Math.round(v).toLocaleString();
 
-    const MTM_MONTHLY = [
-      { month: "Oct '25", trips: 1441, revenue: 110652, miles: 32699, rpm: 11.39 },
-      { month: "Nov '25", trips: 1225, revenue: 94864,  miles: 28171, rpm: 13.08 },
-      { month: "Dec '25", trips: 1085, revenue: 84918,  miles: 26048, rpm: 12.88 },
-      { month: "Jan '26", trips: 1076, revenue: 80173,  miles: 25496, rpm: 10.89 },
-      { month: "Feb '26", trips: 1053, revenue: 83657,  miles: 28452, rpm: 11.49 },
-      { month: "Mar '26", trips: 1085, revenue: 91268,  miles: 31658, rpm: 11.18 },
-      { month: "Apr '26", trips: 479,  revenue: 39557,  miles: 13530, rpm: 10.78 },
-    ];
+function CustomTooltip({ active, payload, label, view }) {
+  if (!active || !payload?.length) return null;
+  return (
+    <div style={{background:'#fff',border:'1px solid #e5e7eb',borderRadius:8,padding:'10px 14px',fontSize:12,boxShadow:'0 4px 12px rgba(0,0,0,0.1)'}}>
+      <p style={{fontWeight:600,marginBottom:6,color:'#374151'}}>{label}</p>
+      {payload.map((p,i) => (
+        <p key={i} style={{color:p.color,margin:'2px 0'}}>
+          {p.name}: {view==='trips' ? fmtN(p.value) : fmt$(p.value)}
+        </p>
+      ))}
+    </div>
+  );
+}
 
-    const MDV_MONTHLY = [
-      { month: "Mar '26", trips: 114, revenue: 3501 },
-      { month: "Apr '26", trips: 137, revenue: 4868 },
-    ];
+function Dashboard() {
+  const [view, setView] = useState('revenue');
+  const [period, setPeriod] = useState('monthly');
 
-    const ALL_MONTHS = ["Oct '25","Nov '25","Dec '25","Jan '26","Feb '26","Mar '26","Apr '26"];
+  const totalMTMRev = MONTHLY_DATA.reduce((s,r)=>s+r.mtmRevenue,0);
+  const totalModRev = MONTHLY_DATA.reduce((s,r)=>s+r.modRevenue,0);
+  const totalRev = totalMTMRev + totalModRev;
+  const totalTrips = MONTHLY_DATA.reduce((s,r)=>s+r.totalTrips,0);
+  const totalMTMTrips = MONTHLY_DATA.reduce((s,r)=>s+r.mtmTrips,0);
+  const totalModTrips = MONTHLY_DATA.reduce((s,r)=>s+r.modTrips,0);
+  const peakMonth = MONTHLY_DATA.reduce((a,b)=>a.totalRevenue>b.totalRevenue?a:b);
 
-    const COMBINED_MONTHLY = ALL_MONTHS.map((month) => {
-      const mtm = MTM_MONTHLY.find(m => m.month === month);
-      const mdv = MDV_MONTHLY.find(m => m.month === month);
-      const mtmRev  = mtm ? mtm.revenue : 0;
-      const mdvRev  = mdv ? mdv.revenue : 0;
-      const totalRev = mtmRev + mdvRev;
-      const hasData = totalRev > 0;
-      const expenses = hasData ? MONTHLY_EXPENSES : 0;
-      const partial = month === "Apr '26";
-      return {
-        month,
-        mtmRevenue: mtmRev,
-        mdvRevenue: mdvRev,
-        revenue: totalRev,
-        expenses,
-        net: totalRev - expenses,
-        mtmTrips: mtm ? mtm.trips : 0,
-        mdvTrips: mdv ? mdv.trips : 0,
-        trips: (mtm ? mtm.trips : 0) + (mdv ? mdv.trips : 0),
-        miles: mtm ? mtm.miles : null,
-        rpm: mtm ? mtm.rpm : null,
-        partial,
-      };
-    });
+  const chartData = period === 'monthly' ? MONTHLY_DATA.map(d => ({
+    name: d.month,
+    MTM: view==='trips' ? d.mtmTrips : d.mtmRevenue,
+    Modivcare: view==='trips' ? d.modTrips : d.modRevenue,
+  })) : WEEKLY_DATA.map(d => ({
+    name: d.week,
+    MTM: view==='trips' ? d.mtmTrips : d.mtmRevenue,
+    Modivcare: view==='trips' ? d.modTrips : d.modRevenue,
+  }));
 
-    let cumSum = 0;
-    COMBINED_MONTHLY.forEach(m => {
-      if (m.expenses > 0) cumSum += m.net;
-      m.cumulative = m.expenses > 0 ? cumSum : null;
-    });
+  const avgData = MONTHLY_DATA.map(d => ({
+    name: d.month,
+    'MTM avg': d.mtmTrips > 0 ? Math.round(d.mtmRevenue/d.mtmTrips*100)/100 : 0,
+    'Modivcare avg': d.modTrips > 0 ? Math.round(d.modRevenue/d.modTrips*100)/100 : 0,
+  }));
 
-    const MTM_DRIVERS = [
-      { name: "Norma Roderick",   trips: 1498+60,  revenue: 92737+3472  },
-      { name: "Jack Wiseman",      trips: 691+92,   revenue: 64825+9225  },
-      { name: "Shannon Henderson", trips: 232+96,   revenue: 26269+8722  },
-      { name: "Gary D Davis",      trips: 540+46,   revenue: 41961+2626  },
-      { name: "Debbie Reddish",    trips: 515+22,   revenue: 33245+1152  },
-      { name: "Bradford Thoele",   trips: 432+54,   revenue: 34848+2945  },
-      { name: "Jill O'Bryan",      trips: 145+44,   revenue: 14452+5550  },
-      { name: "Brandy Wakeland",   trips: 150+32,   revenue: 13722+3899  },
-      { name: "Michael Esker",     trips: 321,      revenue: 28030       },
-      { name: "Steven Schumacher", trips: 328,      revenue: 27796       },
-      { name: "Nancy Merritt",     trips: 311+5,    revenue: 26506+522   },
-      { name: "Michael Schabbing", trips: 298,      revenue: 24474       },
-    ].map(d => ({ ...d, avg: d.revenue / d.trips }))
-     .sort((a, b) => b.revenue - a.revenue);
+  const chartHeight = period === 'weekly' ? 280 : 300;
+  const tickCount = period === 'weekly' ? 72 : 17;
 
-    const MDV_DRIVERS = [
-      { name: "Gary Davis",        trips: 107, revenue: 1847, avg: 17.26 },
-      { name: "Jack Wiseman",      trips: 19,  revenue: 1357, avg: 71.43 },
-      { name: "Shannon Henderson", trips: 18,  revenue: 1229, avg: 68.30 },
-      { name: "Steven Cothern",    trips: 18,  revenue: 1035, avg: 57.50 },
-      { name: "Norma Roderick",    trips: 47,  revenue: 791,  avg: 16.84 },
-      { name: "Jill OBryan",       trips: 10,  revenue: 766,  avg: 76.64 },
-      { name: "Brandy Wakeland",   trips: 8,   revenue: 507,  avg: 63.41 },
-      { name: "Nancy Merritt",     trips: 6,   revenue: 470,  avg: 78.33 },
-      { name: "Tammy Goodman",     trips: 16,  revenue: 311,  avg: 19.43 },
-      { name: "Kevin Cornwell",    trips: 2,   revenue: 54,   avg: 27.07 },
-    ];
+  return (
+    <div id="root">
+      <a href="../index.html" className="back-link">← Back to Map</a>
 
-    const MTM_STATUS = [
-      { name: "Valid",             value: 6966+479, color: "#22c55e" },
-      { name: "Member Cancel",     value: 1324+95,  color: "#f59e0b" },
-      { name: "Turn Back",         value: 728+72,   color: "#ef4444" },
-      { name: "No-Show (Member)",  value: 471+24,   color: "#f97316" },
-      { name: "Res. Changed",      value: 221+30,   color: "#a78bfa" },
-      { name: "Cancelled by MTM",  value: 149+4,    color: "#6b7280" },
-      { name: "Other",             value: 141+3,    color: "#475569" },
-    ];
+      <div className="header">
+        <h1>Effingham Transport — Analytics Dashboard</h1>
+        <p>Dec 2, 2024 – Apr 18, 2026 &nbsp;·&nbsp; MTM + Modivcare (Direct + RouteGenie) &nbsp;·&nbsp; Complete dataset</p>
+      </div>
 
-    const MTM_CITIES = [
-      { city: "Champaign",   trips: 2102, revenue: 173933 },
-      { city: "Danville",    trips: 976,  revenue: 100212 },
-      { city: "Marion",      trips: 522,  revenue: 42401  },
-      { city: "Decatur",     trips: 601,  revenue: 34104  },
-      { city: "Urbana",      trips: 434,  revenue: 24078  },
-      { city: "Springfield", trips: 354,  revenue: 24931  },
-      { city: "Rantoul",     trips: 230,  revenue: 17320  },
-      { city: "Irvington",   trips: 148,  revenue: 15244  },
-    ];
-
-    const fmt$   = (v) => "$" + Math.round(v).toLocaleString();
-    const fmtK   = (v) => (v >= 0 ? "$" : "-$") + (Math.abs(v) / 1000).toFixed(1) + "k";
-    const fmtPct = (v) => v.toFixed(1) + "%";
-
-    const ACCENT  = "#f97316";
-    const BLUE    = "#3b82f6";
-    const GREEN   = "#22c55e";
-    const RED     = "#ef4444";
-    const PURPLE  = "#a78bfa";
-    const MUTED   = "#64748b";
-    const SURFACE = "#0d1b2a";
-    const CARD    = "#111f30";
-    const BORDER  = "#1e3348";
-
-    const TooltipStyle = {
-      backgroundColor: "#0a1628",
-      border: "1px solid #1e3348",
-      borderRadius: 8,
-      color: "#e2e8f0",
-      fontSize: 12,
-      boxShadow: "0 8px 24px rgba(0,0,0,0.4)",
-    };
-
-    const TABS = ["Overview", "P&L", "Trends", "MTM Detail", "Modivcare Detail", "Driver Performance"];
-
-    const DAILY_LABELS = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-    const DAILY_MTM_TRIPS = [54,57,57,57,60,30];
-    const DAILY_MTM_REVENUE = [4292,4822,4678,4730,4619,2028];
-
-    const WEEKLY_LABELS = ['9/29','10/6','10/13','10/20','10/27','11/3','11/10','11/17','11/24','12/1','12/8','12/15','12/22','12/29','1/5','1/12','1/19','1/26','2/2','2/9','2/16','2/23','3/2','3/9','3/16','3/23','3/30','4/6','4/13'];
-    const WEEKLY_MTM_TRIPS = [190,314,312,317,303,303,287,301,294,214,240,271,194,252,209,267,259,255,247,262,245,269,237,262,238,230,176,190,207];
-    const WEEKLY_MTM_REVENUE = [14215,24303,23526,23948,22789,23223,22939,22962,22698,17474,18795,21388,14636,18931,15494,20388,18951,19033,18538,20215,20287,21581,19372,20976,20230,20033,14375,16098,16528];
-    const WEEKLY_MDV_TRIPS = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,15,4,14,55,71,92,0];
-    const WEEKLY_MDV_REVENUE = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,351,254,622,1534,1988,3621,0];
-
-    const MONTHLY_LABELS = ["Oct '25","Nov '25","Dec '25","Jan '26","Feb '26","Mar '26","Apr '26"];
-    const MONTHLY_MTM_TRIPS = [1400,1221,1085,1076,1023,1151,397];
-    const MONTHLY_MTM_REVENUE = [106397,94207,84918,80173,80621,89911,32626];
-    const MONTHLY_MDV_TRIPS = [0,0,0,0,0,114,251];
-    const MONTHLY_MDV_REVENUE = [0,0,0,0,0,3501,8369];
-
-    const BREAKEVEN = { daily: { trips: 50, revenue: 3979 }, weekly: { trips: 300, revenue: 23870 }, monthly: { trips: 1085, revenue: 95000 } };
-    const PROFIT_GOAL = { daily: { trips: 55, revenue: 4377 }, weekly: { trips: 330, revenue: 26260 }, monthly: { trips: 1190, revenue: 104500 } };
-
-    function StatCard({ label, value, sub, accent, negative }) {
-      return (
-        <div style={{
-          background: `linear-gradient(145deg, ${CARD} 0%, #0d1b2a 100%)`,
-          border: `1px solid ${BORDER}`,
-          borderTop: `2px solid ${accent || ACCENT}`,
-          borderRadius: 10,
-          padding: "16px 20px",
-        }}>
-          <div style={{ color: MUTED, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.12em", fontFamily: "monospace", marginBottom: 6 }}>{label}</div>
-          <div style={{ color: negative ? RED : "#f1f5f9", fontSize: 24, fontWeight: 800, lineHeight: 1, letterSpacing: "-0.02em" }}>{value}</div>
-          {sub && <div style={{ color: MUTED, fontSize: 11, marginTop: 5 }}>{sub}</div>}
+      <div className="cards">
+        <div className="card">
+          <div className="card-label">Total Revenue</div>
+          <div className="card-value">${Math.round(totalRev/1000).toLocaleString()}K</div>
+          <div className="card-sub">All time</div>
         </div>
-      );
-    }
-
-    function SectionTitle({ children }) {
-      return (
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
-          <div style={{ width: 2, height: 14, background: ACCENT, borderRadius: 1 }} />
-          <span style={{ color: "#94a3b8", fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em", fontFamily: "monospace" }}>{children}</span>
+        <div className="card">
+          <div className="card-label">Total Trips</div>
+          <div className="card-value">{totalTrips.toLocaleString()}</div>
+          <div className="card-sub">All time</div>
         </div>
-      );
-    }
-
-    function BrokerBadge({ broker }) {
-      const isMTM = broker === "MTM";
-      return (
-        <span style={{
-          background: isMTM ? "#1e3a5f" : "#2d1b4e",
-          color: isMTM ? BLUE : PURPLE,
-          border: `1px solid ${isMTM ? "#1e4d8c" : "#5b21b6"}`,
-          borderRadius: 4, padding: "1px 7px", fontSize: 10, fontWeight: 700, fontFamily: "monospace",
-        }}>{broker}</span>
-      );
-    }
-
-    function ProfitBadge({ value }) {
-      const pos = value >= 0;
-      return (
-        <span style={{
-          background: pos ? "#14532d44" : "#7f1d1d44",
-          color: pos ? GREEN : RED,
-          border: `1px solid ${pos ? "#166534" : "#991b1b"}`,
-          borderRadius: 5, padding: "2px 8px", fontSize: 11, fontWeight: 700, fontFamily: "monospace",
-        }}>
-          {pos ? "+" : ""}{fmtK(value)}
-        </span>
-      );
-    }
-
-    function App() {
-      const [tab, setTab] = useState("Overview");
-      const [driverBroker, setDriverBroker] = useState("MTM");
-      const [granularity, setGranularity] = useState('Weekly');
-
-      const trendGran     = granularity.toLowerCase();
-      const trendLabels   = granularity === 'Daily' ? DAILY_LABELS : granularity === 'Weekly' ? WEEKLY_LABELS : MONTHLY_LABELS;
-      const trendMtmTrips = granularity === 'Daily' ? DAILY_MTM_TRIPS   : granularity === 'Weekly' ? WEEKLY_MTM_TRIPS   : MONTHLY_MTM_TRIPS;
-      const trendMtmRev   = granularity === 'Daily' ? DAILY_MTM_REVENUE : granularity === 'Weekly' ? WEEKLY_MTM_REVENUE : MONTHLY_MTM_REVENUE;
-      const trendMdvTrips = granularity === 'Weekly' ? WEEKLY_MDV_TRIPS   : MONTHLY_MDV_TRIPS;
-      const trendMdvRev   = granularity === 'Weekly' ? WEEKLY_MDV_REVENUE : MONTHLY_MDV_REVENUE;
-      const trendTripsData = trendLabels.map((label, i) => ({ label, mtm: trendMtmTrips[i], mdv: granularity !== 'Daily' ? trendMdvTrips[i] : undefined }));
-      const trendRevData   = trendLabels.map((label, i) => ({ label, mtm: trendMtmRev[i],   mdv: granularity !== 'Daily' ? trendMdvRev[i]   : undefined }));
-      const trendTotalMtmTrips = trendMtmTrips.reduce((s, v) => s + v, 0);
-      const trendTotalMtmRev   = trendMtmRev.reduce((s, v) => s + v, 0);
-      const trendAvgMtmTrips   = Math.round(trendTotalMtmTrips / trendLabels.length);
-      const trendAvgMtmRev     = Math.round(trendTotalMtmRev / trendLabels.length);
-      const trendTotalMdvTrips = trendMdvTrips.reduce((s, v) => s + v, 0);
-      const trendTotalMdvRev   = trendMdvRev.reduce((s, v) => s + v, 0);
-      const trendBreakeven = BREAKEVEN[trendGran];
-      const trendGoal      = PROFIT_GOAL[trendGran];
-      const trendXAxis = {
-        dataKey: "label",
-        tick: granularity === 'Weekly' ? { fill: MUTED, fontSize: 10, angle: -45, textAnchor: 'end' } : { fill: MUTED, fontSize: 10 },
-        interval: granularity === 'Weekly' ? 3 : 0,
-        height: granularity === 'Weekly' ? 55 : 30,
-        axisLine: false,
-        tickLine: false,
-      };
-
-      const mtmTotalRev   = MTM_MONTHLY.reduce((s, m) => s + m.revenue, 0);
-      const mdvTotalRev   = MDV_MONTHLY.reduce((s, m) => s + m.revenue, 0);
-      const combinedRev   = mtmTotalRev + mdvTotalRev;
-      const totalExpenses = ALL_MONTHS.length * MONTHLY_EXPENSES;
-      const totalNet      = COMBINED_MONTHLY.reduce((s, m) => s + m.net, 0);
-      const avgMargin     = (totalNet / combinedRev * 100);
-      const mtmTotalTrips = MTM_MONTHLY.reduce((s, m) => s + m.trips, 0);
-
-      const drivers = driverBroker === "MTM" ? MTM_DRIVERS : MDV_DRIVERS;
-
-      return (
-        <div style={{ minHeight: "100vh", background: SURFACE, fontFamily: "'DM Sans', sans-serif", color: "#e2e8f0", paddingTop: 40 }}>
-
-          {/* Site nav */}
-          <div style={{
-            position: "fixed", top: 0, left: 0, right: 0, height: 40, zIndex: 20,
-            background: "#091422", borderBottom: `1px solid ${BORDER}`,
-            display: "flex", alignItems: "center", padding: "0 16px", gap: 8,
-          }}>
-            <span style={{ flex: 1, color: MUTED, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.15em", fontFamily: "monospace" }}>Effingham Transport</span>
-            <a href="/nemt-map/" style={{
-              display: "inline-block", padding: "4px 12px", borderRadius: 6,
-              fontFamily: "monospace", fontSize: 11, fontWeight: 700, textDecoration: "none",
-              border: `1px solid ${BORDER}`, background: CARD, color: MUTED,
-            }}
-              onMouseOver={e => { e.currentTarget.style.background = BORDER; e.currentTarget.style.color = "#e2e8f0"; }}
-              onMouseOut={e => { e.currentTarget.style.background = CARD; e.currentTarget.style.color = MUTED; }}
-            >Live Map</a>
-            <span style={{
-              display: "inline-block", padding: "4px 12px", borderRadius: 6,
-              fontFamily: "monospace", fontSize: 11, fontWeight: 700,
-              border: `1px solid ${ACCENT}`, borderTop: `2px solid ${ACCENT}`,
-              background: CARD, color: "#e2e8f0", cursor: "default",
-            }}>Analytics Dashboard</span>
-          </div>
-
-          {/* Header */}
-          <div style={{
-            background: "linear-gradient(180deg, #091422 0%, #0d1b2a 100%)",
-            borderBottom: `1px solid ${BORDER}`,
-            padding: "20px 28px 0",
-            position: "sticky", top: 40, zIndex: 10,
-          }}>
-            <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: 16 }}>
-              <div>
-                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 3 }}>
-                  <div style={{ width: 6, height: 6, borderRadius: "50%", background: GREEN, boxShadow: `0 0 6px ${GREEN}` }} />
-                  <span style={{ color: MUTED, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.15em", fontFamily: "monospace" }}>Effingham Transport · MTM + Modivcare</span>
-                </div>
-                <h1 style={{ margin: 0, fontSize: 20, fontWeight: 800, color: "#f8fafc", letterSpacing: "-0.02em" }}>
-                  NEMT Analytics &amp; P&amp;L Dashboard
-                </h1>
-                <div style={{ color: MUTED, fontSize: 12, marginTop: 2 }}>
-                  MTM: Oct &#39;25–Apr &#39;26 (Apr partial) · Modivcare: Mar–Apr &#39;26 · More months incoming
-                </div>
-              </div>
-              <div style={{ display: "flex", gap: 10 }}>
-                <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 8, padding: "6px 14px", textAlign: "center" }}>
-                  <div style={{ color: MUTED, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.1em", fontFamily: "monospace" }}>MTM Revenue</div>
-                  <div style={{ color: BLUE, fontSize: 14, fontWeight: 800, fontFamily: "monospace" }}>{fmtK(mtmTotalRev)}</div>
-                </div>
-                <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 8, padding: "6px 14px", textAlign: "center" }}>
-                  <div style={{ color: MUTED, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.1em", fontFamily: "monospace" }}>Modivcare Rev</div>
-                  <div style={{ color: PURPLE, fontSize: 14, fontWeight: 800, fontFamily: "monospace" }}>{fmtK(mdvTotalRev)}</div>
-                </div>
-                <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 8, padding: "6px 14px", textAlign: "center" }}>
-                  <div style={{ color: MUTED, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.1em", fontFamily: "monospace" }}>Net (7mo)</div>
-                  <div style={{ color: totalNet >= 0 ? GREEN : RED, fontSize: 14, fontWeight: 800, fontFamily: "monospace" }}>
-                    {totalNet >= 0 ? "+" : ""}{fmtK(totalNet)}
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div style={{ display: "flex", gap: 0, overflowX: "auto" }}>
-              {TABS.map(t => (
-                <button key={t} onClick={() => setTab(t)} style={{
-                  background: "none", border: "none", cursor: "pointer",
-                  padding: "8px 16px", fontSize: 12, fontWeight: tab === t ? 700 : 400,
-                  color: tab === t ? "#f1f5f9" : MUTED,
-                  borderBottom: tab === t ? `2px solid ${ACCENT}` : "2px solid transparent",
-                  whiteSpace: "nowrap", transition: "all 0.15s",
-                }}>{t}</button>
-              ))}
-            </div>
-          </div>
-
-          <div style={{ padding: "24px 28px" }}>
-
-            {/* ── OVERVIEW ── */}
-            {tab === "Overview" && (
-              <div>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 12, marginBottom: 24 }}>
-                  <StatCard label="MTM Revenue (7mo)" value={fmt$(mtmTotalRev)} sub="VALID trips · Oct–Apr" accent={BLUE} />
-                  <StatCard label="Modivcare Revenue" value={fmt$(mdvTotalRev)} sub="Mar–Apr '26 partial" accent={PURPLE} />
-                  <StatCard label="Combined Revenue" value={fmt$(combinedRev)} sub="Both brokers to date" accent={GREEN} />
-                  <StatCard label="Total Expenses (7mo)" value={fmt$(totalExpenses)} sub="$95k × 7 months" accent={RED} />
-                  <StatCard label="Net (7mo)" value={(totalNet >= 0 ? "+" : "") + fmt$(totalNet)} sub={fmtPct(Math.abs(avgMargin)) + (avgMargin >= 0 ? " margin" : " deficit")} accent={totalNet >= 0 ? GREEN : RED} negative={totalNet < 0} />
-                </div>
-
-                <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 12, padding: 20, marginBottom: 16 }}>
-                  <SectionTitle>Monthly Revenue by Broker vs. Expenses</SectionTitle>
-                  <ResponsiveContainer width="100%" height={240}>
-                    <ComposedChart data={COMBINED_MONTHLY}>
-                      <CartesianGrid strokeDasharray="3 3" stroke={BORDER} />
-                      <XAxis dataKey="month" tick={{ fill: MUTED, fontSize: 11 }} axisLine={false} tickLine={false} />
-                      <YAxis tickFormatter={v => "$" + (v/1000).toFixed(0) + "k"} tick={{ fill: MUTED, fontSize: 10 }} axisLine={false} tickLine={false} />
-                      <Tooltip contentStyle={TooltipStyle} formatter={(v, n) => [fmt$(v), n]} />
-                      <Legend formatter={v => <span style={{ color: "#94a3b8", fontSize: 11 }}>{v}</span>} />
-                      <Bar dataKey="mtmRevenue" name="MTM Revenue" stackId="rev" fill={BLUE} />
-                      <Bar dataKey="mdvRevenue" name="Modivcare Revenue" stackId="rev" fill={PURPLE} radius={[3,3,0,0]} />
-                      <Line type="monotone" dataKey="expenses" name="Expenses" stroke={RED} strokeWidth={1.5} strokeDasharray="5 3" dot={false} />
-                    </ComposedChart>
-                  </ResponsiveContainer>
-                </div>
-
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-                  <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 12, padding: 20 }}>
-                    <SectionTitle>Broker Revenue Split (to date)</SectionTitle>
-                    <div style={{ display: "flex", flexDirection: "column", gap: 16, marginTop: 16 }}>
-                      {[
-                        { label: "MTM", value: mtmTotalRev, color: BLUE },
-                        { label: "Modivcare", value: mdvTotalRev, color: PURPLE },
-                      ].map(b => (
-                        <div key={b.label}>
-                          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
-                            <span style={{ color: "#cbd5e1", fontSize: 13 }}>{b.label}</span>
-                            <span style={{ color: b.color, fontWeight: 700 }}>{fmt$(b.value)}</span>
-                          </div>
-                          <div style={{ background: BORDER, borderRadius: 4, height: 8 }}>
-                            <div style={{ width: `${(b.value / combinedRev * 100).toFixed(1)}%`, background: b.color, height: 8, borderRadius: 4 }} />
-                          </div>
-                          <div style={{ color: MUTED, fontSize: 11, marginTop: 3 }}>{(b.value / combinedRev * 100).toFixed(1)}% of combined revenue</div>
-                        </div>
-                      ))}
-                      <div style={{ background: "#091422", borderRadius: 8, padding: "10px 12px", borderLeft: `2px solid ${ACCENT}`, fontSize: 12, color: "#94a3b8" }}>
-                        💡 Modivcare data is partial (2 months). More months incoming will close this gap.
-                      </div>
-                    </div>
-                  </div>
-
-                  <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 12, padding: 20 }}>
-                    <SectionTitle>Monthly P&amp;L Snapshot</SectionTitle>
-                    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                      {COMBINED_MONTHLY.map((m, i) => (
-                        <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "6px 10px", background: "#0d1b2a", borderRadius: 6, borderLeft: `2px solid ${m.net >= 0 ? GREEN : RED}` }}>
-                          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                            <span style={{ color: "#94a3b8", fontSize: 12, fontFamily: "monospace" }}>{m.month}</span>
-                            {m.partial && <span style={{ color: MUTED, fontSize: 9, fontFamily: "monospace" }}>partial</span>}
-                          </div>
-                          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                            {m.mdvRevenue > 0 && <BrokerBadge broker="MDV" />}
-                            <ProfitBadge value={m.net} />
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* ── P&L ── */}
-            {tab === "P&L" && (
-              <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
-                  <StatCard label="MTM Revenue" value={fmt$(mtmTotalRev)} sub="7 months VALID" accent={BLUE} />
-                  <StatCard label="Modivcare Revenue" value={fmt$(mdvTotalRev)} sub="Mar–Apr partial" accent={PURPLE} />
-                  <StatCard label="Total Expenses" value={fmt$(totalExpenses)} sub="$95k × 7 months" accent={RED} />
-                  <StatCard label="Net (7mo)" value={(totalNet >= 0 ? "+" : "") + fmt$(totalNet)} sub={fmtPct(Math.abs(avgMargin)) + (avgMargin >= 0 ? " margin" : " deficit")} accent={totalNet >= 0 ? GREEN : RED} negative={totalNet < 0} />
-                </div>
-
-                <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 12, padding: 24 }}>
-                  <SectionTitle>Revenue vs. Expenses by Month</SectionTitle>
-                  <ResponsiveContainer width="100%" height={260}>
-                    <BarChart data={COMBINED_MONTHLY} barCategoryGap="30%">
-                      <CartesianGrid strokeDasharray="3 3" stroke={BORDER} vertical={false} />
-                      <XAxis dataKey="month" tick={{ fill: MUTED, fontSize: 11 }} axisLine={false} tickLine={false} />
-                      <YAxis tickFormatter={v => "$" + (v/1000).toFixed(0) + "k"} tick={{ fill: MUTED, fontSize: 10 }} axisLine={false} tickLine={false} />
-                      <Tooltip contentStyle={TooltipStyle} formatter={(v, n) => [fmt$(v), n]} />
-                      <Legend formatter={v => <span style={{ color: "#94a3b8", fontSize: 11 }}>{v}</span>} />
-                      <Bar dataKey="mtmRevenue" name="MTM Revenue" stackId="rev" fill={BLUE} />
-                      <Bar dataKey="mdvRevenue" name="Modivcare Revenue" stackId="rev" fill={PURPLE} radius={[3,3,0,0]} />
-                      <Bar dataKey="expenses" name="Expenses" fill={RED} opacity={0.6} radius={[3,3,0,0]} />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-                  <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 12, padding: 24 }}>
-                    <SectionTitle>Monthly Net Profit</SectionTitle>
-                    <ResponsiveContainer width="100%" height={200}>
-                      <BarChart data={COMBINED_MONTHLY}>
-                        <CartesianGrid strokeDasharray="3 3" stroke={BORDER} vertical={false} />
-                        <XAxis dataKey="month" tick={{ fill: MUTED, fontSize: 11 }} axisLine={false} tickLine={false} />
-                        <YAxis tickFormatter={fmtK} tick={{ fill: MUTED, fontSize: 10 }} axisLine={false} tickLine={false} />
-                        <ReferenceLine y={0} stroke="#334155" strokeWidth={1.5} />
-                        <Tooltip contentStyle={TooltipStyle} formatter={v => [fmt$(v), "Net"]} />
-                        <Bar dataKey="net" radius={[3,3,0,0]}>
-                          {COMBINED_MONTHLY.map((m, i) => <Cell key={i} fill={m.net >= 0 ? GREEN : RED} />)}
-                        </Bar>
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </div>
-                  <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 12, padding: 24 }}>
-                    <SectionTitle>Cumulative Net Profit</SectionTitle>
-                    <ResponsiveContainer width="100%" height={200}>
-                      <LineChart data={COMBINED_MONTHLY}>
-                        <CartesianGrid strokeDasharray="3 3" stroke={BORDER} />
-                        <XAxis dataKey="month" tick={{ fill: MUTED, fontSize: 11 }} axisLine={false} tickLine={false} />
-                        <YAxis tickFormatter={fmtK} tick={{ fill: MUTED, fontSize: 10 }} axisLine={false} tickLine={false} />
-                        <ReferenceLine y={0} stroke="#334155" strokeWidth={1.5} />
-                        <Tooltip contentStyle={TooltipStyle} formatter={v => [fmt$(v), "Cumulative"]} />
-                        <Line type="monotone" dataKey="cumulative" stroke={ACCENT} strokeWidth={2.5} dot={{ r: 4, fill: ACCENT }} />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
-                </div>
-
-                <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 12, padding: 24 }}>
-                  <SectionTitle>Monthly P&amp;L Detail</SectionTitle>
-                  <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
-                    <thead>
-                      <tr style={{ borderBottom: `1px solid ${BORDER}` }}>
-                        {["Month", "MTM Rev", "MDV Rev", "Combined", "Expenses", "Net", "Margin", "Cumulative"].map(h => (
-                          <th key={h} style={{ textAlign: "left", padding: "8px 10px", color: MUTED, fontWeight: 600, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.08em", fontFamily: "monospace" }}>{h}</th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {COMBINED_MONTHLY.map((m, i) => {
-                        const margin = m.revenue > 0 ? (m.net / m.revenue * 100) : 0;
-                        return (
-                          <tr key={i} style={{ borderBottom: `1px solid ${BORDER}33` }}>
-                            <td style={{ padding: "10px 10px", fontFamily: "monospace", color: "#cbd5e1", fontSize: 12 }}>
-                              {m.month}{m.partial && <span style={{ color: MUTED, fontSize: 9, marginLeft: 4 }}>*</span>}
-                            </td>
-                            <td style={{ padding: "10px 10px", color: BLUE }}>{m.mtmRevenue > 0 ? fmt$(m.mtmRevenue) : "—"}</td>
-                            <td style={{ padding: "10px 10px", color: m.mdvRevenue > 0 ? PURPLE : MUTED }}>{m.mdvRevenue > 0 ? fmt$(m.mdvRevenue) : "—"}</td>
-                            <td style={{ padding: "10px 10px", color: GREEN, fontWeight: 600 }}>{fmt$(m.revenue)}</td>
-                            <td style={{ padding: "10px 10px", color: "#f87171" }}>{fmt$(m.expenses)}</td>
-                            <td style={{ padding: "10px 10px" }}><ProfitBadge value={m.net} /></td>
-                            <td style={{ padding: "10px 10px" }}><span style={{ color: margin >= 0 ? ACCENT : RED, fontWeight: 600 }}>{fmtPct(margin)}</span></td>
-                            <td style={{ padding: "10px 10px", fontFamily: "monospace", fontSize: 12, color: m.cumulative >= 0 ? "#94a3b8" : RED }}>
-                              {m.cumulative != null ? ((m.cumulative >= 0 ? "+" : "") + fmt$(m.cumulative)) : "—"}
-                            </td>
-                          </tr>
-                        );
-                      })}
-                      <tr style={{ borderTop: `2px solid ${BORDER}`, background: "#091422" }}>
-                        <td style={{ padding: "11px 10px", fontWeight: 700, color: "#f1f5f9", fontFamily: "monospace", fontSize: 12 }}>TOTAL</td>
-                        <td style={{ padding: "11px 10px", color: BLUE, fontWeight: 700 }}>{fmt$(mtmTotalRev)}</td>
-                        <td style={{ padding: "11px 10px", color: PURPLE, fontWeight: 700 }}>{fmt$(mdvTotalRev)}</td>
-                        <td style={{ padding: "11px 10px", color: GREEN, fontWeight: 700 }}>{fmt$(combinedRev)}</td>
-                        <td style={{ padding: "11px 10px", color: "#f87171", fontWeight: 700 }}>{fmt$(totalExpenses)}</td>
-                        <td style={{ padding: "11px 10px" }}><ProfitBadge value={totalNet} /></td>
-                        <td style={{ padding: "11px 10px" }}><span style={{ color: avgMargin >= 0 ? ACCENT : RED, fontWeight: 700 }}>{fmtPct(avgMargin)}</span></td>
-                        <td style={{ padding: "11px 10px", color: totalNet >= 0 ? GREEN : RED, fontWeight: 700, fontFamily: "monospace", fontSize: 12 }}>{totalNet >= 0 ? "+" : ""}{fmt$(totalNet)}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                  <div style={{ marginTop: 14, padding: "10px 14px", background: "#091422", borderRadius: 8, borderLeft: `2px solid ${ACCENT}`, fontSize: 12, color: MUTED, lineHeight: 1.6 }}>
-                    💡 * Apr &#39;26 is a partial month (Apr 1–17). Expenses are flat $95k/month. Springfield hub and direct Medicaid billing will further close the deficit.
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* ── TRENDS ── */}
-            {tab === "Trends" && (
-              <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-
-                <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                  <span style={{ color: MUTED, fontSize: 12 }}>Granularity:</span>
-                  {["Daily", "Weekly", "Monthly"].map(gr => (
-                    <button key={gr} onClick={() => setGranularity(gr)} style={{
-                      background: granularity === gr ? BLUE : CARD,
-                      border: `1px solid ${granularity === gr ? BLUE : BORDER}`,
-                      borderRadius: 6, color: granularity === gr ? "#fff" : MUTED,
-                      padding: "4px 14px", fontSize: 11, cursor: "pointer",
-                    }}>{gr}</button>
-                  ))}
-                </div>
-
-                {granularity === 'Daily' && (
-                  <div style={{ fontSize: 11, color: MUTED, fontStyle: "italic" }}>
-                    Showing average trips and revenue per day of week across all available data. Modivcare daily breakdown not available.
-                  </div>
-                )}
-
-                <div style={{ display: "grid", gridTemplateColumns: granularity === 'Daily' ? "1fr 1fr" : "repeat(4, 1fr)", gap: 12 }}>
-                  <StatCard
-                    label={granularity === 'Daily' ? "Avg Trips / Day (MTM)" : "Total Trips (MTM)"}
-                    value={(granularity === 'Daily' ? trendAvgMtmTrips : trendTotalMtmTrips).toLocaleString()}
-                    accent="#378ADD"
-                  />
-                  <StatCard
-                    label={granularity === 'Daily' ? "Avg Revenue / Day (MTM)" : "Total Revenue (MTM)"}
-                    value={granularity === 'Daily' ? fmt$(trendAvgMtmRev) : fmt$(trendTotalMtmRev)}
-                    accent="#378ADD"
-                  />
-                  {granularity !== 'Daily' && (
-                    <StatCard label="Total Trips (Modivcare)" value={trendTotalMdvTrips.toLocaleString()} accent="#AFA9EC" />
-                  )}
-                  {granularity !== 'Daily' && (
-                    <StatCard label="Total Revenue (Modivcare)" value={fmt$(trendTotalMdvRev)} accent="#AFA9EC" />
-                  )}
-                </div>
-
-                <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 12, padding: 24 }}>
-                  <SectionTitle>Trips</SectionTitle>
-                  <ResponsiveContainer width="100%" height={260}>
-                    <BarChart data={trendTripsData} barCategoryGap="25%">
-                      <CartesianGrid strokeDasharray="3 3" stroke={BORDER} vertical={false} />
-                      <XAxis {...trendXAxis} />
-                      <YAxis tick={{ fill: MUTED, fontSize: 10 }} axisLine={false} tickLine={false} />
-                      <Tooltip contentStyle={TooltipStyle} />
-                      <Bar dataKey="mtm" name="MTM Trips" stackId={granularity !== 'Daily' ? "t" : undefined} fill="#378ADD" radius={granularity === 'Daily' ? [3,3,0,0] : [0,0,0,0]} />
-                      {granularity !== 'Daily' && (
-                        <Bar dataKey="mdv" name="Modivcare Trips" stackId="t" fill="#AFA9EC" radius={[3,3,0,0]} />
-                      )}
-                      <ReferenceLine y={trendBreakeven.trips} stroke="#EF9F27" strokeDasharray="6 3" label={{ value: "Break even", position: "insideTopRight", fill: "#EF9F27", fontSize: 10 }} />
-                      <ReferenceLine y={trendGoal.trips} stroke="#639922" strokeDasharray="6 3" label={{ value: "Profit goal", position: "insideTopRight", fill: "#639922", fontSize: 10 }} />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-
-                <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 12, padding: 24 }}>
-                  <SectionTitle>Revenue</SectionTitle>
-                  <ResponsiveContainer width="100%" height={260}>
-                    <BarChart data={trendRevData} barCategoryGap="25%">
-                      <CartesianGrid strokeDasharray="3 3" stroke={BORDER} vertical={false} />
-                      <XAxis {...trendXAxis} />
-                      <YAxis tickFormatter={v => "$" + (v/1000).toFixed(0) + "k"} tick={{ fill: MUTED, fontSize: 10 }} axisLine={false} tickLine={false} />
-                      <Tooltip contentStyle={TooltipStyle} formatter={(v, n) => [fmt$(v), n]} />
-                      <Bar dataKey="mtm" name="MTM Revenue" stackId={granularity !== 'Daily' ? "r" : undefined} fill="#378ADD" radius={granularity === 'Daily' ? [3,3,0,0] : [0,0,0,0]} />
-                      {granularity !== 'Daily' && (
-                        <Bar dataKey="mdv" name="Modivcare Revenue" stackId="r" fill="#AFA9EC" radius={[3,3,0,0]} />
-                      )}
-                      <ReferenceLine y={trendBreakeven.revenue} stroke="#EF9F27" strokeDasharray="6 3" label={{ value: "Break even", position: "insideTopRight", fill: "#EF9F27", fontSize: 10 }} />
-                      <ReferenceLine y={trendGoal.revenue} stroke="#639922" strokeDasharray="6 3" label={{ value: "Profit goal", position: "insideTopRight", fill: "#639922", fontSize: 10 }} />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-
-                <div style={{ display: "flex", gap: 20, alignItems: "center", fontSize: 11, color: MUTED }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                    <svg width="24" height="10"><line x1="0" y1="5" x2="24" y2="5" stroke="#EF9F27" strokeWidth="2" strokeDasharray="6 3" /></svg>
-                    <span>Break even</span>
-                  </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                    <svg width="24" height="10"><line x1="0" y1="5" x2="24" y2="5" stroke="#639922" strokeWidth="2" strokeDasharray="6 3" /></svg>
-                    <span>Profit goal</span>
-                  </div>
-                </div>
-
-              </div>
-            )}
-
-            {/* ── MTM DETAIL ── */}
-            {tab === "MTM Detail" && (
-              <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
-                  <StatCard label="Valid Trips" value={mtmTotalTrips.toLocaleString()} sub="Oct '25–Apr '26" accent={BLUE} />
-                  <StatCard label="Total Revenue" value={fmt$(mtmTotalRev)} sub="VALID trips only" accent={GREEN} />
-                  <StatCard label="Avg / Trip" value="$79.01" sub="All valid trips" accent={ACCENT} />
-                  <StatCard label="Total Miles" value="186,057" sub="Valid trips" accent={BLUE} />
-                </div>
-
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-                  <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 12, padding: 20 }}>
-                    <SectionTitle>Monthly Revenue</SectionTitle>
-                    <ResponsiveContainer width="100%" height={200}>
-                      <BarChart data={MTM_MONTHLY}>
-                        <CartesianGrid strokeDasharray="3 3" stroke={BORDER} vertical={false} />
-                        <XAxis dataKey="month" tick={{ fill: MUTED, fontSize: 11 }} axisLine={false} tickLine={false} />
-                        <YAxis tickFormatter={v => "$" + (v/1000).toFixed(0) + "k"} tick={{ fill: MUTED, fontSize: 10 }} axisLine={false} tickLine={false} />
-                        <Tooltip contentStyle={TooltipStyle} formatter={v => fmt$(v)} />
-                        <Bar dataKey="revenue" name="Revenue" radius={[3,3,0,0]}>
-                          {MTM_MONTHLY.map((m, i) => <Cell key={i} fill={m.month === "Apr '26" ? "#1e3a5f" : BLUE} />)}
-                        </Bar>
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </div>
-                  <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 12, padding: 20 }}>
-                    <SectionTitle>Trip Status Breakdown</SectionTitle>
-                    <ResponsiveContainer width="100%" height={200}>
-                      <PieChart>
-                        <Pie data={MTM_STATUS} dataKey="value" cx="42%" cy="50%" innerRadius={45} outerRadius={75} paddingAngle={2}>
-                          {MTM_STATUS.map((s, i) => <Cell key={i} fill={s.color} />)}
-                        </Pie>
-                        <Tooltip contentStyle={TooltipStyle} formatter={v => v.toLocaleString()} />
-                        <Legend iconSize={7} iconType="circle" formatter={v => <span style={{ color: "#64748b", fontSize: 10 }}>{v}</span>} />
-                      </PieChart>
-                    </ResponsiveContainer>
-                  </div>
-                </div>
-
-                <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 12, padding: 20 }}>
-                  <SectionTitle>Monthly Trip &amp; Revenue Summary</SectionTitle>
-                  <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
-                    <thead>
-                      <tr style={{ borderBottom: `1px solid ${BORDER}` }}>
-                        {["Month", "Valid Trips", "Revenue", "Miles", "Avg $/Trip", "$/Mile"].map(h => (
-                          <th key={h} style={{ textAlign: "left", padding: "8px 12px", color: MUTED, fontWeight: 600, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.1em", fontFamily: "monospace" }}>{h}</th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {MTM_MONTHLY.map((m, i) => (
-                        <tr key={i} style={{ borderBottom: `1px solid ${BORDER}22` }}>
-                          <td style={{ padding: "10px 12px", fontFamily: "monospace", color: "#cbd5e1", fontSize: 12 }}>
-                            {m.month}{m.month === "Apr '26" && <span style={{ color: MUTED, fontSize: 9, marginLeft: 4 }}>*partial</span>}
-                          </td>
-                          <td style={{ padding: "10px 12px" }}>{m.trips.toLocaleString()}</td>
-                          <td style={{ padding: "10px 12px", color: GREEN, fontWeight: 600 }}>{fmt$(m.revenue)}</td>
-                          <td style={{ padding: "10px 12px" }}>{m.miles.toLocaleString()}</td>
-                          <td style={{ padding: "10px 12px" }}>${(m.revenue / m.trips).toFixed(2)}</td>
-                          <td style={{ padding: "10px 12px", color: ACCENT }}>${m.rpm.toFixed(2)}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-
-                <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 12, padding: 20 }}>
-                  <SectionTitle>Top Pickup Cities (Oct–Mar)</SectionTitle>
-                  <ResponsiveContainer width="100%" height={220}>
-                    <BarChart data={MTM_CITIES} layout="vertical">
-                      <CartesianGrid strokeDasharray="3 3" stroke={BORDER} horizontal={false} />
-                      <XAxis type="number" tick={{ fill: MUTED, fontSize: 10 }} axisLine={false} tickLine={false} />
-                      <YAxis dataKey="city" type="category" width={85} tick={{ fill: "#cbd5e1", fontSize: 11 }} axisLine={false} tickLine={false} />
-                      <Tooltip contentStyle={TooltipStyle} />
-                      <Bar dataKey="trips" name="Trips" radius={[0,3,3,0]}>
-                        {MTM_CITIES.map((_, i) => <Cell key={i} fill={i === 0 ? ACCENT : i === 1 ? BLUE : "#1e3a5f"} />)}
-                      </Bar>
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-            )}
-
-            {/* ── MODIVCARE DETAIL ── */}
-            {tab === "Modivcare Detail" && (
-              <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
-                  <StatCard label="Total Trips" value="251" sub="Mar–Apr '26" accent={PURPLE} />
-                  <StatCard label="Total Revenue" value={fmt$(mdvTotalRev)} sub="Billed and completed" accent={GREEN} />
-                  <StatCard label="Avg / Trip" value="$33.34" sub="vs MTM $79.01" accent={ACCENT} />
-                  <StatCard label="Months of Data" value="2" sub="More incoming" accent={PURPLE} />
-                </div>
-
-                <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 12, padding: 20 }}>
-                  <SectionTitle>Monthly Revenue — Modivcare</SectionTitle>
-                  <ResponsiveContainer width="100%" height={180}>
-                    <BarChart data={MDV_MONTHLY}>
-                      <CartesianGrid strokeDasharray="3 3" stroke={BORDER} vertical={false} />
-                      <XAxis dataKey="month" tick={{ fill: MUTED, fontSize: 11 }} axisLine={false} tickLine={false} />
-                      <YAxis tickFormatter={v => "$" + (v/1000).toFixed(1) + "k"} tick={{ fill: MUTED, fontSize: 10 }} axisLine={false} tickLine={false} />
-                      <Tooltip contentStyle={TooltipStyle} formatter={v => fmt$(v)} />
-                      <Bar dataKey="revenue" name="Revenue" fill={PURPLE} radius={[3,3,0,0]} />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-
-                <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 12, padding: 20 }}>
-                  <SectionTitle>Driver Performance — Modivcare</SectionTitle>
-                  <ResponsiveContainer width="100%" height={240}>
-                    <BarChart data={MDV_DRIVERS} layout="vertical">
-                      <CartesianGrid strokeDasharray="3 3" stroke={BORDER} horizontal={false} />
-                      <XAxis type="number" tick={{ fill: MUTED, fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={v => "$" + v} />
-                      <YAxis dataKey="name" type="category" width={130} tick={{ fill: "#cbd5e1", fontSize: 11 }} axisLine={false} tickLine={false} />
-                      <Tooltip contentStyle={TooltipStyle} formatter={v => fmt$(v)} />
-                      <Bar dataKey="revenue" name="Revenue" radius={[0,4,4,0]}>
-                        {MDV_DRIVERS.map((_, i) => <Cell key={i} fill={i === 0 ? PURPLE : i === 1 ? ACCENT : "#2d1b4e"} />)}
-                      </Bar>
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-
-                <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 12, padding: 20, borderLeft: `3px solid ${ACCENT}` }}>
-                  <SectionTitle>Rate Comparison</SectionTitle>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16 }}>
-                    {[
-                      { label: "MTM Avg/Trip", value: "$79.01", color: BLUE },
-                      { label: "Modivcare Avg/Trip", value: "$33.34", color: PURPLE },
-                      { label: "MTM Premium", value: "+137%", color: ACCENT },
-                    ].map(s => (
-                      <div key={s.label} style={{ background: "#091422", borderRadius: 8, padding: "14px 16px", textAlign: "center" }}>
-                        <div style={{ color: MUTED, fontSize: 10, marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.1em", fontFamily: "monospace" }}>{s.label}</div>
-                        <div style={{ color: s.color, fontSize: 24, fontWeight: 800 }}>{s.value}</div>
-                      </div>
-                    ))}
-                  </div>
-                  <div style={{ marginTop: 12, padding: "10px 14px", background: "#091422", borderRadius: 8, borderLeft: `2px solid ${ACCENT}`, fontSize: 12, color: "#94a3b8", lineHeight: 1.6 }}>
-                    💡 Modivcare pays 137% less per trip than MTM. Direct Medicaid billing eliminates broker margin entirely, making it the highest-leverage revenue growth path.
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* ── DRIVER PERFORMANCE ── */}
-            {tab === "Driver Performance" && (
-              <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-                <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                  <span style={{ color: MUTED, fontSize: 12 }}>Broker:</span>
-                  {["MTM", "Modivcare"].map(b => (
-                    <button key={b} onClick={() => setDriverBroker(b)} style={{
-                      background: driverBroker === b ? (b === "MTM" ? BLUE : PURPLE) : CARD,
-                      border: `1px solid ${driverBroker === b ? (b === "MTM" ? BLUE : PURPLE) : BORDER}`,
-                      borderRadius: 6, color: driverBroker === b ? "#fff" : MUTED,
-                      padding: "4px 14px", fontSize: 11, cursor: "pointer",
-                    }}>{b}</button>
-                  ))}
-                </div>
-
-                <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 12, padding: 24 }}>
-                  <SectionTitle>Driver Revenue — {driverBroker}</SectionTitle>
-                  <ResponsiveContainer width="100%" height={320}>
-                    <BarChart data={drivers} layout="vertical" margin={{ left: 10 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke={BORDER} horizontal={false} />
-                      <XAxis type="number" tick={{ fill: MUTED, fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={v => "$" + (v/1000).toFixed(0) + "k"} />
-                      <YAxis dataKey="name" type="category" width={145} tick={{ fill: "#cbd5e1", fontSize: 11 }} axisLine={false} tickLine={false} />
-                      <Tooltip contentStyle={TooltipStyle} formatter={v => fmt$(v)} />
-                      <Bar dataKey="revenue" name="Revenue" radius={[0,4,4,0]}>
-                        {drivers.map((_, i) => <Cell key={i} fill={i === 0 ? ACCENT : i === 1 ? (driverBroker === "MTM" ? BLUE : PURPLE) : "#1e3a5f"} />)}
-                      </Bar>
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-
-                <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 12, padding: 24 }}>
-                  <SectionTitle>Driver Metrics — {driverBroker}</SectionTitle>
-                  <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
-                    <thead>
-                      <tr style={{ borderBottom: `1px solid ${BORDER}` }}>
-                        {["Driver", "Trips", "Revenue", "Avg $/Trip"].map(h => (
-                          <th key={h} style={{ textAlign: "left", padding: "8px 12px", color: MUTED, fontWeight: 600, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.1em", fontFamily: "monospace" }}>{h}</th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {drivers.map((d, i) => (
-                        <tr key={i} style={{ borderBottom: `1px solid ${BORDER}22` }}>
-                          <td style={{ padding: "10px 12px", color: i < 3 ? ACCENT : "#cbd5e1", fontWeight: i < 3 ? 600 : 400 }}>
-                            {i < 3 && <span style={{ color: ACCENT, marginRight: 6, fontSize: 10, fontFamily: "monospace" }}>#{i+1}</span>}
-                            {d.name}
-                          </td>
-                          <td style={{ padding: "10px 12px" }}>{d.trips.toLocaleString()}</td>
-                          <td style={{ padding: "10px 12px", color: GREEN }}>{fmt$(d.revenue)}</td>
-                          <td style={{ padding: "10px 12px" }}>${d.avg.toFixed(2)}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            )}
-
-          </div>
+        <div className="card">
+          <div className="card-label">MTM Revenue</div>
+          <div className="card-value">${Math.round(totalMTMRev/1000).toLocaleString()}K</div>
+          <div className="card-sub">{totalMTMTrips.toLocaleString()} trips · {Math.round(totalMTMRev/totalRev*100)}%</div>
         </div>
-      );
-    }
+        <div className="card">
+          <div className="card-label">Modivcare Revenue</div>
+          <div className="card-value">${Math.round(totalModRev/1000).toLocaleString()}K</div>
+          <div className="card-sub">{totalModTrips.toLocaleString()} trips · {Math.round(totalModRev/totalRev*100)}%</div>
+        </div>
+        <div className="card">
+          <div className="card-label">Peak Month</div>
+          <div className="card-value">{fmtK(peakMonth.totalRevenue)}</div>
+          <div className="card-sub">{peakMonth.month}</div>
+        </div>
+        <div className="card">
+          <div className="card-label">Avg $/Trip (MTM)</div>
+          <div className="card-value">${Math.round(totalMTMRev/totalMTMTrips)}</div>
+          <div className="card-sub">vs ${Math.round(totalModRev/totalModTrips)} Modivcare</div>
+        </div>
+      </div>
 
-    const root = ReactDOM.createRoot(document.getElementById("root"));
-    root.render(<App />);
-  </script>
+      <div className="chart-box">
+        <div className="chart-title">Trips & Revenue by Broker</div>
+        <div className="chart-sub">Stacked by MTM and Modivcare</div>
+        <div className="tabs">
+          {['revenue','trips'].map(v => (
+            <button key={v} className={`tab${view===v?' active':''}`} onClick={()=>setView(v)}>
+              {v.charAt(0).toUpperCase()+v.slice(1)}
+            </button>
+          ))}
+          <div style={{flex:1}}/>
+          {['monthly','weekly'].map(p => (
+            <button key={p} className={`tab${period===p?' active':''}`} onClick={()=>setPeriod(p)}>
+              {p.charAt(0).toUpperCase()+p.slice(1)}
+            </button>
+          ))}
+        </div>
+        <div className="legend">
+          <div className="legend-item"><div className="legend-dot" style={{background:'#1F3864'}}/> MTM</div>
+          <div className="legend-item"><div className="legend-dot" style={{background:'#1D9E75'}}/> Modivcare</div>
+        </div>
+        <ResponsiveContainer width="100%" height={chartHeight}>
+          <BarChart data={chartData} margin={{top:4,right:8,left:8,bottom:period==='weekly'?50:30}}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0"/>
+            <XAxis dataKey="name" tick={{fontSize: period==='weekly'?8:11}} angle={period==='weekly'?-45:0} textAnchor={period==='weekly'?"end":"middle"} interval={period==='weekly'?3:0}/>
+            <YAxis tickFormatter={view==='trips'?fmtN:fmtK} tick={{fontSize:11}} width={55}/>
+            <Tooltip content={<CustomTooltip view={view}/>}/>
+            <Bar dataKey="MTM" stackId="a" fill="#1F3864" radius={[0,0,0,0]}/>
+            <Bar dataKey="Modivcare" stackId="a" fill="#1D9E75" radius={[3,3,0,0]}/>
+          </BarChart>
+        </ResponsiveContainer>
+        <p className="data-note">{period==='weekly' ? '72 weeks' : '17 months'} · Dec 2024 – Apr 2026</p>
+      </div>
+
+      <div className="chart-box">
+        <div className="chart-title">Avg Revenue per Trip</div>
+        <div className="chart-sub">Monthly comparison: MTM vs Modivcare</div>
+        <ResponsiveContainer width="100%" height={240}>
+          <LineChart data={avgData} margin={{top:4,right:8,left:8,bottom:30}}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0"/>
+            <XAxis dataKey="name" tick={{fontSize:10}} angle={-30} textAnchor="end" interval={0}/>
+            <YAxis tickFormatter={v=>'$'+v} tick={{fontSize:11}} width={45}/>
+            <Tooltip formatter={v=>'$'+Number(v).toFixed(2)}/>
+            <Line type="monotone" dataKey="MTM avg" stroke="#1F3864" strokeWidth={2} dot={{r:3}}/>
+            <Line type="monotone" dataKey="Modivcare avg" stroke="#1D9E75" strokeWidth={2} dot={{r:3}} strokeDasharray="4 2"/>
+          </LineChart>
+        </ResponsiveContainer>
+        <div className="legend" style={{marginTop:8}}>
+          <div className="legend-item"><div className="legend-dot" style={{background:'#1F3864'}}/> MTM avg $/trip</div>
+          <div className="legend-item"><div className="legend-dot" style={{background:'#1D9E75',borderBottom:'2px dashed #1D9E75'}}/> Modivcare avg $/trip</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<Dashboard/>);
+</script>
 </body>
 </html>

@@ -31,7 +31,7 @@
       ComposedChart, ReferenceLine
     } = Recharts;
 
-    const MONTHLY_EXPENSES = 95000;
+    const MONTHLY_EXPENSES = 100500;
 
     const MTM_MONTHLY = [
       { month: "Oct '25", trips: 1441, revenue: 110652, miles: 32699, rpm: 11.39 },
@@ -172,8 +172,8 @@
     const MONTHLY_MDV_TRIPS = [0,0,0,0,0,114,251];
     const MONTHLY_MDV_REVENUE = [0,0,0,0,0,3501,8369];
 
-    const BREAKEVEN = { daily: { trips: 50, revenue: 3979 }, weekly: { trips: 300, revenue: 23870 }, monthly: { trips: 1085, revenue: 95000 } };
-    const PROFIT_GOAL = { daily: { trips: 55, revenue: 4377 }, weekly: { trips: 330, revenue: 26260 }, monthly: { trips: 1190, revenue: 104500 } };
+    const BREAKEVEN = { daily: { trips: 53, revenue: 4213 }, weekly: { trips: 318, revenue: 25245 }, monthly: { trips: 1150, revenue: 100500 } };
+    const PROFIT_GOAL = { daily: { trips: 58, revenue: 4613 }, weekly: { trips: 348, revenue: 27678 }, monthly: { trips: 1260, revenue: 110500 } };
 
     function StatCard({ label, value, sub, accent, negative }) {
       return (
@@ -351,7 +351,7 @@
                   <StatCard label="MTM Revenue (7mo)" value={fmt$(mtmTotalRev)} sub="VALID trips · Oct–Apr" accent={BLUE} />
                   <StatCard label="Modivcare Revenue" value={fmt$(mdvTotalRev)} sub="Mar–Apr '26 partial" accent={PURPLE} />
                   <StatCard label="Combined Revenue" value={fmt$(combinedRev)} sub="Both brokers to date" accent={GREEN} />
-                  <StatCard label="Total Expenses (7mo)" value={fmt$(totalExpenses)} sub="$95k × 7 months" accent={RED} />
+                  <StatCard label="Total Expenses (7mo)" value={fmt$(totalExpenses)} sub="$100,500/month" accent={RED} />
                   <StatCard label="Net (7mo)" value={(totalNet >= 0 ? "+" : "") + fmt$(totalNet)} sub={fmtPct(Math.abs(avgMargin)) + (avgMargin >= 0 ? " margin" : " deficit")} accent={totalNet >= 0 ? GREEN : RED} negative={totalNet < 0} />
                 </div>
 
@@ -423,7 +423,7 @@
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
                   <StatCard label="MTM Revenue" value={fmt$(mtmTotalRev)} sub="7 months VALID" accent={BLUE} />
                   <StatCard label="Modivcare Revenue" value={fmt$(mdvTotalRev)} sub="Mar–Apr partial" accent={PURPLE} />
-                  <StatCard label="Total Expenses" value={fmt$(totalExpenses)} sub="$95k × 7 months" accent={RED} />
+                  <StatCard label="Total Expenses" value={fmt$(totalExpenses)} sub="$100,500/month" accent={RED} />
                   <StatCard label="Net (7mo)" value={(totalNet >= 0 ? "+" : "") + fmt$(totalNet)} sub={fmtPct(Math.abs(avgMargin)) + (avgMargin >= 0 ? " margin" : " deficit")} accent={totalNet >= 0 ? GREEN : RED} negative={totalNet < 0} />
                 </div>
 
@@ -517,7 +517,7 @@
                     </tbody>
                   </table>
                   <div style={{ marginTop: 14, padding: "10px 14px", background: "#091422", borderRadius: 8, borderLeft: `2px solid ${ACCENT}`, fontSize: 12, color: MUTED, lineHeight: 1.6 }}>
-                    💡 * Apr &#39;26 is a partial month (Apr 1–17). Expenses are flat $95k/month. Springfield hub and direct Medicaid billing will further close the deficit.
+                    💡 * Apr &#39;26 is a partial month (Apr 1–17). Expenses are flat $100,500/month. Springfield hub and direct Medicaid billing will further close the deficit.
                   </div>
                 </div>
               </div>

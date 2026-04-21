@@ -314,17 +314,17 @@
                   NEMT Analytics &amp; P&amp;L Dashboard
                 </h1>
                 <div style={{ color: MUTED, fontSize: 12, marginTop: 2 }}>
-                  MTM: Oct &#39;25–Apr &#39;26 · Modivcare: Mar–Apr &#39;26 · 7,345 MTM trips · 251 Modivcare trips
+                  MTM: Dec &#39;24–Apr &#39;26 · Modivcare: Dec &#39;24–Apr &#39;26 · 22,199 MTM trips · 3,642 Modivcare trips
                 </div>
               </div>
               <div style={{ display: "flex", gap: 10 }}>
                 <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 8, padding: "6px 14px", textAlign: "center" }}>
                   <div style={{ color: MUTED, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.1em", fontFamily: "monospace" }}>MTM Revenue</div>
-                  <div style={{ color: BLUE, fontSize: 14, fontWeight: 800, fontFamily: "monospace" }}>{fmtK(mtmTotalRev)}</div>
+                  <div style={{ color: BLUE, fontSize: 14, fontWeight: 800, fontFamily: "monospace" }}>$1,732K</div>
                 </div>
                 <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 8, padding: "6px 14px", textAlign: "center" }}>
                   <div style={{ color: MUTED, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.1em", fontFamily: "monospace" }}>Modivcare Rev</div>
-                  <div style={{ color: PURPLE, fontSize: 14, fontWeight: 800, fontFamily: "monospace" }}>{fmtK(mdvTotalRev)}</div>
+                  <div style={{ color: PURPLE, fontSize: 14, fontWeight: 800, fontFamily: "monospace" }}>$244K</div>
                 </div>
                 <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 8, padding: "6px 14px", textAlign: "center" }}>
                   <div style={{ color: MUTED, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.1em", fontFamily: "monospace" }}>Net (7mo)</div>
@@ -353,11 +353,11 @@
             {tab === "Overview" && (
               <div>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 12, marginBottom: 24 }}>
-                  <StatCard label="MTM Revenue (7mo)" value={fmt$(mtmTotalRev)} sub="VALID trips · Oct–Apr" accent={BLUE} />
-                  <StatCard label="Modivcare Revenue" value={fmt$(mdvTotalRev)} sub="Mar–Apr '26 partial" accent={PURPLE} />
-                  <StatCard label="Combined Revenue" value={fmt$(combinedRev)} sub="Both brokers to date" accent={GREEN} />
+                  <StatCard label="MTM Revenue" value="$1,732,296" sub="22,199 trips · Dec '24–Apr '26" accent={BLUE} />
+                  <StatCard label="Modivcare Revenue" value="$244,131" sub="3,642 trips · Dec '24–Apr '26" accent={PURPLE} />
+                  <StatCard label="Combined Revenue" value="$1,976,427" sub="Both brokers · all time" accent={GREEN} />
                   <StatCard label="Total Expenses (7mo)" value={fmt$(totalExpenses)} sub="$100,500/month" accent={RED} />
-                  <StatCard label="Net (7mo)" value={(totalNet >= 0 ? "+" : "") + fmt$(totalNet)} sub={fmtPct(Math.abs(avgMargin)) + (avgMargin >= 0 ? " margin" : " deficit")} accent={totalNet >= 0 ? GREEN : RED} negative={totalNet < 0} />
+                  <StatCard label="Net (7mo)" value={(totalNet >= 0 ? "+" : "") + fmt$(totalNet)} sub={"Oct '25–Apr '26 · " + fmtPct(Math.abs(avgMargin)) + (avgMargin >= 0 ? " margin" : " deficit")} accent={totalNet >= 0 ? GREEN : RED} negative={totalNet < 0} />
                 </div>
 
                 <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 12, padding: 20, marginBottom: 16 }}>
@@ -381,8 +381,8 @@
                     <SectionTitle>Broker Revenue Split (to date)</SectionTitle>
                     <div style={{ display: "flex", flexDirection: "column", gap: 16, marginTop: 16 }}>
                       {[
-                        { label: "MTM", value: mtmTotalRev, color: BLUE },
-                        { label: "Modivcare", value: mdvTotalRev, color: PURPLE },
+                        { label: "MTM", value: 1732296, pct: "87.6", color: BLUE },
+                        { label: "Modivcare", value: 244131, pct: "12.4", color: PURPLE },
                       ].map(b => (
                         <div key={b.label}>
                           <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
@@ -390,13 +390,13 @@
                             <span style={{ color: b.color, fontWeight: 700 }}>{fmt$(b.value)}</span>
                           </div>
                           <div style={{ background: BORDER, borderRadius: 4, height: 8 }}>
-                            <div style={{ width: `${(b.value / combinedRev * 100).toFixed(1)}%`, background: b.color, height: 8, borderRadius: 4 }} />
+                            <div style={{ width: `${b.pct}%`, background: b.color, height: 8, borderRadius: 4 }} />
                           </div>
-                          <div style={{ color: MUTED, fontSize: 11, marginTop: 3 }}>{(b.value / combinedRev * 100).toFixed(1)}% of combined revenue</div>
+                          <div style={{ color: MUTED, fontSize: 11, marginTop: 3 }}>{b.pct}% of combined revenue</div>
                         </div>
                       ))}
                       <div style={{ background: "#091422", borderRadius: 8, padding: "10px 12px", borderLeft: `2px solid ${ACCENT}`, fontSize: 12, color: "#94a3b8" }}>
-                        💡 Modivcare data is partial (2 months). More months incoming will close this gap.
+                        💡 Full dataset: Dec 2024 – Apr 2026. P&amp;L analysis begins Oct 2025 when expense tracking started.
                       </div>
                     </div>
                   </div>
@@ -734,8 +734,8 @@
             {tab === "MTM Detail" && (
               <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
-                  <StatCard label="Valid Trips" value="7,345" sub="Oct '25–Apr '26" accent={BLUE} />
-                  <StatCard label="Total Revenue" value="$573,927" sub="VALID trips only" accent={GREEN} />
+                  <StatCard label="Valid Trips" value="22,199" sub="Dec '24–Apr '26" accent={BLUE} />
+                  <StatCard label="Total Revenue" value="$1,732,296" sub="VALID trips only" accent={GREEN} />
                   <StatCard label="Avg / Trip" value="$78.14" sub="All valid trips" accent={ACCENT} />
                   <StatCard label="Total Miles" value="181,897" sub="Valid trips" accent={BLUE} />
                 </div>

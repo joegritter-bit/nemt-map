@@ -34,13 +34,13 @@
     const MONTHLY_EXPENSES = 100500;
 
     const MTM_MONTHLY = [
-      { month: "Oct '25", trips: 1441, revenue: 110652, miles: 32699, rpm: 11.39 },
-      { month: "Nov '25", trips: 1225, revenue: 94864,  miles: 28171, rpm: 13.08 },
+      { month: "Oct '25", trips: 1400, revenue: 106397, miles: 31161, rpm: 11.64 },
+      { month: "Nov '25", trips: 1221, revenue: 94207,  miles: 27859, rpm: 13.11 },
       { month: "Dec '25", trips: 1085, revenue: 84918,  miles: 26048, rpm: 12.88 },
       { month: "Jan '26", trips: 1076, revenue: 80173,  miles: 25496, rpm: 10.89 },
-      { month: "Feb '26", trips: 1053, revenue: 83657,  miles: 28452, rpm: 11.49 },
-      { month: "Mar '26", trips: 1085, revenue: 91268,  miles: 31658, rpm: 11.18 },
-      { month: "Apr '26", trips: 479,  revenue: 39557,  miles: 13530, rpm: 10.78 },
+      { month: "Feb '26", trips: 1023, revenue: 80621,  miles: 27378, rpm: 11.75 },
+      { month: "Mar '26", trips: 1037, revenue: 86410,  miles: 29939, rpm: 11.57 },
+      { month: "Apr '26", trips: 503,  revenue: 41201,  miles: 14016, rpm: 11.06 },
     ];
 
     const MDV_MONTHLY = [
@@ -82,20 +82,19 @@
     });
 
     const MTM_DRIVERS = [
-      { name: "Norma Roderick",   trips: 1498+60,  revenue: 92737+3472  },
-      { name: "Jack Wiseman",      trips: 691+92,   revenue: 64825+9225  },
-      { name: "Shannon Henderson", trips: 232+96,   revenue: 26269+8722  },
-      { name: "Gary D Davis",      trips: 540+46,   revenue: 41961+2626  },
-      { name: "Debbie Reddish",    trips: 515+22,   revenue: 33245+1152  },
-      { name: "Bradford Thoele",   trips: 432+54,   revenue: 34848+2945  },
-      { name: "Jill O'Bryan",      trips: 145+44,   revenue: 14452+5550  },
-      { name: "Brandy Wakeland",   trips: 150+32,   revenue: 13722+3899  },
-      { name: "Michael Esker",     trips: 321,      revenue: 28030       },
-      { name: "Steven Schumacher", trips: 328,      revenue: 27796       },
-      { name: "Nancy Merritt",     trips: 311+5,    revenue: 26506+522   },
-      { name: "Michael Schabbing", trips: 298,      revenue: 24474       },
-    ].map(d => ({ ...d, avg: d.revenue / d.trips }))
-     .sort((a, b) => b.revenue - a.revenue);
+      { name: "Norma Roderick",   trips: 1556, revenue: 96006, avg: 61.70 },
+      { name: "Jack Wiseman",      trips: 719,  revenue: 67329, avg: 93.64 },
+      { name: "Gary D Davis",      trips: 586,  revenue: 44344, avg: 75.67 },
+      { name: "Bradford Thoele",   trips: 490,  revenue: 37944, avg: 77.44 },
+      { name: "Shannon Henderson", trips: 328,  revenue: 34937, avg: 106.52 },
+      { name: "Debbie Reddish",    trips: 535,  revenue: 34129, avg: 63.79 },
+      { name: "Michael Esker",     trips: 313,  revenue: 27207, avg: 86.92 },
+      { name: "Steven Schumacher", trips: 322,  revenue: 27178, avg: 84.40 },
+      { name: "Nancy Merritt",     trips: 311,  revenue: 26459, avg: 85.08 },
+      { name: "Michael Schabbing", trips: 296,  revenue: 24273, avg: 82.00 },
+      { name: "Robert McGee",      trips: 292,  revenue: 23849, avg: 81.67 },
+      { name: "Trever Floyd",      trips: 262,  revenue: 20833, avg: 79.52 },
+    ];
 
     const MDV_DRIVERS = [
       { name: "Gary Davis",        trips: 107, revenue: 1847, avg: 17.26 },
@@ -111,24 +110,24 @@
     ];
 
     const MTM_STATUS = [
-      { name: "Valid",             value: 6966+479, color: "#22c55e" },
-      { name: "Member Cancel",     value: 1324+95,  color: "#f59e0b" },
-      { name: "Turn Back",         value: 728+72,   color: "#ef4444" },
-      { name: "No-Show (Member)",  value: 471+24,   color: "#f97316" },
-      { name: "Res. Changed",      value: 221+30,   color: "#a78bfa" },
-      { name: "Cancelled by MTM",  value: 149+4,    color: "#6b7280" },
-      { name: "Other",             value: 141+3,    color: "#475569" },
+      { name: "Valid",             value: 7507, color: "#22c55e" },
+      { name: "Member Cancel",     value: 1429, color: "#f59e0b" },
+      { name: "Turn Back",         value: 805,  color: "#ef4444" },
+      { name: "No-Show (Member)",  value: 499,  color: "#f97316" },
+      { name: "Res. Changed",      value: 253,  color: "#a78bfa" },
+      { name: "Cancelled by MTM",  value: 153,  color: "#6b7280" },
+      { name: "Other",             value: 144,  color: "#475569" },
     ];
 
     const MTM_CITIES = [
-      { city: "Champaign",   trips: 2102, revenue: 173933 },
-      { city: "Danville",    trips: 976,  revenue: 100212 },
-      { city: "Marion",      trips: 522,  revenue: 42401  },
-      { city: "Decatur",     trips: 601,  revenue: 34104  },
-      { city: "Urbana",      trips: 434,  revenue: 24078  },
-      { city: "Springfield", trips: 354,  revenue: 24931  },
-      { city: "Rantoul",     trips: 230,  revenue: 17320  },
-      { city: "Irvington",   trips: 148,  revenue: 15244  },
+      { city: "Champaign",   trips: 2171, revenue: 178872 },
+      { city: "Danville",    trips: 981,  revenue: 100947 },
+      { city: "Marion",      trips: 584,  revenue: 46960  },
+      { city: "Decatur",     trips: 642,  revenue: 36546  },
+      { city: "Urbana",      trips: 467,  revenue: 25896  },
+      { city: "Springfield", trips: 372,  revenue: 26242  },
+      { city: "Normal",      trips: 270,  revenue: 11300  },
+      { city: "Rantoul",     trips: 257,  revenue: 19324  },
     ];
 
     const fmt$   = (v) => "$" + Math.round(v).toLocaleString();
@@ -309,7 +308,7 @@
                   NEMT Analytics &amp; P&amp;L Dashboard
                 </h1>
                 <div style={{ color: MUTED, fontSize: 12, marginTop: 2 }}>
-                  MTM: Oct &#39;25–Apr &#39;26 (Apr partial) · Modivcare: Mar–Apr &#39;26 · More months incoming
+                  MTM: Oct &#39;25–Apr &#39;26 · Modivcare: Mar–Apr &#39;26 · 7,345 MTM trips · 251 Modivcare trips
                 </div>
               </div>
               <div style={{ display: "flex", gap: 10 }}>
@@ -618,10 +617,10 @@
             {tab === "MTM Detail" && (
               <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
-                  <StatCard label="Valid Trips" value={mtmTotalTrips.toLocaleString()} sub="Oct '25–Apr '26" accent={BLUE} />
-                  <StatCard label="Total Revenue" value={fmt$(mtmTotalRev)} sub="VALID trips only" accent={GREEN} />
-                  <StatCard label="Avg / Trip" value="$79.01" sub="All valid trips" accent={ACCENT} />
-                  <StatCard label="Total Miles" value="186,057" sub="Valid trips" accent={BLUE} />
+                  <StatCard label="Valid Trips" value="7,345" sub="Oct '25–Apr '26" accent={BLUE} />
+                  <StatCard label="Total Revenue" value="$573,927" sub="VALID trips only" accent={GREEN} />
+                  <StatCard label="Avg / Trip" value="$78.14" sub="All valid trips" accent={ACCENT} />
+                  <StatCard label="Total Miles" value="181,897" sub="Valid trips" accent={BLUE} />
                 </div>
 
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
@@ -703,7 +702,7 @@
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
                   <StatCard label="Total Trips" value="251" sub="Mar–Apr '26" accent={PURPLE} />
                   <StatCard label="Total Revenue" value={fmt$(mdvTotalRev)} sub="Billed and completed" accent={GREEN} />
-                  <StatCard label="Avg / Trip" value="$33.34" sub="vs MTM $79.01" accent={ACCENT} />
+                  <StatCard label="Avg / Trip" value="$33.34" sub="vs MTM $78.14" accent={ACCENT} />
                   <StatCard label="Months of Data" value="2" sub="More incoming" accent={PURPLE} />
                 </div>
 
@@ -739,7 +738,7 @@
                   <SectionTitle>Rate Comparison</SectionTitle>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16 }}>
                     {[
-                      { label: "MTM Avg/Trip", value: "$79.01", color: BLUE },
+                      { label: "MTM Avg/Trip", value: "$78.14", color: BLUE },
                       { label: "Modivcare Avg/Trip", value: "$33.34", color: PURPLE },
                       { label: "MTM Premium", value: "+137%", color: ACCENT },
                     ].map(s => (

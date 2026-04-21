@@ -54,9 +54,12 @@
 
     const EXPENSE_START_IDX = HISTORY_MONTHLY.findIndex(m => m.month === "Oct 2025");
 
+    const APR_PRORATED_EXPENSES = 50250; // 18 days of $100,500/month
+
     const COMBINED_MONTHLY = HISTORY_MONTHLY.map((d, i) => {
       const tracking = i >= EXPENSE_START_IDX;
-      const expenses = tracking ? MONTHLY_EXPENSES : 0;
+      const partial = d.month === "Apr 2026";
+      const expenses = !tracking ? 0 : partial ? APR_PRORATED_EXPENSES : MONTHLY_EXPENSES;
       const rev = d.mtmRevenue + d.modRevenue;
       return {
         month: d.month,
@@ -68,7 +71,7 @@
         mtmTrips: d.mtmTrips,
         mdvTrips: d.modTrips,
         trips: d.mtmTrips + d.modTrips,
-        partial: d.month === "Apr 2026",
+        partial,
         tracking,
       };
     });
@@ -259,7 +262,7 @@
       const mdvTotalRev    = HISTORY_MONTHLY.reduce((s, m) => s + m.modRevenue, 0);
       const combinedRev    = mtmTotalRev + mdvTotalRev;
       const trackingMonths = COMBINED_MONTHLY.filter(m => m.tracking);
-      const totalExpenses  = trackingMonths.length * MONTHLY_EXPENSES;
+      const totalExpenses  = trackingMonths.reduce((s, m) => s + m.expenses, 0);
       const totalNet       = trackingMonths.reduce((s, m) => s + m.net, 0);
       const trackingRev    = trackingMonths.reduce((s, m) => s + m.revenue, 0);
       const avgMargin      = (totalNet / trackingRev * 100);
@@ -448,14 +451,14 @@
                   <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 12, padding: 24 }}>
                     <SectionTitle>Monthly Net Profit (Oct '25–Apr '26)</SectionTitle>
                     <ResponsiveContainer width="100%" height={200}>
-                      <BarChart data={COMBINED_MONTHLY.map(m => ({ ...m, chartNet: m.tracking ? m.net : null }))}>
+                      <BarChart data={COMBINED_MONTHLY.filter(m => m.tracking).map(m => ({ month: m.month, net: m.net }))}>
                         <CartesianGrid strokeDasharray="3 3" stroke={BORDER} vertical={false} />
                         <XAxis dataKey="month" tick={{ fill: MUTED, fontSize: 9, angle: -35, textAnchor: 'end' }} height={45} interval={0} axisLine={false} tickLine={false} />
                         <YAxis tickFormatter={fmtK} tick={{ fill: MUTED, fontSize: 10 }} axisLine={false} tickLine={false} />
                         <ReferenceLine y={0} stroke="#334155" strokeWidth={1.5} />
                         <Tooltip contentStyle={TooltipStyle} formatter={v => [fmt$(v), "Net"]} />
-                        <Bar dataKey="chartNet" radius={[3,3,0,0]}>
-                          {COMBINED_MONTHLY.map((m, i) => <Cell key={i} fill={m.net >= 0 ? GREEN : RED} />)}
+                        <Bar dataKey="net" radius={[3,3,0,0]}>
+                          {COMBINED_MONTHLY.filter(m => m.tracking).map((m, i) => <Cell key={i} fill={m.net >= 0 ? GREEN : RED} />)}
                         </Bar>
                       </BarChart>
                     </ResponsiveContainer>
@@ -463,13 +466,13 @@
                   <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 12, padding: 24 }}>
                     <SectionTitle>Cumulative Net Profit (from Oct '25)</SectionTitle>
                     <ResponsiveContainer width="100%" height={200}>
-                      <LineChart data={COMBINED_MONTHLY}>
+                      <LineChart data={COMBINED_MONTHLY.filter(m => m.tracking).map(m => ({ month: m.month, cumulative: m.cumulative }))}>
                         <CartesianGrid strokeDasharray="3 3" stroke={BORDER} />
                         <XAxis dataKey="month" tick={{ fill: MUTED, fontSize: 9, angle: -35, textAnchor: 'end' }} height={45} interval={0} axisLine={false} tickLine={false} />
                         <YAxis tickFormatter={fmtK} tick={{ fill: MUTED, fontSize: 10 }} axisLine={false} tickLine={false} />
                         <ReferenceLine y={0} stroke="#334155" strokeWidth={1.5} />
                         <Tooltip contentStyle={TooltipStyle} formatter={v => [fmt$(v), "Cumulative"]} />
-                        <Line type="monotone" dataKey="cumulative" stroke={ACCENT} strokeWidth={2.5} dot={{ r: 4, fill: ACCENT }} connectNulls={false} />
+                        <Line type="monotone" dataKey="cumulative" stroke={ACCENT} strokeWidth={2.5} dot={{ r: 4, fill: ACCENT }} />
                       </LineChart>
                     </ResponsiveContainer>
                   </div>
@@ -539,7 +542,7 @@
                     </tbody>
                   </table>
                   <div style={{ marginTop: 14, padding: "10px 14px", background: "#091422", borderRadius: 8, borderLeft: `2px solid ${ACCENT}`, fontSize: 12, color: MUTED, lineHeight: 1.6 }}>
-                    💡 * Apr &#39;26 is a partial month (Apr 1–17). Expenses are flat $100,500/month. Springfield hub and direct Medicaid billing will further close the deficit.
+                    💡 * Apr &#39;26 is a partial month (Apr 1–18). Expenses prorated to $50,250 (~18/31 days × $100,500). Pre-Oct 2025 months show revenue only — expense tracking begins Oct 2025.
                   </div>
                 </div>
               </div>

@@ -58,7 +58,7 @@
 <div class="header">
   <div>
     <h1>🚗 NEMT Dispatch Dashboard</h1>
-    <div class="meta">Last updated: 04/20/2026 07:39 PM · Auto-refreshes every 30 min</div>
+    <div class="meta">Last updated: 04/21/2026 07:06 AM · Auto-refreshes every 30 min</div>
   </div>
   <a href="https://joegritter-bit.github.io/nemt-map/" class="map-btn" target="_blank">
     🗺️ Live Map
@@ -81,7 +81,7 @@
       <div class="lbl">Avg Rev/Hour</div>
     </div>
     <div class="stat">
-      <div class="val" style="color:#e74c3c">12</div>
+      <div class="val" style="color:#e74c3c">10</div>
       <div class="lbl">Regular Rider Alerts</div>
     </div>
   </div>
@@ -100,15 +100,6 @@
       <th>Pickup Address</th><th>Dropoff</th><th>Miles</th><th>Broker</th>
     </tr>
 
-    <tr class="alert-row">
-      <td>Upcoming</td>
-      <td>04/21/2026</td>
-      <td><b>-----</b></td>
-      <td><b>821 S Neil St, , Champaign Il, 61820</b><br><span style="font-size:10px;color:#888;">Matched: 821 S Neil St , Champaign, IL 61820</span></td>
-      <td>1701 E Florida Ave , apt 104, , Urbana Il, 61802</td>
-      <td>3.67</td>
-      <td>MTM</td>
-    </tr>
     <tr class="alert-row">
       <td>Upcoming</td>
       <td>04/21/2026</td>
@@ -183,15 +174,6 @@
     </tr>
     <tr class="alert-row">
       <td>Upcoming</td>
-      <td>04/27/2026</td>
-      <td><b>9:00 AM</b></td>
-      <td><b>11090 Washington Rd, , Clinton Il, 61727</b><br><span style="font-size:10px;color:#888;">Matched: 11090 Washington Rd , Clinton, IL 61727</span></td>
-      <td>303 Landmark Dr, , Normal Il, 61761</td>
-      <td>28.26</td>
-      <td>MTM</td>
-    </tr>
-    <tr class="alert-row">
-      <td>Upcoming</td>
       <td>04/22/2026</td>
       <td><b>9:00 AM</b></td>
       <td><b>18304 Quarry Rd, , Gillespie Il, 62033</b><br><span style="font-size:10px;color:#888;">Matched: 18304 Quarry Rd , Gillespie, IL 62033</span></td>
@@ -238,13 +220,13 @@
     <tr style="opacity:0.7;">
       <td>04/21/2026</td>
       <td>✅ GOOD</td>
-      <td>Traditional</td>
-      <td>1</td>
-      <td>7.7h</td>
-      <td class="revenue">$63.31</td>
-      <td class="revenue"><b>$485.72</b></td>
+      <td>Clinic</td>
+      <td>3</td>
+      <td>6.8h</td>
+      <td class="revenue">$45.85</td>
+      <td class="revenue"><b>$312.78</b></td>
       <td>Unknown</td>
-      <td style="font-size:11px;">9:15 AM (2070 N Church S)</td>
+      <td style="font-size:11px;">7:45 AM (524 S Main St) ➡ 🚌 2x to 303 landma</td>
     </tr>
     <tr style="opacity:0.7;">
       <td>04/21/2026</td>
@@ -307,6 +289,17 @@
       <td>04/21/2026</td>
       <td>Clinic</td>
       <td><b>Springfield</b></td>
+      <td>3</td>
+      <td>6.8h</td>
+      <td class="revenue">$45.85</td>
+      <td class="revenue"><b>$312.78</b></td>
+      <td>Unknown</td>
+      <td style="font-size:11px;">7:45 AM (524 S Main St) ➡ 🚌 2x to 303 landma</td>
+    </tr>
+    <tr style="opacity:0.7;">
+      <td>04/21/2026</td>
+      <td>Clinic</td>
+      <td><b>Springfield</b></td>
       <td>1</td>
       <td>4.1h</td>
       <td class="revenue">$43.04</td>
@@ -324,28 +317,6 @@
       <td class="revenue"><b>$115.50</b></td>
       <td>Unknown</td>
       <td style="font-size:11px;">9:30 AM (1660 E Grand Av)</td>
-    </tr>
-    <tr style="opacity:0.7;">
-      <td>04/21/2026</td>
-      <td>Traditional</td>
-      <td><b>Springfield</b></td>
-      <td>1</td>
-      <td>7.7h</td>
-      <td class="revenue">$63.31</td>
-      <td class="revenue"><b>$485.72</b></td>
-      <td>Unknown</td>
-      <td style="font-size:11px;">9:15 AM (2070 N Church S)</td>
-    </tr>
-    <tr style="opacity:0.7;">
-      <td>04/21/2026</td>
-      <td>Traditional</td>
-      <td><b>Effingham</b></td>
-      <td>1</td>
-      <td>8.2h</td>
-      <td class="revenue">$59.71</td>
-      <td class="revenue"><b>$489.17</b></td>
-      <td>Unknown</td>
-      <td style="font-size:11px;">8:00 AM (621 Polk Ave)</td>
     </tr>
     <tr style="opacity:0.7;">
       <td>04/22/2026</td>
@@ -419,13 +390,16 @@
   <div class="section-header" style="background:#27ae60;">
     🧩 Driver Schedule Extensions
   </div>
+  <div style="background:#fff3cd; color:#856404; padding:8px 16px; font-size:12px; font-weight:bold; border-bottom:1px solid #ffc107;">
+    ⚠️ Data from previous run — Stage 5 may have failed
+  </div>
   <table>
     <tr>
       <th>Driver</th><th>Day</th><th>Window</th>
       <th>Broker</th><th>Route</th><th>Price</th>
     </tr>
 
-    <tr>
+    <tr style="opacity:0.7;">
       <td><b>7</b></td>
       <td>Tuesday 04/21</td>
       <td>Before 15:00</td>
@@ -433,7 +407,7 @@
       <td>316 W Mazon Ave ➡️ 801 N Walnut St 🔄</td>
       <td class="revenue"><b>$247.27</b></td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td><b>7</b></td>
       <td>Tuesday 04/21</td>
       <td>Before 15:00</td>
@@ -441,7 +415,7 @@
       <td>108 Water St ➡️ 420 Ne Glen Oak Ave 🔄</td>
       <td class="revenue"><b>$205.60</b></td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td><b>7</b></td>
       <td>Tuesday 04/21</td>
       <td>Before 15:00</td>
@@ -449,7 +423,7 @@
       <td>301 Briar Ln ➡️ 1120 N Melvin St 🔄</td>
       <td class="revenue"><b>$185.30</b></td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td><b>7</b></td>
       <td>Tuesday 04/21</td>
       <td>Before 15:00</td>
@@ -457,7 +431,7 @@
       <td>156 N Commercial St ➡️ 120 N 11th St 🔄</td>
       <td class="revenue"><b>$177.07</b></td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td><b>7</b></td>
       <td>Tuesday 04/21</td>
       <td>Before 15:00</td>
@@ -465,7 +439,7 @@
       <td>2900 W Farmington Rd  ➡️ 303 Landmark Dr 🔄</td>
       <td class="revenue"><b>$154.00</b></td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td><b>Jill O'Bryan</b></td>
       <td>Saturday 04/25</td>
       <td>After 08:12</td>
@@ -473,7 +447,7 @@
       <td>215 N Walnut St ➡️ 4105 S Water Tower Pl 🔄</td>
       <td class="revenue"><b>$152.65</b></td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td><b>Debbie Reddish</b></td>
       <td>Friday 04/24</td>
       <td>After 12:42</td>
@@ -481,15 +455,7 @@
       <td>1402 E College Ave ➡️ 600 Ne Water St 🔄</td>
       <td class="revenue"><b>$144.19</b></td>
     </tr>
-    <tr>
-      <td><b>Adam Scott Watkins</b></td>
-      <td>Friday 04/24</td>
-      <td>After 12:42</td>
-      <td>MTM</td>
-      <td>1402 E College Ave ➡️ 600 Ne Water St 🔄</td>
-      <td class="revenue"><b>$144.19</b></td>
-    </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td><b>Steven Ray Cothern</b></td>
       <td>Friday 04/24</td>
       <td>After 12:42</td>
@@ -497,23 +463,15 @@
       <td>1402 E College Ave ➡️ 600 Ne Water St 🔄</td>
       <td class="revenue"><b>$144.19</b></td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td><b>Adam Scott Watkins</b></td>
-      <td>Monday 04/20</td>
+      <td>Friday 04/24</td>
       <td>After 12:42</td>
       <td>MTM</td>
-      <td>119 Valley View Cir ➡️ 303 N William Kumpf Blvd 🔄</td>
-      <td class="revenue"><b>$134.92</b></td>
+      <td>1402 E College Ave ➡️ 600 Ne Water St 🔄</td>
+      <td class="revenue"><b>$144.19</b></td>
     </tr>
-    <tr>
-      <td><b>Steven Ray Cothern</b></td>
-      <td>Monday 04/20</td>
-      <td>After 12:42</td>
-      <td>MTM</td>
-      <td>119 Valley View Cir ➡️ 303 N William Kumpf Blvd 🔄</td>
-      <td class="revenue"><b>$134.92</b></td>
-    </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td><b>Jill O'Bryan</b></td>
       <td>Wednesday 04/22</td>
       <td>After 07:57</td>
@@ -521,15 +479,7 @@
       <td>1025 E Rexford St ➡️ 1201 Ricker Dr 🔄</td>
       <td class="revenue"><b>$133.45</b></td>
     </tr>
-    <tr>
-      <td><b>7</b></td>
-      <td>Tuesday 04/21</td>
-      <td>Before 15:00</td>
-      <td>MTM</td>
-      <td>524 S Main St ➡️ 617 Ne Glendale Ave 🔄</td>
-      <td class="revenue"><b>$118.78</b></td>
-    </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td><b>Adam Scott Watkins</b></td>
       <td>Tuesday 04/21</td>
       <td>Before 11:45</td>
@@ -537,13 +487,37 @@
       <td>524 S Main St ➡️ 617 Ne Glendale Ave 🔄</td>
       <td class="revenue"><b>$118.78</b></td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
+      <td><b>7</b></td>
+      <td>Tuesday 04/21</td>
+      <td>Before 15:00</td>
+      <td>MTM</td>
+      <td>524 S Main St ➡️ 617 Ne Glendale Ave 🔄</td>
+      <td class="revenue"><b>$118.78</b></td>
+    </tr>
+    <tr style="opacity:0.7;">
       <td><b>7</b></td>
       <td>Tuesday 04/21</td>
       <td>Before 15:00</td>
       <td>MTM</td>
       <td>508 S Union St ➡️ 25259 W Reed St 🔄</td>
       <td class="revenue"><b>$116.89</b></td>
+    </tr>
+    <tr style="opacity:0.7;">
+      <td><b>7</b></td>
+      <td>Tuesday 04/21</td>
+      <td>Before 15:00</td>
+      <td>MTM</td>
+      <td>203 S Madison St ➡️ 2122 Troy Rd 🔄</td>
+      <td class="revenue"><b>$104.08</b></td>
+    </tr>
+    <tr style="opacity:0.7;">
+      <td><b>7</b></td>
+      <td>Tuesday 04/21</td>
+      <td>Before 15:00</td>
+      <td>MTM</td>
+      <td>400 E Washington St ➡️ 1650 Midtown Rd 🔄</td>
+      <td class="revenue"><b>$77.08</b></td>
     </tr>
   </table>
 </div>
@@ -557,7 +531,7 @@
     <tr>
       <td>400 E Washington St</td>
       <td><b>MTM</b></td>
-      <td class="revenue"><b>7 available</b></td>
+      <td class="revenue"><b>6 available</b></td>
     </tr>
     <tr>
       <td>4938 La Quienta Dr</td>
@@ -580,7 +554,7 @@
       <td class="revenue"><b>4 available</b></td>
     </tr>
     <tr>
-      <td>315 E Mckinley Rd</td>
+      <td>395 E 2nd Ave</td>
       <td><b>MTM</b></td>
       <td class="revenue"><b>4 available</b></td>
     </tr>
@@ -597,13 +571,6 @@
     </tr>
 
     <tr>
-      <td>Monday</td>
-      <td>6:00 PM</td>
-      <td><b>MTM</b></td>
-      <td>2618 Briar Trail</td>
-      <td><b>13x/week</b></td>
-    </tr>
-    <tr>
       <td>Sunday</td>
       <td>8:00 AM</td>
       <td><b>MTM</b></td>
@@ -611,10 +578,24 @@
       <td><b>13x/week</b></td>
     </tr>
     <tr>
+      <td>Monday</td>
+      <td>6:00 PM</td>
+      <td><b>MTM</b></td>
+      <td>2618 Briar Trail</td>
+      <td><b>13x/week</b></td>
+    </tr>
+    <tr>
       <td>Thursday</td>
       <td>5:15 AM</td>
       <td><b>MTM</b></td>
       <td>35 Belle Crest Dr</td>
+      <td><b>12x/week</b></td>
+    </tr>
+    <tr>
+      <td>Friday</td>
+      <td>5:00 AM</td>
+      <td><b>MTM</b></td>
+      <td>10374 Michael Todd Terrace</td>
       <td><b>12x/week</b></td>
     </tr>
     <tr>
@@ -632,13 +613,6 @@
       <td><b>12x/week</b></td>
     </tr>
     <tr>
-      <td>Thursday</td>
-      <td>11:15 AM</td>
-      <td><b>MTM</b></td>
-      <td>1231 9th Ave</td>
-      <td><b>12x/week</b></td>
-    </tr>
-    <tr>
       <td>Tuesday</td>
       <td>5:15 AM</td>
       <td><b>MTM</b></td>
@@ -646,10 +620,10 @@
       <td><b>12x/week</b></td>
     </tr>
     <tr>
-      <td>Friday</td>
-      <td>5:00 AM</td>
+      <td>Saturday</td>
+      <td>5:15 AM</td>
       <td><b>MTM</b></td>
-      <td>10374 Michael Todd Terrace</td>
+      <td>35 Belle Crest Dr</td>
       <td><b>12x/week</b></td>
     </tr>
   </table>

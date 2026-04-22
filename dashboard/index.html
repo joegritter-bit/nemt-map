@@ -52,14 +52,11 @@
       { month: "Apr '26", trips: 137, revenue: 4868 },
     ];
 
-    const EXPENSE_START_IDX = HISTORY_MONTHLY.findIndex(m => m.month === "Oct 2025");
-
     const APR_PRORATED_EXPENSES = 50250; // 18 days of $100,500/month
 
-    const COMBINED_MONTHLY = HISTORY_MONTHLY.map((d, i) => {
-      const tracking = i >= EXPENSE_START_IDX;
+    const COMBINED_MONTHLY = HISTORY_MONTHLY.map((d) => {
       const partial = d.month === "Apr 2026";
-      const expenses = !tracking ? 0 : partial ? APR_PRORATED_EXPENSES : MONTHLY_EXPENSES;
+      const expenses = partial ? APR_PRORATED_EXPENSES : MONTHLY_EXPENSES;
       const rev = d.mtmRevenue + d.modRevenue;
       return {
         month: d.month,
@@ -72,14 +69,13 @@
         mdvTrips: d.modTrips,
         trips: d.mtmTrips + d.modTrips,
         partial,
-        tracking,
       };
     });
 
     let cumSum = 0;
     COMBINED_MONTHLY.forEach(m => {
-      if (m.tracking) cumSum += m.net;
-      m.cumulative = m.tracking ? cumSum : null;
+      cumSum += m.net;
+      m.cumulative = cumSum;
     });
 
     const MTM_DRIVERS = [
@@ -258,15 +254,13 @@
         tickLine: false,
       };
 
-      const mtmTotalRev    = HISTORY_MONTHLY.reduce((s, m) => s + m.mtmRevenue, 0);
-      const mdvTotalRev    = HISTORY_MONTHLY.reduce((s, m) => s + m.modRevenue, 0);
-      const combinedRev    = mtmTotalRev + mdvTotalRev;
-      const trackingMonths = COMBINED_MONTHLY.filter(m => m.tracking);
-      const totalExpenses  = trackingMonths.reduce((s, m) => s + m.expenses, 0);
-      const totalNet       = trackingMonths.reduce((s, m) => s + m.net, 0);
-      const trackingRev    = trackingMonths.reduce((s, m) => s + m.revenue, 0);
-      const avgMargin      = (totalNet / trackingRev * 100);
-      const mtmTotalTrips  = MTM_MONTHLY.reduce((s, m) => s + m.trips, 0);
+      const mtmTotalRev   = HISTORY_MONTHLY.reduce((s, m) => s + m.mtmRevenue, 0);
+      const mdvTotalRev   = HISTORY_MONTHLY.reduce((s, m) => s + m.modRevenue, 0);
+      const combinedRev   = mtmTotalRev + mdvTotalRev;
+      const totalExpenses = COMBINED_MONTHLY.reduce((s, m) => s + m.expenses, 0);
+      const totalNet      = COMBINED_MONTHLY.reduce((s, m) => s + m.net, 0);
+      const avgMargin     = (totalNet / combinedRev * 100);
+      const mtmTotalTrips = MTM_MONTHLY.reduce((s, m) => s + m.trips, 0);
 
       const drivers = driverBroker === "MTM" ? MTM_DRIVERS : MDV_DRIVERS;
 
@@ -326,7 +320,7 @@
                   <div style={{ color: PURPLE, fontSize: 14, fontWeight: 800, fontFamily: "monospace" }}>$244K</div>
                 </div>
                 <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 8, padding: "6px 14px", textAlign: "center" }}>
-                  <div style={{ color: MUTED, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.1em", fontFamily: "monospace" }}>Net (7mo)</div>
+                  <div style={{ color: MUTED, fontSize: 9, textTransform: "uppercase", letterSpacing: "0.1em", fontFamily: "monospace" }}>Net (17mo)</div>
                   <div style={{ color: totalNet >= 0 ? GREEN : RED, fontSize: 14, fontWeight: 800, fontFamily: "monospace" }}>
                     {totalNet >= 0 ? "+" : ""}{fmtK(totalNet)}
                   </div>
@@ -355,8 +349,8 @@
                   <StatCard label="MTM Revenue" value="$1,732,296" sub="22,199 trips · Dec '24–Apr '26" accent={BLUE} />
                   <StatCard label="Modivcare Revenue" value="$244,131" sub="3,642 trips · Dec '24–Apr '26" accent={PURPLE} />
                   <StatCard label="Combined Revenue" value="$1,976,427" sub="Both brokers · all time" accent={GREEN} />
-                  <StatCard label="Total Expenses (7mo)" value={fmt$(totalExpenses)} sub="$100,500/month" accent={RED} />
-                  <StatCard label="Net (7mo)" value={(totalNet >= 0 ? "+" : "") + fmt$(totalNet)} sub={"Oct '25–Apr '26 · " + fmtPct(Math.abs(avgMargin)) + (avgMargin >= 0 ? " margin" : " deficit")} accent={totalNet >= 0 ? GREEN : RED} negative={totalNet < 0} />
+                  <StatCard label="Total Expenses" value={fmt$(totalExpenses)} sub="17 months · $100,500/mo" accent={RED} />
+                  <StatCard label="Net (17mo)" value={(totalNet >= 0 ? "+" : "") + fmt$(totalNet)} sub={fmtPct(Math.abs(avgMargin)) + (avgMargin >= 0 ? " margin" : " deficit")} accent={totalNet >= 0 ? GREEN : RED} negative={totalNet < 0} />
                 </div>
 
                 <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 12, padding: 20, marginBottom: 16 }}>
@@ -395,7 +389,7 @@
                         </div>
                       ))}
                       <div style={{ background: "#091422", borderRadius: 8, padding: "10px 12px", borderLeft: `2px solid ${ACCENT}`, fontSize: 12, color: "#94a3b8" }}>
-                        💡 Full dataset: Dec 2024 – Apr 2026. P&amp;L analysis begins Oct 2025 when expense tracking started.
+                        💡 Full dataset: Dec 2024 – Apr 2026 · 17 months · MTM + Modivcare.
                       </div>
                     </div>
                   </div>
@@ -427,8 +421,8 @@
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
                   <StatCard label="MTM Revenue" value={fmt$(mtmTotalRev)} sub="22,199 trips · all time" accent={BLUE} />
                   <StatCard label="Modivcare Revenue" value={fmt$(mdvTotalRev)} sub="3,642 trips · all time" accent={PURPLE} />
-                  <StatCard label="Total Expenses" value={fmt$(totalExpenses)} sub="Oct '25–Apr '26 · 7 months" accent={RED} />
-                  <StatCard label="Net (Oct '25–Apr '26)" value={(totalNet >= 0 ? "+" : "") + fmt$(totalNet)} sub={fmtPct(Math.abs(avgMargin)) + (avgMargin >= 0 ? " margin" : " deficit")} accent={totalNet >= 0 ? GREEN : RED} negative={totalNet < 0} />
+                  <StatCard label="Total Expenses" value={fmt$(totalExpenses)} sub="17 months · $100,500/mo" accent={RED} />
+                  <StatCard label="Net (17 months)" value={(totalNet >= 0 ? "+" : "") + fmt$(totalNet)} sub={fmtPct(Math.abs(avgMargin)) + (avgMargin >= 0 ? " margin" : " deficit")} accent={totalNet >= 0 ? GREEN : RED} negative={totalNet < 0} />
                 </div>
 
                 <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 12, padding: 24 }}>
@@ -449,24 +443,24 @@
 
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
                   <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 12, padding: 24 }}>
-                    <SectionTitle>Monthly Net Profit (Oct '25–Apr '26)</SectionTitle>
+                    <SectionTitle>Monthly Net Profit</SectionTitle>
                     <ResponsiveContainer width="100%" height={200}>
-                      <BarChart data={COMBINED_MONTHLY.filter(m => m.tracking).map(m => ({ month: m.month, net: m.net }))}>
+                      <BarChart data={COMBINED_MONTHLY}>
                         <CartesianGrid strokeDasharray="3 3" stroke={BORDER} vertical={false} />
                         <XAxis dataKey="month" tick={{ fill: MUTED, fontSize: 9, angle: -35, textAnchor: 'end' }} height={45} interval={0} axisLine={false} tickLine={false} />
                         <YAxis tickFormatter={fmtK} tick={{ fill: MUTED, fontSize: 10 }} axisLine={false} tickLine={false} />
                         <ReferenceLine y={0} stroke="#334155" strokeWidth={1.5} />
                         <Tooltip contentStyle={TooltipStyle} formatter={v => [fmt$(v), "Net"]} />
                         <Bar dataKey="net" radius={[3,3,0,0]}>
-                          {COMBINED_MONTHLY.filter(m => m.tracking).map((m, i) => <Cell key={i} fill={m.net >= 0 ? GREEN : RED} />)}
+                          {COMBINED_MONTHLY.map((m, i) => <Cell key={i} fill={m.net >= 0 ? GREEN : RED} />)}
                         </Bar>
                       </BarChart>
                     </ResponsiveContainer>
                   </div>
                   <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 12, padding: 24 }}>
-                    <SectionTitle>Cumulative Net Profit (from Oct '25)</SectionTitle>
+                    <SectionTitle>Cumulative Net Profit</SectionTitle>
                     <ResponsiveContainer width="100%" height={200}>
-                      <LineChart data={COMBINED_MONTHLY.filter(m => m.tracking).map(m => ({ month: m.month, cumulative: m.cumulative }))}>
+                      <LineChart data={COMBINED_MONTHLY}>
                         <CartesianGrid strokeDasharray="3 3" stroke={BORDER} />
                         <XAxis dataKey="month" tick={{ fill: MUTED, fontSize: 9, angle: -35, textAnchor: 'end' }} height={45} interval={0} axisLine={false} tickLine={false} />
                         <YAxis tickFormatter={fmtK} tick={{ fill: MUTED, fontSize: 10 }} axisLine={false} tickLine={false} />
@@ -489,18 +483,9 @@
                       </tr>
                     </thead>
                     <tbody>
-                      {COMBINED_MONTHLY.reduce((rows, m, i) => {
-                        if (m.month === "Oct 2025") {
-                          rows.push(
-                            <tr key="divider">
-                              <td colSpan={8} style={{ padding: "5px 10px", background: "#0a1628", borderTop: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}` }}>
-                                <span style={{ color: "#EF9F27", fontSize: 10, fontFamily: "monospace", fontWeight: 700, letterSpacing: "0.08em" }}>── Expense tracking begins Oct 2025 ──</span>
-                              </td>
-                            </tr>
-                          );
-                        }
-                        const margin = m.tracking && m.revenue > 0 ? (m.net / m.revenue * 100) : null;
-                        rows.push(
+                      {COMBINED_MONTHLY.map((m, i) => {
+                        const margin = m.revenue > 0 ? (m.net / m.revenue * 100) : 0;
+                        return (
                           <tr key={i} style={{ borderBottom: `1px solid ${BORDER}33` }}>
                             <td style={{ padding: "10px 10px", fontFamily: "monospace", color: "#cbd5e1", fontSize: 12 }}>
                               {m.month}{m.partial && <span style={{ color: MUTED, fontSize: 9, marginLeft: 4 }}>*</span>}
@@ -508,27 +493,15 @@
                             <td style={{ padding: "10px 10px", color: BLUE }}>{m.mtmRevenue > 0 ? fmt$(m.mtmRevenue) : "—"}</td>
                             <td style={{ padding: "10px 10px", color: m.mdvRevenue > 0 ? PURPLE : MUTED }}>{m.mdvRevenue > 0 ? fmt$(m.mdvRevenue) : "—"}</td>
                             <td style={{ padding: "10px 10px", color: GREEN, fontWeight: 600 }}>{fmt$(m.revenue)}</td>
-                            {m.tracking ? (
-                              <>
-                                <td style={{ padding: "10px 10px", color: "#f87171" }}>{fmt$(m.expenses)}</td>
-                                <td style={{ padding: "10px 10px" }}><ProfitBadge value={m.net} /></td>
-                                <td style={{ padding: "10px 10px" }}><span style={{ color: margin >= 0 ? ACCENT : RED, fontWeight: 600 }}>{fmtPct(margin)}</span></td>
-                                <td style={{ padding: "10px 10px", fontFamily: "monospace", fontSize: 12, color: m.cumulative >= 0 ? "#94a3b8" : RED }}>
-                                  {m.cumulative != null ? ((m.cumulative >= 0 ? "+" : "") + fmt$(m.cumulative)) : "—"}
-                                </td>
-                              </>
-                            ) : (
-                              <>
-                                <td style={{ padding: "10px 10px", color: MUTED, fontSize: 11, fontStyle: "italic" }}>pre-tracking</td>
-                                <td style={{ padding: "10px 10px", color: MUTED }}>—</td>
-                                <td style={{ padding: "10px 10px", color: MUTED }}>—</td>
-                                <td style={{ padding: "10px 10px", color: MUTED }}>—</td>
-                              </>
-                            )}
+                            <td style={{ padding: "10px 10px", color: "#f87171" }}>{fmt$(m.expenses)}</td>
+                            <td style={{ padding: "10px 10px" }}><ProfitBadge value={m.net} /></td>
+                            <td style={{ padding: "10px 10px" }}><span style={{ color: margin >= 0 ? ACCENT : RED, fontWeight: 600 }}>{fmtPct(margin)}</span></td>
+                            <td style={{ padding: "10px 10px", fontFamily: "monospace", fontSize: 12, color: m.cumulative >= 0 ? "#94a3b8" : RED }}>
+                              {(m.cumulative >= 0 ? "+" : "") + fmt$(m.cumulative)}
+                            </td>
                           </tr>
                         );
-                        return rows;
-                      }, [])}
+                      })}
                       <tr style={{ borderTop: `2px solid ${BORDER}`, background: "#091422" }}>
                         <td style={{ padding: "11px 10px", fontWeight: 700, color: "#f1f5f9", fontFamily: "monospace", fontSize: 12 }}>TOTAL</td>
                         <td style={{ padding: "11px 10px", color: BLUE, fontWeight: 700 }}>{fmt$(mtmTotalRev)}</td>
@@ -542,7 +515,7 @@
                     </tbody>
                   </table>
                   <div style={{ marginTop: 14, padding: "10px 14px", background: "#091422", borderRadius: 8, borderLeft: `2px solid ${ACCENT}`, fontSize: 12, color: MUTED, lineHeight: 1.6 }}>
-                    💡 * Apr &#39;26 is a partial month (Apr 1–18). Expenses prorated to $50,250 (~18/31 days × $100,500). Pre-Oct 2025 months show revenue only — expense tracking begins Oct 2025.
+                    💡 * Apr &#39;26 is a partial month (Apr 1–18). Expenses prorated to $50,250 (~18/31 days × $100,500). All 17 months (Dec 2024–Apr 2026) included in P&amp;L.
                   </div>
                 </div>
               </div>

@@ -402,8 +402,9 @@
 
         <div class="two-col">
           <div class="field">
-            <label>Trip Miles (MTM one-way)</label>
+            <label>Trip Miles (auto-calculated · override if needed)</label>
             <input type="number" id="tripmiles" placeholder="e.g. 12.5" step="0.1" min="0">
+            <div id="tripmiles-note" style="font-size:11px;color:#1A7A4A;margin-top:4px;display:none;">✓ Auto-calculated from Google Maps</div>
           </div>
           <div class="field">
             <label>Riders</label>
@@ -586,6 +587,31 @@ function getDeadheadFromGoogle(hubAddress, pickupAddress) {
   });
 }
 
+function getTripMilesFromGoogle(pickupAddress, dropoffAddress) {
+  return new Promise((resolve) => {
+    if (!window.google || !window.google.maps) {
+      resolve(null);
+      return;
+    }
+    const service = new google.maps.DistanceMatrixService();
+    service.getDistanceMatrix({
+      origins: [pickupAddress],
+      destinations: [dropoffAddress],
+      travelMode: google.maps.TravelMode.DRIVING,
+      unitSystem: google.maps.UnitSystem.IMPERIAL,
+    }, (response, status) => {
+      if (status === 'OK' &&
+          response.rows[0].elements[0].status === 'OK') {
+        const meters = response.rows[0].elements[0].distance.value;
+        const miles = Math.round(meters * 10 / 1609.34) / 10;
+        resolve(miles);
+      } else {
+        resolve(null);
+      }
+    });
+  });
+}
+
 // ── DEADHEAD LOOKUP TABLES ───────────────────────────────────────────────
 const EFFINGHAM_DH = {
   'springfield':96,'chatham':91,'decatur':58,'taylorville':66,
@@ -663,7 +689,6 @@ async function calculate() {
   const hub       = document.getElementById('hub').value;
   const pickup    = document.getElementById('pickup').value.trim();
   const dropoff   = document.getElementById('dropoff').value.trim();
-  const tripMiles = parseFloat(document.getElementById('tripmiles').value) || 0;
   const riders    = parseInt(document.getElementById('riders').value) || 1;
   const apptType  = document.getElementById('appttype').value;
   const gasPrice  = parseFloat(document.getElementById('gasprice').value) || 4.14;
@@ -685,19 +710,38 @@ async function calculate() {
   document.getElementById('calc-btn').disabled = true;
 
   const hubAddress = HUB_ADDRESSES[hub];
+
+  // Fire both API calls simultaneously
+  const [googleDeadhead, googleTripMiles] = await Promise.all([
+    getDeadheadFromGoogle(hubAddress, pickup),
+    getTripMilesFromGoogle(pickup, dropoff)
+  ]);
+
   let deadheadMi;
   let geocoded = false;
   let dh;
 
-  const googleMiles = await getDeadheadFromGoogle(hubAddress, pickup);
-
-  if (googleMiles !== null) {
-    deadheadMi = googleMiles;
+  if (googleDeadhead !== null) {
+    deadheadMi = googleDeadhead;
     geocoded = true;
   } else {
-    // Fallback to lookup table
     dh = getDeadhead(pickup, hub);
     deadheadMi = dh.miles;
+  }
+
+  // Auto-populate trip miles if Google returned a value
+  // and the field is empty or was previously auto-filled
+  let tripMiles;
+  if (googleTripMiles !== null) {
+    tripMiles = googleTripMiles;
+    const tripField = document.getElementById('tripmiles');
+    tripField.value = tripMiles;
+    tripField.style.background = '#F0FFF7';
+    tripField.style.borderColor = '#1A7A4A';
+    document.getElementById('tripmiles-note').style.display = 'block';
+  } else {
+    tripMiles = parseFloat(
+      document.getElementById('tripmiles').value) || 0;
   }
 
   // Restore button
@@ -755,7 +799,10 @@ async function calculate() {
 
   let note = '';
   if (geocoded) {
-    note = `✓ Deadhead calculated via Google Maps — exact driving distance from ${hub === 'springfield' ? 'Springfield' : 'Effingham'} hub to pickup (${deadheadMi} mi each way). Total driver day: ${totalMiles.toFixed(0)} miles.`;
+    const bothCalc = geocoded && googleTripMiles !== null;
+    note = bothCalc
+      ? `✓ Google Maps calculated deadhead (${deadheadMi} mi each way) and trip miles (${tripMiles} mi one-way). Total driver day: ${totalMiles.toFixed(0)} miles.`
+      : `✓ Deadhead calculated via Google Maps — exact driving distance from ${hub === 'springfield' ? 'Springfield' : 'Effingham'} hub to pickup (${deadheadMi} mi each way). Total driver day: ${totalMiles.toFixed(0)} miles.`;
   } else if (!dh || !dh.city) {
     note = `⚠ Google Maps lookup failed and "${pickup}" was not found in our city table — defaulting to 50 miles deadhead. Verify actual distance and adjust if needed.`;
   } else {
@@ -770,7 +817,11 @@ async function calculate() {
 function resetForm() {
   document.getElementById('pickup').value = '';
   document.getElementById('dropoff').value = '';
-  document.getElementById('tripmiles').value = '';
+  const tf = document.getElementById('tripmiles');
+  tf.value = '';
+  tf.style.background = '';
+  tf.style.borderColor = '';
+  document.getElementById('tripmiles-note').style.display = 'none';
   document.getElementById('riders').value = '1';
   document.getElementById('appttype').value = 'standard';
   document.getElementById('customWaitField').style.display = 'none';

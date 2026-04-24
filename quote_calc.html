@@ -470,7 +470,7 @@
         </div>
       </div>
 
-      <button class="calc-btn" onclick="calculate()">Calculate Trip Cost &amp; Quote →</button>
+      <button class="calc-btn" id="calc-btn" onclick="calculate()">Calculate Trip Cost &amp; Quote →</button>
     </div>
 
     <!-- ── RIGHT: RESULTS ── -->
@@ -550,6 +550,36 @@
 </div>
 
 <script>
+const GOOGLE_API_KEY = 'PASTE_YOUR_KEY_HERE';
+
+const HUB_ADDRESSES = {
+  'effingham': '506 South St, Effingham, IL 62401',
+  'springfield': '1 Springfield Hub, Springfield, IL'
+};
+
+async function getDeadheadFromGoogle(hubAddress, pickupAddress) {
+  const origin = encodeURIComponent(hubAddress);
+  const destination = encodeURIComponent(pickupAddress);
+  const url = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${origin}&destinations=${destination}&units=imperial&key=${GOOGLE_API_KEY}`;
+
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+
+    if (data.status === 'OK' &&
+        data.rows[0].elements[0].status === 'OK') {
+      // distance.value is in meters, convert to miles
+      const meters = data.rows[0].elements[0].distance.value;
+      const miles = meters / 1609.34;
+      return Math.round(miles);
+    }
+    return null; // trigger fallback
+  } catch (err) {
+    console.warn('Distance Matrix API failed:', err);
+    return null; // trigger fallback
+  }
+}
+
 // ── DEADHEAD LOOKUP TABLES ───────────────────────────────────────────────
 const EFFINGHAM_DH = {
   'springfield':96,'chatham':91,'decatur':58,'taylorville':66,
@@ -623,7 +653,7 @@ function getDeadhead(address, hub) {
 }
 
 // ── MAIN CALCULATION ─────────────────────────────────────────────────────
-function calculate() {
+async function calculate() {
   const hub       = document.getElementById('hub').value;
   const pickup    = document.getElementById('pickup').value.trim();
   const dropoff   = document.getElementById('dropoff').value.trim();
@@ -643,8 +673,31 @@ function calculate() {
     waitHours = isNaN(cw) ? 1.0 : cw/60;
   }
 
-  const dh = getDeadhead(pickup, hub);
-  const deadheadMi = dh.miles;
+  // Show loading state
+  document.getElementById('calc-btn').textContent =
+    'Looking up distance...';
+  document.getElementById('calc-btn').disabled = true;
+
+  const hubAddress = HUB_ADDRESSES[hub];
+  let deadheadMi;
+  let geocoded = false;
+  let dh;
+
+  const googleMiles = await getDeadheadFromGoogle(hubAddress, pickup);
+
+  if (googleMiles !== null) {
+    deadheadMi = googleMiles;
+    geocoded = true;
+  } else {
+    // Fallback to lookup table
+    dh = getDeadhead(pickup, hub);
+    deadheadMi = dh.miles;
+  }
+
+  // Restore button
+  document.getElementById('calc-btn').textContent =
+    'Calculate Trip Cost & Quote →';
+  document.getElementById('calc-btn').disabled = false;
 
   // Extra miles per additional rider (local pickup variation)
   const extraRiderMi = (riders - 1) * 10;
@@ -694,12 +747,13 @@ function calculate() {
   document.getElementById('r-urgency-badge').textContent =
     urgencyLabels[selectedMarkup] || `+${Math.round(selectedMarkup*100)}% premium`;
 
-  // Mileage note
   let note = '';
-  if (!dh.city) {
-    note = `⚠ "${pickup}" was not found in our city distance table — defaulting to 50 miles deadhead. Verify actual distance from hub and adjust if needed.`;
+  if (geocoded) {
+    note = `✓ Deadhead calculated via Google Maps — exact driving distance from ${hub === 'springfield' ? 'Springfield' : 'Effingham'} hub to pickup (${deadheadMi} mi each way). Total driver day: ${totalMiles.toFixed(0)} miles.`;
+  } else if (!dh || !dh.city) {
+    note = `⚠ Google Maps lookup failed and "${pickup}" was not found in our city table — defaulting to 50 miles deadhead. Verify actual distance and adjust if needed.`;
   } else {
-    note = `ℹ Deadhead based on ${hub === 'springfield' ? 'Springfield' : 'Effingham'} hub to ${dh.city} (${dh.miles} mi each way). Total driver day: ${totalMiles.toFixed(0)} miles.`;
+    note = `ℹ Google Maps unavailable — deadhead estimated from city table: ${hub === 'springfield' ? 'Springfield' : 'Effingham'} hub to ${dh.city} (${deadheadMi} mi each way). Total driver day: ${totalMiles.toFixed(0)} miles.`;
   }
   document.getElementById('r-mileage-note').textContent = note;
 

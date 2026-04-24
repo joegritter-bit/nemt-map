@@ -353,6 +353,12 @@
   }
   .reset-btn:hover { color: var(--red); }
 </style>
+<script src="https://maps.googleapis.com/maps/api/js?key=PASTE_YOUR_KEY_HERE&libraries=geometry&callback=initMap" async defer></script>
+<script>
+  function initMap() {
+    window.googleMapsReady = true;
+  }
+</script>
 </head>
 <body>
 
@@ -550,34 +556,34 @@
 </div>
 
 <script>
-const GOOGLE_API_KEY = 'PASTE_YOUR_KEY_HERE';
-
 const HUB_ADDRESSES = {
   'effingham': '506 South St, Effingham, IL 62401',
   'springfield': '1 Springfield Hub, Springfield, IL'
 };
 
-async function getDeadheadFromGoogle(hubAddress, pickupAddress) {
-  const origin = encodeURIComponent(hubAddress);
-  const destination = encodeURIComponent(pickupAddress);
-  const url = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${origin}&destinations=${destination}&units=imperial&key=${GOOGLE_API_KEY}`;
-
-  try {
-    const response = await fetch(url);
-    const data = await response.json();
-
-    if (data.status === 'OK' &&
-        data.rows[0].elements[0].status === 'OK') {
-      // distance.value is in meters, convert to miles
-      const meters = data.rows[0].elements[0].distance.value;
-      const miles = meters / 1609.34;
-      return Math.round(miles);
+function getDeadheadFromGoogle(hubAddress, pickupAddress) {
+  return new Promise((resolve) => {
+    if (!window.google || !window.google.maps) {
+      resolve(null);
+      return;
     }
-    return null; // trigger fallback
-  } catch (err) {
-    console.warn('Distance Matrix API failed:', err);
-    return null; // trigger fallback
-  }
+    const service = new google.maps.DistanceMatrixService();
+    service.getDistanceMatrix({
+      origins: [hubAddress],
+      destinations: [pickupAddress],
+      travelMode: google.maps.TravelMode.DRIVING,
+      unitSystem: google.maps.UnitSystem.IMPERIAL,
+    }, (response, status) => {
+      if (status === 'OK' &&
+          response.rows[0].elements[0].status === 'OK') {
+        const meters = response.rows[0].elements[0].distance.value;
+        const miles = Math.round(meters / 1609.34);
+        resolve(miles);
+      } else {
+        resolve(null);
+      }
+    });
+  });
 }
 
 // ── DEADHEAD LOOKUP TABLES ───────────────────────────────────────────────

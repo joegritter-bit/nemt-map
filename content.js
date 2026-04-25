@@ -150,7 +150,6 @@ const TRIP_COST = {
   MPG: 15.5,
   GAS_PRICE: 4.14,       // Central IL average (AAA, April 2026)
   DRIVER_RATE: 19.00,    // per hour
-  AVG_SPEED_MPH: 35,     // NEMT mixed driving estimate
   WEAR_PER_MILE: 0.14    // wear & tear, high-mileage van
 };
 
@@ -413,7 +412,8 @@ function calculateTripCost(miles, pickupAddress, dropoffAddress, overrideDeadhea
 
   // Driver labor: drive time at 45mph avg + wait time
   // Clinic dropoffs: 5 min wait; standard appointments: 1 hr wait
-  const driveHours = totalMiles / 45;
+  const avgSpeed = totalMiles > 60 ? 55 : 45;
+  const driveHours = totalMiles / avgSpeed;
   const waitHours = isClinic(dropoffAddress || '') ? (5 / 60) : 1.0;
   const labor = (driveHours + waitHours) * TRIP_COST.DRIVER_RATE;
 

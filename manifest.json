@@ -1,14 +1,56 @@
 {
   "manifest_version": 3,
-  "name": "Barrier-Free PDF Filler",
-  "version": "1.0",
-  "permissions": [
-    "storage"
+  "name": "NEMT Rate Decoder",
+  "version": "1.3.0",
+  "description": "Streamlines NEMT dispatch workflows by automatically decoding rates and integrating directly with your dispatch map.",
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": ["activeTab", "storage", "tabs"],
+  "host_permissions": [
+    "https://mtm.mtmlink.net/pe/v1/marketplace*",
+    "https://mtm.mtmlink.net/pe/marketplace*",
+    "https://joegritter-bit.github.io/*",
+    "https://maps.googleapis.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://mtm.mtmlink.net/pe/v1/marketplace*",
+        "https://mtm.mtmlink.net/pe/marketplace*"
+      ],
+      "js": ["page_bridge.js"],
+      "run_at": "document_idle",
+      "world": "MAIN"
+    },
+    {
+      "matches": [
+        "https://mtm.mtmlink.net/pe/v1/marketplace*",
+        "https://mtm.mtmlink.net/pe/marketplace*"
+      ],
+      "js": ["content.js"],
+      "css": ["styles.css"],
+      "run_at": "document_idle"
+    }
   ],
   "action": {
-    "default_popup": "editor.html"
+    "default_popup": "popup.html",
+    "default_title": "NEMT Rate Decoder",
+    "default_icon": {
+      "16": "icon16.png",
+      "48": "icon48.png"
+    }
   },
   "content_security_policy": {
-    "extension_pages": "script-src 'self' https://cdnjs.cloudflare.com https://unpkg.com; object-src 'self'"
-  }
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  },
+  "web_accessible_resources": [{
+    "resources": ["styles.css"],
+    "matches": ["https://mtm.mtmlink.net/*"]
+  }]
 }

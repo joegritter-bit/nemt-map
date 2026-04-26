@@ -636,100 +636,115 @@ function sortAllRows() {
   if (_sortingInProgress) return;
   _sortingInProgress = true;
 
-  try {
-    const table = document.querySelector('.ant-table-tbody, tbody');
-    if (!table) return;
-
-    const rows = Array.from(table.querySelectorAll('tr.ant-table-row'));
-    if (rows.length < 2) return;
-
-    function extractPayout(badge) {
-      if (!badge) return 0;
-      const match = badge.textContent.match(/\$(\d+\.?\d*)/);
-      return match ? parseFloat(match[1]) : 0;
-    }
-
-    function getRowScore(row) {
-      // Regular rider — always first
-      if (row.querySelector('.regular-rider')) return 100000;
-
-      // Clinic — just below regular riders, above all county tiers
-      if (row.querySelector('.nemt-badge.clinic')) return 90000 + (payout || 0);
-
-      // Excluded/Chicago — always last
-      const excludedBadge = row.querySelector('.nemt-badge.excluded');
-      if (excludedBadge) return -1;
-
-      // Get county from the county div
-      const countyEl = row.querySelector('.nemt-county');
-      const countyText = countyEl ? countyEl.textContent.trim() : '';
-
-      // Get payout for secondary sort within tier
-      const badge = row.querySelector(
-        '.nemt-badge.high-value, .nemt-badge.medium-value, .nemt-badge.low-value');
-      const payout = badge ? extractPayout(badge) : 0;
-
-      // Tier 1: $65 counties (Sangamon, Vermilion)
-      if (countyText.includes('Sangamon') || countyText.includes('Vermilion'))
-        return 50000 + payout;
-
-      // Tier 2: $55 counties
-      if (countyText.includes('Macon') || countyText.includes('Champaign') ||
-          countyText.includes('Christian') || countyText.includes('Piatt'))
-        return 40000 + payout;
-
-      // Tier 3: $50 counties
-      if (countyText.includes('Marion') || countyText.includes('Jefferson'))
-        return 30000 + payout;
-
-      // Tier 4: $40 counties
-      if (countyText.includes('Coles') || countyText.includes('Fayette') ||
-          countyText.includes('Clay'))
-        return 20000 + payout;
-
-      // Tier 5: Other known Illinois counties (in service area but lower rate)
-      if (countyText && !countyText.includes('Outside') &&
-          !countyText.includes('Unknown') && !countyText.includes('Verify'))
-        return 10000 + payout;
-
-      // Tier 6: Unknown/outside primary area
-      if (countyText.includes('Outside') || countyText.includes('Unknown') ||
-          countyText.includes('Verify'))
-        return 5000 + payout;
-
-      // Unprocessed rows — middle
-      return 500;
-    }
-
-    // Skip if already sorted
-    const scores = rows.map(getRowScore);
-    let alreadySorted = true;
-    for (let i = 0; i < scores.length - 1; i++) {
-      if (scores[i] < scores[i + 1]) { alreadySorted = false; break; }
-    }
-    if (alreadySorted) return;
-
-    const sorted = [...rows].sort((a, b) => getRowScore(b) - getRowScore(a));
-    const fragment = document.createDocumentFragment();
-    sorted.forEach(r => fragment.appendChild(r));
-    table.appendChild(fragment);
-
-    // County grouping — alternate background on county change
-    let lastCounty = null;
-    let colorToggle = false;
-    sorted.forEach(row => {
-      const countyEl = row.querySelector('.nemt-county');
-      const county = countyEl ? countyEl.textContent.trim() : '';
-      if (county !== lastCounty && lastCounty !== null) {
-        colorToggle = !colorToggle;
-      }
-      row.style.backgroundColor = colorToggle ? '#fafffe' : '';
-      lastCounty = county;
-    });
-
-  } finally {
-    setTimeout(() => { _sortingInProgress = false; }, 1000);
+  const container = document.querySelector(
+    'table tbody, .trip-list, [class*="table"] tbody');
+  if (!container) {
+    _sortingInProgress = false;
+    return;
   }
+
+  const rows = Array.from(container.querySelectorAll(
+    'tr[class*="row"], tr:has(.nemt-badge-wrapper), tr'));
+  if (rows.length < 2) {
+    _sortingInProgress = false;
+    return;
+  }
+
+  // County tier map
+  const COUNTY_TIER = {
+    'Sangamon County': 1,   'Vermilion County': 1,
+    'Macon County': 2,      'Champaign County': 2,
+    'Christian County': 2,  'Piatt County': 2,
+    'Marion County': 3,     'Jefferson County': 3,
+    'Coles County': 4,      'Fayette County': 4,
+    'Clay County': 4,
+  };
+
+  function getRowScore(row) {
+    const wrapper = row.querySelector('.nemt-badge-wrapper');
+    if (!wrapper) return { tier: 8, county: '', time: 9999 };
+
+    // Excluded rows — always last
+    const excluded = row.querySelector('.nemt-badge.excluded');
+    if (excluded) return { tier: 9, county: '', time: 9999 };
+
+    // Regular rider — always first
+    const isRegular = row.querySelector('.regular-rider');
+    if (isRegular) return { tier: 0, county: '', time: 0 };
+
+    // Clinic — second
+    const isClinic = row.querySelector('.nemt-badge.clinic');
+    if (isClinic) return { tier: 1, county: '', time: 0 };
+
+    // Detect county from badge text
+    const badgeText = wrapper.innerText || '';
+    let county = '';
+    let tier = 6; // default unknown
+
+    for (const [c, t] of Object.entries(COUNTY_TIER)) {
+      if (badgeText.includes(c)) {
+        county = c;
+        tier = t + 1; // shift so tier 1=$65 sorts above tier 2=$55
+        break;
+      }
+    }
+
+    // Check for outside/verify/unknown
+    if (badgeText.includes('Outside') ||
+        badgeText.includes('Verify') ||
+        badgeText.includes('Unknown')) {
+      tier = 7;
+    }
+
+    // Extract appointment time for within-county sorting
+    const apptCell = row.querySelector('td:first-child');
+    const timeStr = apptCell?.innerText?.trim() || '';
+    let timeVal = 9999;
+    if (timeStr && timeStr !== '—') {
+      const match = timeStr.match(/(\d+):(\d+)\s*(AM|PM)/i);
+      if (match) {
+        let h = parseInt(match[1]);
+        const m = parseInt(match[2]);
+        const isPM = match[3].toUpperCase() === 'PM';
+        if (isPM && h !== 12) h += 12;
+        if (!isPM && h === 12) h = 0;
+        timeVal = h * 60 + m;
+      }
+    }
+
+    return { tier, county, time: timeVal };
+  }
+
+  // Sort rows
+  rows.sort((a, b) => {
+    const sa = getRowScore(a);
+    const sb = getRowScore(b);
+    if (sa.tier !== sb.tier) return sa.tier - sb.tier;
+    // Same tier — group by county, then sort by time
+    if (sa.county !== sb.county)
+      return sa.county.localeCompare(sb.county);
+    return sa.time - sb.time;
+  });
+
+  // Re-append in sorted order
+  rows.forEach(row => container.appendChild(row));
+
+  // Alternate row background by county group
+  let lastCounty = null;
+  let colorFlip = false;
+  rows.forEach(row => {
+    const score = getRowScore(row);
+    if (score.county !== lastCounty) {
+      colorFlip = !colorFlip;
+      lastCounty = score.county;
+    }
+    if (score.tier >= 2 && score.tier <= 6) {
+      row.style.backgroundColor =
+        colorFlip ? '#fafffe' : 'transparent';
+    }
+  });
+
+  setTimeout(() => { _sortingInProgress = false; }, 1000);
 }
 
 function autoToggleServiceArea() {

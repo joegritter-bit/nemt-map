@@ -352,12 +352,28 @@ function getInterStopMiles(fromAddr, toAddr) {
 
 function estimateTotalHours(avgSpeed = AVG_MPH) {
   if (!trips.length) return 0;
-  const hubToFirst = calcDeadheadHours(trips[0].pickup, avgSpeed);
-  const lastToHub  = calcDeadheadHours(trips[trips.length - 1].pickup, avgSpeed);
+
+  // Use geocoded deadhead if available, else lookup table
+  const deadheadOutMiles = trips[0].deadheadMiles !== undefined
+    ? trips[0].deadheadMiles
+    : getDeadheadMilesRB(trips[0].pickup);
+  const hubToFirst = deadheadOutMiles / avgSpeed;
+
+  const lastTrip = trips[trips.length - 1];
+  const deadheadBackMiles = lastTrip.deadheadMiles !== undefined
+    ? lastTrip.deadheadMiles
+    : getDeadheadMilesRB(lastTrip.pickup);
+  const lastToHub = deadheadBackMiles / avgSpeed;
+
   let total = hubToFirst + lastToHub;
   trips.forEach((t, i) => {
     total += calcTripDuration(t.miles, t.isClinic, avgSpeed);
-    if (i < trips.length - 1) total += getInterStopMiles(t.dropoff, trips[i + 1].pickup) / avgSpeed;
+    if (i < trips.length - 1) {
+      const interMiles = t.interStopToNext !== undefined
+        ? t.interStopToNext
+        : getInterStopMiles(t.dropoff, trips[i + 1].pickup);
+      total += interMiles / avgSpeed;
+    }
   });
   return +total.toFixed(2);
 }
@@ -478,21 +494,20 @@ function clearRoute() {
 }
 
 // ── ROUTE COST ─────────────────────────────────────────────────────────────────
-function calculateRouteCost(trips) {
-  if (!trips.length) return null;
-  const hub = getHub().toLowerCase();
-  const deadheadTable = hub === 'springfield'
+function getDeadheadMilesRB(addr) {
+  if (!addr) return 50;
+  const lower = addr.toLowerCase();
+  const table = getHub().toLowerCase() === 'springfield'
     ? SPRINGFIELD_DEADHEAD_MILES_RB
     : EFFINGHAM_DEADHEAD_MILES_RB;
-
-  function getDeadheadMilesRB(addr) {
-    if (!addr) return 50;
-    const lower = addr.toLowerCase();
-    for (const [city, miles] of Object.entries(deadheadTable)) {
-      if (lower.includes(city)) return miles;
-    }
-    return 50;
+  for (const [city, miles] of Object.entries(table)) {
+    if (lower.includes(city)) return miles;
   }
+  return 50;
+}
+
+function calculateRouteCost(trips) {
+  if (!trips.length) return null;
 
   const firstPickup  = trips[0]?.pickup || '';
   const lastDropoff  = trips[trips.length - 1]?.dropoff || '';

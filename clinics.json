@@ -1,0 +1,1079 @@
+{
+  "clinics": [
+    {
+      "address": "805 Bloomington Rd, Champaign, IL 61821",
+      "facility": "Recovery Concepts",
+      "substance_abuse": true
+    },
+    {
+      "address": "202 S Bentley St, Marion, IL 62959",
+      "facility": "202 S Bentley St",
+      "substance_abuse": false
+    },
+    {
+      "address": "106 S Country Fair Dr, Champaign, IL 61821",
+      "facility": "Medmark Champaign",
+      "substance_abuse": true
+    },
+    {
+      "address": "303 Landmark Dr, Normal, IL 61761",
+      "facility": "Medmark Normal",
+      "substance_abuse": true
+    },
+    {
+      "address": "151 N Main St, Decatur, IL 62523",
+      "facility": "Heritage",
+      "substance_abuse": false
+    },
+    {
+      "address": "207 Arlington Dr, Danville, IL 61834",
+      "facility": "207 Arlington Dr",
+      "substance_abuse": false
+    },
+    {
+      "address": "612 1/2 W Clark St, Champaign, IL 61820",
+      "facility": "612 1/2 W Clark St",
+      "substance_abuse": false
+    },
+    {
+      "address": "411 E Washington St, Urbana, IL 61801",
+      "facility": "411 E Washington St",
+      "substance_abuse": false
+    },
+    {
+      "address": "11090 Washington Rd, Clinton, IL 61727",
+      "facility": "11090 Washington Rd",
+      "substance_abuse": false
+    },
+    {
+      "address": "1227 S 9th St, Springfield, IL 62703",
+      "facility": "Medmark Springfield",
+      "substance_abuse": true
+    },
+    {
+      "address": "1052 Eastview Dr, Rantoul, IL 61866",
+      "facility": "1052 Eastview Dr",
+      "substance_abuse": false
+    },
+    {
+      "address": "605 S 2nd St, Irvington, IL 62848",
+      "facility": "605 S 2nd St",
+      "substance_abuse": false
+    },
+    {
+      "address": "915 W Webster St, Clinton, IL 61727",
+      "facility": "915 W Webster St",
+      "substance_abuse": false
+    },
+    {
+      "address": "806 W 7th St, West Frankfort, IL 62896",
+      "facility": "806 W 7th St",
+      "substance_abuse": false
+    },
+    {
+      "address": "111 Joplin St, Benton, IL 62812",
+      "facility": "111 Joplin St",
+      "substance_abuse": false
+    },
+    {
+      "address": "1322 W Polk St, Danville, IL 61832",
+      "facility": "1322 W Polk St",
+      "substance_abuse": false
+    },
+    {
+      "address": "24 Ridge Dr, Decatur, IL 62521",
+      "facility": "24 Ridge Dr",
+      "substance_abuse": false
+    },
+    {
+      "address": "509 E North St, Kansas, IL 61933",
+      "facility": "509 E North St",
+      "substance_abuse": false
+    },
+    {
+      "address": "2230 College St, Mount Vernon, IL 62864",
+      "facility": "2230 College St",
+      "substance_abuse": false
+    },
+    {
+      "address": "106 S Country Fair Dr suite c, Champaign, IL 61821",
+      "facility": "106 S Country Fair Dr suite c",
+      "substance_abuse": false
+    },
+    {
+      "address": "205 W Jackson St, Dix, IL 62830",
+      "facility": "205 W Jackson St",
+      "substance_abuse": false
+    },
+    {
+      "address": "52 Bismark St, Danville, IL 61832",
+      "facility": "52 Bismark St",
+      "substance_abuse": false
+    },
+    {
+      "address": "1321 Sunset Dr, Rantoul, IL 61866",
+      "facility": "1321 Sunset Dr",
+      "substance_abuse": false
+    },
+    {
+      "address": "907 Fowler Ave, Danville, IL 61832",
+      "facility": "907 Fowler Ave",
+      "substance_abuse": false
+    },
+    {
+      "address": "1020 Campbell Ln, Danville, IL 61832",
+      "facility": "1020 Campbell Ln",
+      "substance_abuse": false
+    },
+    {
+      "address": "503 Harvey St, Danville, IL 61832",
+      "facility": "503 Harvey St",
+      "substance_abuse": false
+    },
+    {
+      "address": "1202 E Harding Dr, Urbana, IL 61801",
+      "facility": "1202 E Harding Dr",
+      "substance_abuse": false
+    },
+    {
+      "address": "409 N George St, Clinton, IL 61727",
+      "facility": "409 N George St",
+      "substance_abuse": false
+    },
+    {
+      "address": "809 W Hill St, Urbana, IL 61801",
+      "facility": "809 W Hill St",
+      "substance_abuse": false
+    },
+    {
+      "address": "1139 E Seminary St, Danville, IL 61832",
+      "facility": "1139 E Seminary St",
+      "substance_abuse": false
+    },
+    {
+      "address": "4117 IL-154, Pinckneyville, IL 62274",
+      "facility": "4117 IL-154",
+      "substance_abuse": false
+    },
+    {
+      "address": "274 Appletree Dr, Urbana, IL 61802",
+      "facility": "274 Appletree Dr",
+      "substance_abuse": false
+    },
+    {
+      "address": "801 W Harvard St, Champaign, IL 61820",
+      "facility": "801 W Harvard St",
+      "substance_abuse": false
+    },
+    {
+      "address": "2627 Wescott St, Mt Vernon, IL 62864",
+      "facility": "2627 Wescott St",
+      "substance_abuse": false
+    },
+    {
+      "address": "114 Cronkhite Ave, Danville, IL 61832",
+      "facility": "114 Cronkhite Ave",
+      "substance_abuse": false
+    },
+    {
+      "address": "2062 Bradley Ct, Springfield, IL 62703",
+      "facility": "2062 Bradley Ct",
+      "substance_abuse": false
+    },
+    {
+      "address": "2613 Perrysville Rd, Danville, IL 61834",
+      "facility": "2613 Perrysville Rd",
+      "substance_abuse": false
+    },
+    {
+      "address": "3101 County Rd 2 3/4 A, Springfield, IL 62712",
+      "facility": "3101 County Rd 2 3/4 A",
+      "substance_abuse": false
+    },
+    {
+      "address": "545 W Main St, Decatur, IL 62522",
+      "facility": "545 W Main St",
+      "substance_abuse": false
+    },
+    {
+      "address": "1605 N Willow Rd, Urbana, IL 61801",
+      "facility": "1605 N Willow Rd",
+      "substance_abuse": false
+    },
+    {
+      "address": "1755 N Main St, Decatur, IL 62526",
+      "facility": "1755 N Main St",
+      "substance_abuse": false
+    },
+    {
+      "address": "549 N Dunham Ave, Decatur, IL 62522",
+      "facility": "549 N Dunham Ave",
+      "substance_abuse": false
+    },
+    {
+      "address": "976 N Woodford St, Decatur, IL 62521",
+      "facility": "976 N Woodford St",
+      "substance_abuse": false
+    },
+    {
+      "address": "2007 Mattis Ave, Champaign, IL 61821",
+      "facility": "2007 Mattis Ave",
+      "substance_abuse": false
+    },
+    {
+      "address": "403 Edgebrook Dr, Champaign, IL 61820",
+      "facility": "403 Edgebrook Dr",
+      "substance_abuse": false
+    },
+    {
+      "address": "708 E Market St, Bloomington, IL 61701",
+      "facility": "708 E Market St",
+      "substance_abuse": false
+    },
+    {
+      "address": "2727 N Monroe St, Decatur, IL 62526",
+      "facility": "2727 N Monroe St",
+      "substance_abuse": false
+    },
+    {
+      "address": "831 E Madison St, Danville, IL 61832",
+      "facility": "831 E Madison St",
+      "substance_abuse": false
+    },
+    {
+      "address": "53 S Virginia Ave, Danville, IL 61832",
+      "facility": "53 S Virginia Ave",
+      "substance_abuse": false
+    },
+    {
+      "address": "1606 E Colorado Ave, Urbana, IL 61802",
+      "facility": "1606 E Colorado Ave",
+      "substance_abuse": false
+    },
+    {
+      "address": "804 Turnberry Dr, Bloomington, IL 61701",
+      "facility": "804 Turnberry Dr",
+      "substance_abuse": false
+    },
+    {
+      "address": "120 N 11th St, Springfield, IL 62703",
+      "facility": "Family Guidance Center",
+      "substance_abuse": false
+    },
+    {
+      "address": "820 E Cleveland Ave, Decatur, IL 62521",
+      "facility": "820 E Cleveland Ave",
+      "substance_abuse": false
+    },
+    {
+      "address": "2615 Edwards St, Alton, IL 62002",
+      "facility": "2615 Edwards St",
+      "substance_abuse": false
+    },
+    {
+      "address": "199 Burdell Ln, Hillsboro, IL 62049",
+      "facility": "199 Burdell Ln",
+      "substance_abuse": false
+    },
+    {
+      "address": "1001 W Macon St, Clinton, IL 61727",
+      "facility": "1001 W Macon St",
+      "substance_abuse": false
+    },
+    {
+      "address": "1115 N Park Ave, Herrin, IL 62948",
+      "facility": "1115 N Park Ave",
+      "substance_abuse": false
+    },
+    {
+      "address": "5727 Mooney Rd, Niantic, IL 62551",
+      "facility": "5727 Mooney Rd",
+      "substance_abuse": false
+    },
+    {
+      "address": "602 W Jefferson Ave, Altamont, IL 62411",
+      "facility": "602 W Jefferson Ave",
+      "substance_abuse": false
+    },
+    {
+      "address": "118 S Main St, Taylorville, IL 62568",
+      "facility": "118 S Main St",
+      "substance_abuse": false
+    },
+    {
+      "address": "711 W Washington St, Farina, IL 62838",
+      "facility": "711 W Washington St",
+      "substance_abuse": false
+    },
+    {
+      "address": "3101 White Timber Rd, Springfield, IL 62712",
+      "facility": "3101 White Timber Rd",
+      "substance_abuse": false
+    },
+    {
+      "address": "1121 S 13th St, Mount Vernon, IL 62864",
+      "facility": "1121 S 13th St",
+      "substance_abuse": false
+    },
+    {
+      "address": "202 S Bentley St, Marion, IL, 62959",
+      "facility": "Centerstone",
+      "substance_abuse": false
+    },
+    {
+      "address": "310 Market St, Shumway, IL 62461",
+      "facility": "310 Market St",
+      "substance_abuse": false
+    },
+    {
+      "address": "112 Waymire Ln, Villa Grove, IL 61956",
+      "facility": "112 Waymire Ln",
+      "substance_abuse": false
+    },
+    {
+      "address": "1307 W Main St, Marion, IL 62959",
+      "facility": "1307 W Main St",
+      "substance_abuse": false
+    },
+    {
+      "address": "104 Van Voorhis Dr, Tuscola, IL 61953",
+      "facility": "104 Van Voorhis Dr",
+      "substance_abuse": false
+    },
+    {
+      "address": "572 Old Salem Rd, Kell, IL 62853",
+      "facility": "572 Old Salem Rd",
+      "substance_abuse": false
+    },
+    {
+      "address": "101 Plum St, Freeman Spur, IL 62841",
+      "facility": "101 Plum St",
+      "substance_abuse": false
+    },
+    {
+      "address": "15 N Main St, Altamont, IL 62411",
+      "facility": "15 N Main St",
+      "substance_abuse": false
+    },
+    {
+      "address": "1330 E Wellington Way, Decatur, IL 62526",
+      "facility": "1330 E Wellington Way",
+      "substance_abuse": false
+    },
+    {
+      "address": "2239 E Cook St, Springfield, IL 62703",
+      "facility": "2239 E Cook St",
+      "substance_abuse": false
+    },
+    {
+      "address": "1303 W Evergreen Ave, Effingham, IL 62401",
+      "facility": "1303 W Evergreen Ave",
+      "substance_abuse": false
+    },
+    {
+      "address": "1813 W Kirby Ave, Champaign, IL 61821",
+      "facility": "1813 W Kirby Ave",
+      "substance_abuse": false
+    },
+    {
+      "address": "300 Capitol Point Ct, Vandalia, IL 62471",
+      "facility": "300 Capitol Point Ct",
+      "substance_abuse": false
+    },
+    {
+      "address": "816 W William St, Decatur, IL 62522",
+      "facility": "816 W William St",
+      "substance_abuse": false
+    },
+    {
+      "address": "612 1/2 W Clark St, Champaign, IL, 61820",
+      "facility": "612 1/2 W Clark St",
+      "substance_abuse": false
+    },
+    {
+      "address": "601 W Green St, Le Roy, IL 61752",
+      "facility": "601 W Green St",
+      "substance_abuse": false
+    },
+    {
+      "address": "201 N Hazel St, Danville, IL 61832",
+      "facility": "201 N Hazel St",
+      "substance_abuse": false
+    },
+    {
+      "address": "106 S COUNTRY FAIR DR STE C, CHAMPAIGN, IL, 61821",
+      "facility": "106 S COUNTRY FAIR DR STE C",
+      "substance_abuse": false
+    },
+    {
+      "address": "1501 Shelby Ave, Mattoon, IL 61938",
+      "facility": "1501 Shelby Ave",
+      "substance_abuse": false
+    },
+    {
+      "address": "2910 N Brownsville Rd, Mount Vernon, IL, 62864",
+      "facility": "2910 N Brownsville Rd",
+      "substance_abuse": false
+    },
+    {
+      "address": "805 Bloomington Rd, Champaign, IL 61820",
+      "facility": "805 Bloomington Rd",
+      "substance_abuse": false
+    },
+    {
+      "address": "1605 N Willow Rd #309, Urbana, IL 61801",
+      "facility": "1605 N Willow Rd #309",
+      "substance_abuse": false
+    },
+    {
+      "address": "1202 E Harding Dr #415, Urbana, IL 61801",
+      "facility": "1202 E Harding Dr #415",
+      "substance_abuse": false
+    },
+    {
+      "address": "1625 W Main St, Decatur, IL 62522",
+      "facility": "1625 W Main St",
+      "substance_abuse": false
+    },
+    {
+      "address": "2007 Cynthia Dr, Champaign, IL 61821",
+      "facility": "2007 Cynthia Dr",
+      "substance_abuse": false
+    },
+    {
+      "address": "402 S 5th St, Effingham, IL 62401",
+      "facility": "402 S 5th St",
+      "substance_abuse": false
+    },
+    {
+      "address": "2062 Bradley Ct e, Springfield, IL 62703",
+      "facility": "2062 Bradley Ct e",
+      "substance_abuse": false
+    },
+    {
+      "address": "504 Wittenberg Ct, Normal, IL 61761",
+      "facility": "504 Wittenberg Ct",
+      "substance_abuse": false
+    },
+    {
+      "address": "708 N Sherman St, Danville, IL 61832",
+      "facility": "708 N Sherman St",
+      "substance_abuse": false
+    },
+    {
+      "address": "106 N Country Fair Dr, Champaign, IL 61821",
+      "facility": "106 N Country Fair Dr",
+      "substance_abuse": false
+    },
+    {
+      "address": "106 S Country Fair Dr, Champaign, IL, 61821",
+      "facility": "Medmark Champaign",
+      "substance_abuse": true
+    },
+    {
+      "address": "1000 Health Center Dr, Mattoon, IL 61938",
+      "facility": "1000 Health Center Dr",
+      "substance_abuse": false
+    },
+    {
+      "address": "2910 N Brownsville Rd, Mt Vernon, IL 62864",
+      "facility": "2910 N Brownsville Rd",
+      "substance_abuse": false
+    },
+    {
+      "address": "10759 Winterset Dr, Orland Park, IL 60467",
+      "facility": "10759 Winterset Dr",
+      "substance_abuse": false
+    },
+    {
+      "address": "1302 Ave of Mid-America, Effingham, IL 62401",
+      "facility": "1302 Ave of Mid-America",
+      "substance_abuse": false
+    },
+    {
+      "address": "1801 W Windsor Rd, Champaign, IL 61822",
+      "facility": "1801 W Windsor Rd",
+      "substance_abuse": false
+    },
+    {
+      "address": "1112 S Washington St, Naperville, IL 60540",
+      "facility": "1112 S Washington St",
+      "substance_abuse": false
+    },
+    {
+      "address": "141 E Pershing Rd, Decatur, IL 62526",
+      "facility": "141 E Pershing Rd",
+      "substance_abuse": false
+    },
+    {
+      "address": "1207 N Merchant St, Effingham, IL 62401",
+      "facility": "1207 N Merchant St",
+      "substance_abuse": false
+    },
+    {
+      "address": "200 Richmond Ave E, Mattoon, IL 61938",
+      "facility": "200 Richmond Ave E",
+      "substance_abuse": false
+    },
+    {
+      "address": "611 W Park St, Urbana, IL 61801",
+      "facility": "Carle Hospital",
+      "substance_abuse": false
+    },
+    {
+      "address": "976 N Woodford St, Decatur, IL, 62521",
+      "facility": "976 N Woodford St",
+      "substance_abuse": false
+    },
+    {
+      "address": "53 S Virginia Ave, Danville, IL, 61832",
+      "facility": "53 S Virginia Ave",
+      "substance_abuse": false
+    },
+    {
+      "address": "304 Illinois Dr, Rantoul, IL 61866",
+      "facility": "304 Illinois Dr",
+      "substance_abuse": false
+    },
+    {
+      "address": "24 Ridge Dr, Decatur, IL, 62521",
+      "facility": "24 Ridge Dr",
+      "substance_abuse": false
+    },
+    {
+      "address": "912 S 17th St, Mattoon, IL 61938",
+      "facility": "912 S 17th St",
+      "substance_abuse": false
+    },
+    {
+      "address": "516 W Madison St, Danville, IL 61832",
+      "facility": "516 W Madison St",
+      "substance_abuse": false
+    },
+    {
+      "address": "600 N Keller Dr, Effingham, IL 62401",
+      "facility": "600 N Keller Dr",
+      "substance_abuse": false
+    },
+    {
+      "address": "821 S Neil St, Champaign, IL 61820",
+      "facility": "821 S Neil St",
+      "substance_abuse": false
+    },
+    {
+      "address": "2301 S Veterans Dr, Effingham, IL 62401",
+      "facility": "2301 S Veterans Dr",
+      "substance_abuse": false
+    },
+    {
+      "address": "2313 S 14th St, Springfield, IL 62703",
+      "facility": "2313 S 14th St",
+      "substance_abuse": false
+    },
+    {
+      "address": "2727 N Monroe St, Decatur, IL 62522",
+      "facility": "2727 N Monroe St",
+      "substance_abuse": false
+    },
+    {
+      "address": "219 W Main St, Arcola, IL 61910",
+      "facility": "219 W Main St",
+      "substance_abuse": false
+    },
+    {
+      "address": "3799 N Portage Pl, Decatur, IL 62526",
+      "facility": "3799 N Portage Pl",
+      "substance_abuse": false
+    },
+    {
+      "address": "4302 Rose Ln apt 2, Mount Vernon, IL, 62864",
+      "facility": "4302 Rose Ln apt 2",
+      "substance_abuse": false
+    },
+    {
+      "address": "2121 E Cantrell St, Decatur, IL 62521",
+      "facility": "2121 E Cantrell St",
+      "substance_abuse": false
+    },
+    {
+      "address": "18304 Quarry Rd, Gillespie, IL 62033",
+      "facility": "18304 Quarry Rd",
+      "substance_abuse": false
+    },
+    {
+      "address": "1008 Shasta Dr, Danville, IL 61832",
+      "facility": "1008 Shasta Dr",
+      "substance_abuse": false
+    },
+    {
+      "address": "1006 E Gordon Ave, Effingham, IL 62401",
+      "facility": "1006 E Gordon Ave",
+      "substance_abuse": false
+    },
+    {
+      "address": "1004 Charlotte Dr, Normal, IL 61761",
+      "facility": "1004 Charlotte Dr",
+      "substance_abuse": false
+    },
+    {
+      "address": "120 N 11th St, Springfield, IL, 62703",
+      "facility": "Family Guidance Center",
+      "substance_abuse": false
+    },
+    {
+      "address": "1710 E Windsor Rd, Urbana, IL 61802",
+      "facility": "1710 E Windsor Rd",
+      "substance_abuse": false
+    },
+    {
+      "address": "1701 Curtis Rd, Champaign, IL 61822",
+      "facility": "1701 Curtis Rd",
+      "substance_abuse": false
+    },
+    {
+      "address": "1825 Maple Ave, Mattoon, IL 61938",
+      "facility": "1825 Maple Ave",
+      "substance_abuse": false
+    },
+    {
+      "address": "1605 E Colorado Ave, Urbana, IL 61802",
+      "facility": "1605 E Colorado Ave",
+      "substance_abuse": false
+    },
+    {
+      "address": "1600 W Bradley Ave, Champaign, IL 61821",
+      "facility": "1600 W Bradley Ave",
+      "substance_abuse": false
+    },
+    {
+      "address": "15 W Vine Ave, Charleston, IL 61920",
+      "facility": "15 W Vine Ave",
+      "substance_abuse": false
+    },
+    {
+      "address": "1405 W Park St, Urbana, IL 61801",
+      "facility": "1405 W Park St",
+      "substance_abuse": false
+    },
+    {
+      "address": "1413 Queens Way, Champaign, IL 61821",
+      "facility": "1413 Queens Way",
+      "substance_abuse": false
+    },
+    {
+      "address": "1510 Sunset Dr, Vandalia, IL 62471",
+      "facility": "1510 Sunset Dr",
+      "substance_abuse": false
+    },
+    {
+      "address": "1525 S Fairview Ave, Decatur, IL 62521",
+      "facility": "1525 S Fairview Ave",
+      "substance_abuse": false
+    },
+    {
+      "address": "1310 Mark Franklin Dr, Benton, IL 62812",
+      "facility": "1310 Mark Franklin Dr",
+      "substance_abuse": false
+    },
+    {
+      "address": "132 W Walnut St, Albion, IL 62806",
+      "facility": "132 W Walnut St",
+      "substance_abuse": false
+    },
+    {
+      "address": "111 Joplin St, Benton, IL, 62812",
+      "facility": "111 Joplin St",
+      "substance_abuse": false
+    },
+    {
+      "address": "1202 E Harding Dr APT415, Urbana, IL, 61801",
+      "facility": "1202 E Harding Dr APT415",
+      "substance_abuse": false
+    },
+    {
+      "address": "119 W St Clair St, Vandalia, IL 62471",
+      "facility": "119 W St Clair St",
+      "substance_abuse": false
+    },
+    {
+      "address": "1113 Mimosa Dr, Champaign, IL 61821",
+      "facility": "1113 Mimosa Dr",
+      "substance_abuse": false
+    },
+    {
+      "address": "1102 Gaskins Ave, Mount Vernon, IL 62864",
+      "facility": "1102 Gaskins Ave",
+      "substance_abuse": false
+    },
+    {
+      "address": "108 Illinois Ave, South Roxana, IL 62087",
+      "facility": "108 Illinois Ave",
+      "substance_abuse": false
+    },
+    {
+      "address": "1106 N Merchant St, Effingham, IL 62401",
+      "facility": "1106 N Merchant St",
+      "substance_abuse": false
+    },
+    {
+      "address": "1106 E North Line Rd, Tuscola, IL 61953",
+      "facility": "1106 E North Line Rd",
+      "substance_abuse": false
+    },
+    {
+      "address": "1204 Avenue Of Mid America, Effingham, IL 62401",
+      "facility": "1204 Avenue Of Mid America",
+      "substance_abuse": false
+    },
+    {
+      "address": "12201 S Harlem Ave, Palos Heights, IL 60463",
+      "facility": "12201 S Harlem Ave",
+      "substance_abuse": false
+    },
+    {
+      "address": "12 N 3rd St, Altamont, IL 62411",
+      "facility": "12 N 3rd St",
+      "substance_abuse": false
+    },
+    {
+      "address": "1003 Martin Luther King Jr Dr, Bloomington, IL 61701",
+      "facility": "1003 Martin Luther King Jr Dr",
+      "substance_abuse": false
+    },
+    {
+      "address": "1003 Martin Luther King Dr, Bloomington, IL 61701",
+      "facility": "1003 Martin Luther King Dr",
+      "substance_abuse": false
+    },
+    {
+      "address": "100 Deerpath, Charleston, IL 61920",
+      "facility": "100 Deerpath",
+      "substance_abuse": false
+    },
+    {
+      "address": "102 Bay Shore Dr, Decatur, IL 62521",
+      "facility": "102 Bay Shore Dr",
+      "substance_abuse": false
+    },
+    {
+      "address": "1050 Eastview Dr, Rantoul, IL 61866",
+      "facility": "1050 Eastview Dr",
+      "substance_abuse": false
+    },
+    {
+      "address": "1905 W Springfield Ave, Champaign, IL 61821",
+      "facility": "1905 W Springfield Ave",
+      "substance_abuse": false
+    },
+    {
+      "address": "1869 Old Park Ave, Mulberry Grove, IL 62262",
+      "facility": "1869 Old Park Ave",
+      "substance_abuse": false
+    },
+    {
+      "address": "1907 N Cunningham Ave, Urbana, IL 61802",
+      "facility": "1907 N Cunningham Ave",
+      "substance_abuse": false
+    },
+    {
+      "address": "4505 N Rockwood Dr, Peoria, IL 61615",
+      "facility": "4505 N Rockwood Dr",
+      "substance_abuse": false
+    },
+    {
+      "address": "411 E Washington St, Urbana, IL, 61801",
+      "facility": "411 E Washington St",
+      "substance_abuse": false
+    },
+    {
+      "address": "401 N Veterans Pkwy, Bloomington, IL 61704",
+      "facility": "401 N Veterans Pkwy",
+      "substance_abuse": false
+    },
+    {
+      "address": "4209 Gateway Blvd, Newburgh, IN 476308900",
+      "facility": "4209 Gateway Blvd",
+      "substance_abuse": false
+    },
+    {
+      "address": "425 S State St, Westville, IL 61883",
+      "facility": "425 S State St",
+      "substance_abuse": false
+    },
+    {
+      "address": "305 N Broadway St, Newman, IL 61942",
+      "facility": "305 N Broadway St",
+      "substance_abuse": false
+    },
+    {
+      "address": "302 Landmark Dr, Normal, IL 61761",
+      "facility": "302 Landmark Dr",
+      "substance_abuse": false
+    },
+    {
+      "address": "3105 Fields S Dr, Champaign, IL 61822",
+      "facility": "3105 Fields S Dr",
+      "substance_abuse": false
+    },
+    {
+      "address": "312 W Oak St, Ashmore, IL 61912",
+      "facility": "312 W Oak St",
+      "substance_abuse": false
+    },
+    {
+      "address": "317 Orchard St, Catlin, IL 61817",
+      "facility": "317 Orchard St",
+      "substance_abuse": false
+    },
+    {
+      "address": "3180 N 400 St, Ramsey, IL 62080",
+      "facility": "3180 N 400 St",
+      "substance_abuse": false
+    },
+    {
+      "address": "404 W Beardsley Ave, Champaign, IL 61820",
+      "facility": "404 W Beardsley Ave",
+      "substance_abuse": false
+    },
+    {
+      "address": "409 W 11th St, Johnston City, IL 62951",
+      "facility": "409 W 11th St",
+      "substance_abuse": false
+    },
+    {
+      "address": "2918 Crossing Ct, Champaign, IL 61822",
+      "facility": "2918 Crossing Ct",
+      "substance_abuse": false
+    },
+    {
+      "address": "2920 Veterans Memorial Dr, Mount Vernon, IL 62864",
+      "facility": "2920 Veterans Memorial Dr",
+      "substance_abuse": false
+    },
+    {
+      "address": "2203 E Washington St, Urbana, IL 61802",
+      "facility": "2203 E Washington St",
+      "substance_abuse": false
+    },
+    {
+      "address": "22 Tennessee Ave, Danville, IL 61832",
+      "facility": "22 Tennessee Ave",
+      "substance_abuse": false
+    },
+    {
+      "address": "204 Van Voorhis Dr, Tuscola, IL 61953",
+      "facility": "204 Van Voorhis Dr",
+      "substance_abuse": false
+    },
+    {
+      "address": "2023 Vadalabene Dr, Maryville, IL 62062",
+      "facility": "2023 Vadalabene Dr",
+      "substance_abuse": false
+    },
+    {
+      "address": "206 E Center St, Monticello, IL 61856",
+      "facility": "206 E Center St",
+      "substance_abuse": false
+    },
+    {
+      "address": "2230 College St, Mt Vernon, IL 62864",
+      "facility": "2230 College St",
+      "substance_abuse": false
+    },
+    {
+      "address": "2210 S 19th St, Mattoon, IL 61938",
+      "facility": "2210 S 19th St",
+      "substance_abuse": false
+    },
+    {
+      "address": "2300 S 1st St, Champaign, IL 61820",
+      "facility": "2300 S 1st St",
+      "substance_abuse": false
+    },
+    {
+      "address": "259 E Erie St, Chicago, IL 60611",
+      "facility": "259 E Erie St",
+      "substance_abuse": false
+    },
+    {
+      "address": "2530 Parkview Dr, Granite City, IL 62040",
+      "facility": "2530 Parkview Dr",
+      "substance_abuse": false
+    },
+    {
+      "address": "2404 Grange Dr, Urbana, IL 61801",
+      "facility": "2404 Grange Dr",
+      "substance_abuse": false
+    },
+    {
+      "address": "333 E Center St, Decatur, IL 62526",
+      "facility": "333 E Center St",
+      "substance_abuse": false
+    },
+    {
+      "address": "37 S Griffin St, Danville, IL 61832",
+      "facility": "37 S Griffin St",
+      "substance_abuse": false
+    },
+    {
+      "address": "5 E Cumberland Rd, Altamont, IL 62411",
+      "facility": "5 E Cumberland Rd",
+      "substance_abuse": false
+    },
+    {
+      "address": "800 N Logan Ave Ste 204, Danville, IL 61832",
+      "facility": "800 N Logan Ave Ste 204",
+      "substance_abuse": false
+    },
+    {
+      "address": "728 N Burtschi, Vandalia, IL 62471",
+      "facility": "728 N Burtschi",
+      "substance_abuse": false
+    },
+    {
+      "address": "702 10th St, Charleston, IL 61920",
+      "facility": "702 10th St",
+      "substance_abuse": false
+    },
+    {
+      "address": "705 8th St, Highland, IL, 62249",
+      "facility": "705 8th St",
+      "substance_abuse": false
+    },
+    {
+      "address": "751 N Rutledge St, Springfield, IL 62702",
+      "facility": "751 N Rutledge St",
+      "substance_abuse": false
+    },
+    {
+      "address": "610 E Hendelmeyer Ave, Effingham, IL 62401",
+      "facility": "610 E Hendelmeyer Ave",
+      "substance_abuse": false
+    },
+    {
+      "address": "625 W Pershing Rd, Decatur, IL 62526",
+      "facility": "625 W Pershing Rd",
+      "substance_abuse": false
+    },
+    {
+      "address": "606 W Clay St, Benton, IL, 62812",
+      "facility": "606 W Clay St",
+      "substance_abuse": false
+    },
+    {
+      "address": "511 W Fairchild St, Danville, IL 61832",
+      "facility": "511 W Fairchild St",
+      "substance_abuse": false
+    },
+    {
+      "address": "510 E Hendelmeyer Ave, Effingham, IL 62401",
+      "facility": "510 E Hendelmeyer Ave",
+      "substance_abuse": false
+    },
+    {
+      "address": "595 S Lake Ridge Ave, Decatur, IL 62521",
+      "facility": "595 S Lake Ridge Ave",
+      "substance_abuse": false
+    },
+    {
+      "address": "512 E Hendelmeyer Ave, Effingham, IL 62401",
+      "facility": "512 E Hendelmeyer Ave",
+      "substance_abuse": false
+    },
+    {
+      "address": "605 S 2nd St, Irvington, IL, 62848",
+      "facility": "605 S 2nd St",
+      "substance_abuse": false
+    },
+    {
+      "address": "800 N Logan Ave, Danville, IL 61832",
+      "facility": "800 N Logan Ave",
+      "substance_abuse": false
+    },
+    {
+      "address": "805 W Bloomington Rd, Champaign, IL 61821",
+      "facility": "805 W Bloomington Rd",
+      "substance_abuse": false
+    },
+    {
+      "address": "904 Trailway Dr, Champaign, IL 61822",
+      "facility": "904 Trailway Dr",
+      "substance_abuse": false
+    },
+    {
+      "address": "901 W Virginia Ave, Effingham, IL 62401",
+      "facility": "901 W Virginia Ave",
+      "substance_abuse": false
+    },
+    {
+      "address": "819 Bloomington Rd, Champaign, IL 61820",
+      "facility": "819 Bloomington Rd",
+      "substance_abuse": false
+    },
+    {
+      "address": "806 W 7th St, West Frankfort, IL, 62896",
+      "facility": "806 W 7th St",
+      "substance_abuse": false
+    },
+    {
+      "address": "8045 N 500th St, Altamont, IL 62411",
+      "facility": "8045 N 500th St",
+      "substance_abuse": false
+    },
+    {
+      "address": "905 N Maple St, Effingham, IL 62401",
+      "facility": "905 N Maple St",
+      "substance_abuse": false
+    },
+    {
+      "address": "905 Medical Park Dr, Effingham, IL 62401",
+      "facility": "905 Medical Park Dr",
+      "substance_abuse": false
+    },
+    {
+      "address": "905 Anthony Dr, Champaign, IL 61821",
+      "facility": "905 Anthony Dr",
+      "substance_abuse": false
+    },
+    {
+      "address": "911 Remington Rd, Mattoon, IL 61938",
+      "facility": "911 Remington Rd",
+      "substance_abuse": false
+    },
+    {
+      "address": "909 S Main St, Bloomington, IL 61701",
+      "facility": "909 S Main St",
+      "substance_abuse": false
+    },
+    {
+      "address": "907 Fowler Ave, Danville, IL, 61832",
+      "facility": "907 Fowler Ave",
+      "substance_abuse": false
+    },
+    {
+      "address": "913 N Diamond St, Jacksonville, IL 62650",
+      "facility": "913 N Diamond St",
+      "substance_abuse": false
+    },
+    {
+      "address": "950 Edgar Dr, Charleston, IL 61920",
+      "facility": "950 Edgar Dr",
+      "substance_abuse": false
+    },
+    {
+      "address": "925 N Martin Luther King Jr Dr, Decatur, IL 62521",
+      "facility": "925 N Martin Luther King Jr Dr",
+      "substance_abuse": false
+    },
+    {
+      "address": "Cannon St, Danville, IL 61832",
+      "facility": "Cannon St",
+      "substance_abuse": false
+    },
+    {
+      "address": "East St, Watson, IL 62473",
+      "facility": "East St",
+      "substance_abuse": false
+    }
+  ]
+}

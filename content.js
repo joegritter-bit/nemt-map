@@ -296,6 +296,19 @@ fetch('https://joegritter-bit.github.io/nemt-map/regular_riders.json?t=' + Date.
   })
   .catch(() => {});
 
+// Clinic address database — loaded from bundled JSON
+let CLINIC_ADDRESSES_NORMALIZED = [];
+let CLINIC_DATA = [];
+
+fetch('https://joegritter-bit.github.io/nemt-map/clinics.json?t=' + Date.now())
+  .then(r => r.json())
+  .then(data => {
+    CLINIC_DATA = data.clinics || [];
+    CLINIC_ADDRESSES_NORMALIZED = CLINIC_DATA.map(c => normalizeAddrJS(c.address));
+    console.log(`NEMT: Loaded ${CLINIC_DATA.length} clinic addresses`);
+  })
+  .catch(() => {});
+
 function normalizeAddrJS(addr) {
   if (!addr) return '';
   addr = addr.replace(
@@ -360,6 +373,17 @@ function detectCounty(address) {
 
 function isClinic(dropoffAddress) {
   if (!dropoffAddress) return false;
+
+  // Primary: match against known clinic address database
+  if (CLINIC_ADDRESSES_NORMALIZED.length > 0) {
+    const normalized = normalizeAddrJS(dropoffAddress);
+    if (CLINIC_ADDRESSES_NORMALIZED.some(c =>
+        normalized.includes(c) || c.includes(normalized))) {
+      return true;
+    }
+  }
+
+  // Fallback: keyword matching
   const lower = dropoffAddress.toLowerCase();
   return CLINIC_KEYWORDS.some(k => lower.includes(k));
 }
@@ -628,6 +652,9 @@ function sortAllRows() {
     function getRowScore(row) {
       // Regular rider — always first
       if (row.querySelector('.regular-rider')) return 100000;
+
+      // Clinic — just below regular riders, above all county tiers
+      if (row.querySelector('.nemt-badge.clinic')) return 90000 + (payout || 0);
 
       // Excluded/Chicago — always last
       const excludedBadge = row.querySelector('.nemt-badge.excluded');

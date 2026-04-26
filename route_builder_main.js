@@ -300,8 +300,8 @@ function minutesToTimeStr(mins) {
   return `${h12}:${String(m).padStart(2,'0')} ${ampm}`;
 }
 
-function calcTripDuration(miles, isClinic) {
-  const driveHrs = (parseFloat(miles) || 0) / AVG_MPH;
+function calcTripDuration(miles, isClinic, avgSpeed = AVG_MPH) {
+  const driveHrs = (parseFloat(miles) || 0) / avgSpeed;
   const waitHrs  = isClinic ? CLINIC_WAIT_HRS : STANDARD_WAIT_HRS;
   return (driveHrs * 2) + waitHrs + 0.15;
 }
@@ -324,11 +324,11 @@ function getPickupCityCoords(address) {
   return null;
 }
 
-function calcDeadheadHours(address) {
+function calcDeadheadHours(address, avgSpeed = AVG_MPH) {
   const hub  = getHubCoords();
   const city = getPickupCityCoords(address);
   if (city) {
-    return estimateDistanceMiles(hub.lat, hub.lng, city.lat, city.lng) / AVG_MPH;
+    return estimateDistanceMiles(hub.lat, hub.lng, city.lat, city.lng) / avgSpeed;
   }
   // City not in lookup — use hub-specific average and flag for display
   window._deadheadEstimated = true;
@@ -350,14 +350,14 @@ function getInterStopMiles(fromAddr, toAddr) {
   return Math.round(estimateDistanceMiles(from.lat, from.lng, to.lat, to.lng) * 1.3);
 }
 
-function estimateTotalHours() {
+function estimateTotalHours(avgSpeed = AVG_MPH) {
   if (!trips.length) return 0;
-  const hubToFirst = calcDeadheadHours(trips[0].pickup);
-  const lastToHub  = calcDeadheadHours(trips[trips.length - 1].pickup);
+  const hubToFirst = calcDeadheadHours(trips[0].pickup, avgSpeed);
+  const lastToHub  = calcDeadheadHours(trips[trips.length - 1].pickup, avgSpeed);
   let total = hubToFirst + lastToHub;
   trips.forEach((t, i) => {
-    total += t.duration_hrs;
-    if (i < trips.length - 1) total += getInterStopMiles(t.dropoff, trips[i + 1].pickup) / AVG_MPH;
+    total += calcTripDuration(t.miles, t.isClinic, avgSpeed);
+    if (i < trips.length - 1) total += getInterStopMiles(t.dropoff, trips[i + 1].pickup) / avgSpeed;
   });
   return +total.toFixed(2);
 }
@@ -540,7 +540,9 @@ function calculateRouteCost(trips) {
 function render() {
   const totalRev  = trips.reduce((s, t) => s + t.payout, 0);
   window._deadheadEstimated = false;
-  const totalHrs  = estimateTotalHours();
+  const estMiles  = trips.reduce((s, t) => s + (parseFloat(t.miles) || 0) * 2, 0);
+  const avgSpeed  = estMiles > 60 ? 55 : 45;
+  const totalHrs  = estimateTotalHours(avgSpeed);
   const deadheadEstimated = window._deadheadEstimated;
   const revHr     = totalHrs > 0 ? totalRev / totalHrs : 0;
   const remaining = Math.max(0, MAX_SHIFT_HOURS - totalHrs);
@@ -676,7 +678,9 @@ function getTotalRevenue() {
   return trips.reduce((s, t) => s + (t.payout || 0), 0);
 }
 function getTotalHours() {
-  return estimateTotalHours();
+  const estMiles = trips.reduce((s, t) => s + (parseFloat(t.miles) || 0) * 2, 0);
+  const avgSpeed = estMiles > 60 ? 55 : 45;
+  return estimateTotalHours(avgSpeed);
 }
 function getRevPerHour() {
   const hrs = getTotalHours();

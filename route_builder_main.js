@@ -123,6 +123,31 @@ const CITY_COORDS = {
   'murphysboro':    { lat: 37.7648, lng: -89.3354 },
 };
 
+function getDistanceMiles(fromAddr, toAddr) {
+  return new Promise((resolve) => {
+    if (!fromAddr || !toAddr) { resolve(null); return; }
+    try {
+      chrome.runtime.sendMessage({
+        type: 'GET_DEADHEAD_MILES',
+        origin: fromAddr,
+        destination: toAddr
+      }, (response) => {
+        if (chrome.runtime.lastError) {
+          console.warn('Route builder geocode error:', chrome.runtime.lastError);
+          resolve(null);
+          return;
+        }
+        if (response && response.miles !== null) {
+          console.log('Route builder geocode:', fromAddr, '→', toAddr, '=', response.miles, 'mi');
+          resolve(response.miles);
+        } else {
+          resolve(null);
+        }
+      });
+    } catch(e) { resolve(null); }
+  });
+}
+
 const SPRINGFIELD_CITIES = [
   'springfield','chatham','taylorville','decatur',
   'champaign','urbana','rantoul','bloomington','normal',
@@ -403,7 +428,32 @@ function addTrip() {
   const pickupMins      = apptMins !== null ? Math.round(apptMins - driveMins) : null;
   const pickup_time_calc = minutesToTimeStr(pickupMins);
 
-  trips.push({ pickup, dropoff, miles, time, riders, county, baseRate, payout, isClinic, duration_hrs, pickup_time_calc, hub: getHub() });
+  const trip = { pickup, dropoff, miles, time, riders, county, baseRate, payout, isClinic, duration_hrs, pickup_time_calc, hub: getHub() };
+  trips.push(trip);
+
+  // Geocode deadhead for this trip (hub → pickup)
+  const hubAddr = trip.hub === 'Springfield'
+    ? '1 North Old State Capitol Plaza, Springfield, IL 62701'
+    : '506 South St, Effingham, IL 62401';
+  getDistanceMiles(hubAddr, trip.pickup).then(geoMiles => {
+    if (geoMiles !== null) {
+      trip.deadheadMiles = geoMiles;
+      console.log('Deadhead geocoded:', geoMiles, 'mi to', trip.pickup);
+      render();
+    }
+  });
+
+  // Geocode inter-stop from previous trip's dropoff to this trip's pickup
+  if (trips.length > 1) {
+    const prevTrip = trips[trips.length - 2];
+    getDistanceMiles(prevTrip.dropoff, trip.pickup).then(geoMiles => {
+      if (geoMiles !== null) {
+        prevTrip.interStopToNext = geoMiles;
+        console.log('Inter-stop geocoded:', prevTrip.dropoff, '→', trip.pickup, '=', geoMiles, 'mi');
+        render();
+      }
+    });
+  }
 
   // Reset form
   document.getElementById('pickup').value = '';
@@ -446,22 +496,37 @@ function calculateRouteCost(trips) {
 
   const firstPickup  = trips[0]?.pickup || '';
   const lastDropoff  = trips[trips.length - 1]?.dropoff || '';
-  const deadheadOut  = getDeadheadMilesRB(firstPickup);
-  const deadheadBack = getDeadheadMilesRB(lastDropoff);
 
-  let riderMiles = 0;
+  // Deadhead out — use geocoded if available
+  const deadheadOut = trips[0].deadheadMiles !== undefined
+    ? trips[0].deadheadMiles
+    : getDeadheadMilesRB(firstPickup);
+
+  // Deadhead back — use geocoded if available
+  const lastTrip = trips[trips.length - 1];
+  const deadheadBack = lastTrip.deadheadMiles !== undefined
+    ? lastTrip.deadheadMiles
+    : getDeadheadMilesRB(lastDropoff);
+
+  // Rider miles — sum of all trip miles × 2 (round trip each)
+  const riderMiles = trips.reduce(
+    (s, t) => s + (parseFloat(t.miles) || 0), 0) * 2;
+
+  // Inter-stop miles — use geocoded if available
   let interStopMiles = 0;
-  trips.forEach((t, i) => {
-    riderMiles += (parseFloat(t.miles) || 0) * 2;
-    if (i < trips.length - 1) {
-      interStopMiles += getInterStopMiles(t.dropoff, trips[i + 1].pickup);
+  for (let i = 0; i < trips.length - 1; i++) {
+    if (trips[i].interStopToNext !== undefined) {
+      interStopMiles += trips[i].interStopToNext;
+    } else {
+      interStopMiles += getInterStopMiles(trips[i].dropoff, trips[i + 1].pickup);
     }
-  });
+  }
 
   const totalMiles = deadheadOut + riderMiles + interStopMiles + deadheadBack;
 
   const fuel = (totalMiles / TRIP_COST_RB.MPG) * TRIP_COST_RB.GAS_PRICE;
-  const driveHours = totalMiles / TRIP_COST_RB.AVG_SPEED_MPH;
+  const avgSpeed = totalMiles > 60 ? 55 : 45;
+  const driveHours = totalMiles / avgSpeed;
   const waitHours = trips.reduce((s, t) => s + (parseFloat(t.duration_hrs) || STANDARD_WAIT_HRS), 0);
   const labor = (driveHours + waitHours) * TRIP_COST_RB.DRIVER_RATE;
   const wear = totalMiles * TRIP_COST_RB.WEAR_PER_MILE;
@@ -516,6 +581,16 @@ function render() {
   const multiloadNoteEl = document.getElementById('multiload-note');
   if (costEl) costEl.textContent = costResult ? `$${costResult.totalCost.toFixed(2)}` : '—';
   if (totalMilesEl) totalMilesEl.textContent = costResult ? `${Math.round(costResult.totalMiles)} mi` : '—';
+
+  const geoCount = trips.filter(t => t.deadheadMiles !== undefined).length;
+  const allGeo = trips.length > 0 && geoCount === trips.length &&
+    trips.every((t, i) => i === trips.length - 1 || t.interStopToNext !== undefined);
+  const geoIndicator = document.getElementById('geoStatusIndicator');
+  if (geoIndicator) {
+    geoIndicator.textContent = trips.length === 0 ? '📍 Est.' : allGeo ? '📍 Geocoded' : '⏳ Est...';
+    geoIndicator.style.color = allGeo ? '#27ae60' : '#aaa';
+  }
+
   if (marginEl && marginPctEl) {
     if (costResult) {
       const margin = totalRev - costResult.totalCost;

@@ -459,79 +459,68 @@ class MTMController(MTMScraper):
 
         driver_routes = {}
 
-        while True:
-            # Try multiple selector strategies for driver names
-            driver_names = []
+        # Parse driver names from page text
+        # Pattern: name appears on the line just before "Next Stop"
+        body_text = self.page.evaluate('document.body.innerText')
 
-            # Strategy 1: Look for elements near "Trip" count text
-            all_elements = self.page.query_selector_all(
-                'h3, h4, [class*="name"], [class*="Name"], '
-                '[class*="driver"], [class*="Driver"], '
-                '[class*="title"], [class*="Title"]')
+        lines = [l.strip() for l in body_text.split('\n') if l.strip()]
 
-            seen_names = set()
-            for el in all_elements:
+        known_skip = {
+            'PE', 'RA', 'JG', 'Assignments', 'Assignment Management',
+            'All Drivers', 'Search', 'Map', 'Satellite',
+            'Reassign Driver', 'Update Trip Order',
+            'Update Scheduled Pick Times', 'Next Stop',
+            'Terms', 'Keyboard shortcuts', 'Unassigned',
+            "You're actively looking at your MTM Link account only."
+        }
+
+        driver_names = []
+        i = 0
+        while i < len(lines):
+            line = lines[i]
+            if (i + 1 < len(lines) and
+                    lines[i + 1] == 'Next Stop' and
+                    line not in known_skip and
+                    len(line) > 3 and
+                    'Trips' not in line and
+                    'Stop' not in line and
+                    '©' not in line):
+                driver_names.append(line)
+            i += 1
+
+        print(f"[Assignments] Found drivers: {driver_names}")
+
+        for driver_name in driver_names:
+            try:
+                print(f"[Assignments] Clicking {driver_name}...")
+
+                self.page.get_by_text(driver_name, exact=True).first.click()
+                self.page.wait_for_timeout(2000)
+
+                trips = self._parse_assignment_trips()
+
+                if trips:
+                    driver_routes[driver_name] = trips
+                    print(f"[Assignments] {driver_name}: {len(trips)} trips parsed")
+                else:
+                    print(f"[Assignments] {driver_name}: no trips found")
+
+                # Return to driver list
+                search_btn = self.page.query_selector('button:has-text("Search")')
+                if search_btn:
+                    search_btn.click()
+                    self.page.wait_for_timeout(2000)
+
+            except Exception as e:
+                print(f"[Assignments] Error on {driver_name}: {e}")
                 try:
-                    text = el.inner_text().strip()
-                    if (text and
-                            len(text) > 3 and
-                            len(text) < 50 and
-                            text not in seen_names and
-                            text not in ('Assignment Management', 'Search',
-                                         'All Drivers', 'Map', 'Satellite') and
-                            not text.startswith('0') and
-                            not text.isdigit()):
-                        parent = el.evaluate_handle(
-                            'el => el.closest("div, li, tr, section")')
-                        parent_text = parent.evaluate(
-                            'el => el ? el.innerText : ""')
-                        if 'Trip' in parent_text or 'trip' in parent_text:
-                            driver_names.append((text, el))
-                            seen_names.add(text)
-                except:
-                    continue
-
-            # Strategy 2: If nothing found, dump page text for debugging
-            if not driver_names:
-                print("[Assignments] DEBUG: Page URL:", self.page.url)
-                print("[Assignments] DEBUG: Page title:", self.page.title())
-                body_text = self.page.evaluate('document.body.innerText')
-                print("[Assignments] DEBUG page text (first 2000):")
-                print(body_text[:2000])
-                print("[Assignments] No driver cards found")
-                break
-
-            print(f"[Assignments] Found {len(driver_names)} drivers")
-
-            for driver_name, card_el in driver_names:
-                try:
-                    print(f"[Assignments] Scraping {driver_name}...")
-                    card_el.click()
-                    self.page.wait_for_timeout(1500)
-
-                    trips = self._parse_assignment_trips()
-
-                    if trips:
-                        driver_routes[driver_name] = trips
-                        print(f"[Assignments] {driver_name}: {len(trips)} trips")
-
                     search_btn = self.page.query_selector('button:has-text("Search")')
                     if search_btn:
                         search_btn.click()
-                        self.page.wait_for_timeout(1500)
-
-                except Exception as e:
-                    print(f"[Assignments] Error on {driver_name}: {e}")
-                    continue
-
-            next_btn = self.page.query_selector(
-                'button[aria-label="right"], '
-                '.ant-pagination-next:not(.ant-pagination-disabled)')
-            if next_btn:
-                next_btn.click()
-                self.page.wait_for_timeout(1500)
-            else:
-                break
+                        self.page.wait_for_timeout(2000)
+                except:
+                    pass
+                continue
 
         return driver_routes
 

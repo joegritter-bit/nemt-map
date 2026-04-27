@@ -424,7 +424,8 @@ class MTMController(MTMScraper):
             if date_input:
                 date_input.click()
                 self.page.wait_for_timeout(300)
-                date_input.triple_click()
+                # Select all and replace
+                date_input.evaluate('el => el.select()')
                 date_input.type(date_str, delay=50)
                 self.page.keyboard.press('Enter')
                 self.page.wait_for_timeout(1000)
@@ -437,6 +438,10 @@ class MTMController(MTMScraper):
             if search_btn:
                 search_btn.click()
                 self.page.wait_for_timeout(2000)
+                print("[Assignments] DEBUG: After search, URL:", self.page.url)
+                body_text = self.page.evaluate('document.body.innerText')
+                print("[Assignments] DEBUG: Page text after search:")
+                print(body_text[:1000])
         except Exception as e:
             print(f"[Assignments] Search click failed: {e}")
             return {}
@@ -444,18 +449,44 @@ class MTMController(MTMScraper):
         driver_routes = {}
 
         while True:
-            driver_cards = self.page.query_selector_all(
-                'h3, [class*="driver-name"], '
-                '[class*="driverName"], '
-                '[class*="provider-name"]')
-
+            # Try multiple selector strategies for driver names
             driver_names = []
-            for card in driver_cards:
-                text = card.inner_text().strip()
-                if text and len(text) > 2 and text != 'Assignment Management':
-                    driver_names.append((text, card))
 
+            # Strategy 1: Look for elements near "Trip" count text
+            all_elements = self.page.query_selector_all(
+                'h3, h4, [class*="name"], [class*="Name"], '
+                '[class*="driver"], [class*="Driver"], '
+                '[class*="title"], [class*="Title"]')
+
+            seen_names = set()
+            for el in all_elements:
+                try:
+                    text = el.inner_text().strip()
+                    if (text and
+                            len(text) > 3 and
+                            len(text) < 50 and
+                            text not in seen_names and
+                            text not in ('Assignment Management', 'Search',
+                                         'All Drivers', 'Map', 'Satellite') and
+                            not text.startswith('0') and
+                            not text.isdigit()):
+                        parent = el.evaluate_handle(
+                            'el => el.closest("div, li, tr, section")')
+                        parent_text = parent.evaluate(
+                            'el => el ? el.innerText : ""')
+                        if 'Trip' in parent_text or 'trip' in parent_text:
+                            driver_names.append((text, el))
+                            seen_names.add(text)
+                except:
+                    continue
+
+            # Strategy 2: If nothing found, dump page text for debugging
             if not driver_names:
+                print("[Assignments] DEBUG: Page URL:", self.page.url)
+                print("[Assignments] DEBUG: Page title:", self.page.title())
+                body_text = self.page.evaluate('document.body.innerText')
+                print("[Assignments] DEBUG page text (first 2000):")
+                print(body_text[:2000])
                 print("[Assignments] No driver cards found")
                 break
 

@@ -401,7 +401,18 @@ class MTMController(MTMScraper):
         import datetime
 
         if date_str is None:
-            date_str = datetime.date.today().strftime('%m/%d/%Y')
+            today = datetime.date.today()
+            # Friday → next Monday (+3), Sat → Mon (+2), Sun → Mon (+1), else → tomorrow (+1)
+            if today.weekday() == 4:    # Friday
+                next_day = today + datetime.timedelta(days=3)
+            elif today.weekday() == 5:  # Saturday
+                next_day = today + datetime.timedelta(days=2)
+            elif today.weekday() == 6:  # Sunday
+                next_day = today + datetime.timedelta(days=1)
+            else:
+                next_day = today + datetime.timedelta(days=1)
+            date_str = next_day.strftime('%m/%d/%Y')
+            print(f"[Assignments] Using next business day: {date_str}")
 
         print(f"[Assignments] Scraping assignments for {date_str}")
 

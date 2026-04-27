@@ -246,6 +246,9 @@ def generate_dashboard():
   <a href="https://joegritter-bit.github.io/nemt-map/" class="map-btn" target="_blank">
     🗺️ Live Map
   </a>
+  <a href="http://206.189.190.92:8082" class="map-btn" target="_blank">
+    📡 GPS Tracking
+  </a>
 </div>
 <div class="container">
 """

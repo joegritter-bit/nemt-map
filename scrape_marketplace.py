@@ -391,6 +391,213 @@ class MTMController(MTMScraper):
             except: continue
         return trips
 
+    def scrape_assignments(self, date_str=None):
+        """
+        Scrape the MTM Assignments page for all drivers.
+        Returns a dict of driver_name -> list of trip dicts.
+        Member/patient names are used only to match
+        Pick/Drop pairs and are never written to output.
+        """
+        import datetime
+
+        if date_str is None:
+            date_str = datetime.date.today().strftime('%m/%d/%Y')
+
+        print(f"[Assignments] Scraping assignments for {date_str}")
+
+        assignments_url = "https://mtm.mtmlink.net/pe/v1/assignments?orgId=2853"
+
+        try:
+            self.page.goto(assignments_url,
+                           wait_until='networkidle',
+                           timeout=30000)
+            self.page.wait_for_timeout(2000)
+        except Exception as e:
+            print(f"[Assignments] Navigation failed: {e}")
+            return {}
+
+        # Set date if needed
+        try:
+            date_input = self.page.query_selector(
+                'input[class*="picker"], input[placeholder*="date"], '
+                'input[placeholder*="Date"]')
+            if date_input:
+                date_input.click()
+                self.page.wait_for_timeout(300)
+                date_input.triple_click()
+                date_input.type(date_str, delay=50)
+                self.page.keyboard.press('Enter')
+                self.page.wait_for_timeout(1000)
+        except Exception as e:
+            print(f"[Assignments] Date set failed: {e}")
+
+        # Click Search to load driver list
+        try:
+            search_btn = self.page.query_selector('button:has-text("Search")')
+            if search_btn:
+                search_btn.click()
+                self.page.wait_for_timeout(2000)
+        except Exception as e:
+            print(f"[Assignments] Search click failed: {e}")
+            return {}
+
+        driver_routes = {}
+
+        while True:
+            driver_cards = self.page.query_selector_all(
+                'h3, [class*="driver-name"], '
+                '[class*="driverName"], '
+                '[class*="provider-name"]')
+
+            driver_names = []
+            for card in driver_cards:
+                text = card.inner_text().strip()
+                if text and len(text) > 2 and text != 'Assignment Management':
+                    driver_names.append((text, card))
+
+            if not driver_names:
+                print("[Assignments] No driver cards found")
+                break
+
+            print(f"[Assignments] Found {len(driver_names)} drivers")
+
+            for driver_name, card_el in driver_names:
+                try:
+                    print(f"[Assignments] Scraping {driver_name}...")
+                    card_el.click()
+                    self.page.wait_for_timeout(1500)
+
+                    trips = self._parse_assignment_trips()
+
+                    if trips:
+                        driver_routes[driver_name] = trips
+                        print(f"[Assignments] {driver_name}: {len(trips)} trips")
+
+                    search_btn = self.page.query_selector('button:has-text("Search")')
+                    if search_btn:
+                        search_btn.click()
+                        self.page.wait_for_timeout(1500)
+
+                except Exception as e:
+                    print(f"[Assignments] Error on {driver_name}: {e}")
+                    continue
+
+            next_btn = self.page.query_selector(
+                'button[aria-label="right"], '
+                '.ant-pagination-next:not(.ant-pagination-disabled)')
+            if next_btn:
+                next_btn.click()
+                self.page.wait_for_timeout(1500)
+            else:
+                break
+
+        return driver_routes
+
+    def _parse_assignment_trips(self):
+        """
+        Parse Pick/Drop pairs from the assignment detail table.
+        Matches pairs by member name, then discards names (HIPAA).
+        Returns list of {pickup, dropoff, time, miles} dicts.
+        """
+        import re
+        from collections import defaultdict
+
+        trips = []
+
+        try:
+            self.page.wait_for_selector('table, [class*="table"]', timeout=5000)
+            self.page.wait_for_timeout(500)
+
+            rows = self.page.query_selector_all('tr.ant-table-row, tbody tr')
+
+            stops = []
+            for row in rows:
+                cells = row.query_selector_all('td')
+                if len(cells) < 4:
+                    continue
+
+                stop_type    = cells[1].inner_text().strip() if len(cells) > 1 else ''
+                member_info  = cells[2].inner_text().strip() if len(cells) > 2 else ''
+                stop_address = cells[4].inner_text().replace('\n', ', ').strip() if len(cells) > 4 else ''
+                proj_time    = cells[5].inner_text().strip() if len(cells) > 5 else ''
+
+                if 'depot' in stop_type.lower():
+                    continue
+
+                stop_type_lower = stop_type.lower()
+                if 'pick' not in stop_type_lower and 'drop' not in stop_type_lower:
+                    continue
+
+                stops.append({
+                    'type':    'pick' if 'pick' in stop_type_lower else 'drop',
+                    'member':  member_info,  # temp — for matching only
+                    'address': stop_address,
+                    'time':    proj_time
+                })
+
+            # Match Pick/Drop pairs by member name, then discard names
+            by_member = defaultdict(list)
+            for stop in stops:
+                by_member[stop['member']].append(stop)
+
+            for member, member_stops in by_member.items():
+                picks = [s for s in member_stops if s['type'] == 'pick']
+                drops = [s for s in member_stops if s['type'] == 'drop']
+
+                for i in range(min(len(picks), len(drops))):
+                    trips.append({
+                        'pickup':  picks[i]['address'],
+                        'dropoff': drops[i]['address'],
+                        'time':    picks[i]['time'] or drops[i]['time'],
+                        'miles':   None  # calculated by route builder
+                        # member name intentionally excluded
+                    })
+
+            def parse_time(t):
+                if not t or t == 'N/A':
+                    return 9999
+                m = re.match(r'(\d+):(\d+)\s*(AM|PM)', t, re.I)
+                if not m:
+                    return 9999
+                h, mn = int(m.group(1)), int(m.group(2))
+                if m.group(3).upper() == 'PM' and h != 12:
+                    h += 12
+                if m.group(3).upper() == 'AM' and h == 12:
+                    h = 0
+                return h * 60 + mn
+
+            trips.sort(key=lambda t: parse_time(t['time']))
+
+        except Exception as e:
+            print(f"[Assignments] Parse error: {e}")
+
+        return trips
+
+    def write_driver_routes(self, driver_routes, date_str=None):
+        """
+        Write driver_routes.json for the route builder.
+        No patient/member names in output (HIPAA compliance).
+        """
+        import datetime, json, os
+
+        if date_str is None:
+            date_str = datetime.date.today().strftime('%m/%d/%Y')
+
+        output = {
+            'date':         date_str,
+            'generated_at': datetime.datetime.now().strftime('%I:%M %p'),
+            'drivers':      driver_routes
+        }
+
+        output_path = os.path.join(os.path.dirname(__file__), 'driver_routes.json')
+
+        with open(output_path, 'w') as f:
+            json.dump(output, f, indent=2)
+
+        print(f"[Assignments] Wrote driver_routes.json — {len(driver_routes)} drivers")
+        return output_path
+
+
 # --- MODIVCARE CONTROLLER ---
 def run_modivcare():
     print("\n🔵 STARTING MODIVCARE SCAN...")

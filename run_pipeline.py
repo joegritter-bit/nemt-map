@@ -29,10 +29,61 @@ def run_critical_step(label, fn):
     return True
 
 
+def run_assignments_scrape():
+    """
+    Run once per day to scrape MTM assignments and
+    write driver_routes.json. Called from run_pipeline()
+    only on the first run of the day.
+    """
+    import datetime, os
+
+    flag_file = os.path.join(os.path.dirname(__file__), '.assignments_scraped_today')
+    today = datetime.date.today().isoformat()
+
+    if os.path.exists(flag_file):
+        with open(flag_file) as f:
+            scraped_date = f.read().strip()
+        if scraped_date == today:
+            print("[Assignments] Already scraped today, skipping")
+            return
+
+    print("[Assignments] Running daily assignments scrape...")
+
+    try:
+        from scrape_marketplace import MTMController
+        scraper = MTMController()
+        scraper.start_browser()
+
+        if not scraper.perform_login():
+            print("[Assignments] Login failed")
+            scraper.close_browser()
+            return
+
+        driver_routes = scraper.scrape_assignments()
+
+        if driver_routes:
+            scraper.write_driver_routes(driver_routes)
+
+            with open(flag_file, 'w') as f:
+                f.write(today)
+
+            print(f"[Assignments] Complete — {len(driver_routes)} drivers scraped")
+        else:
+            print("[Assignments] No driver data returned")
+
+        scraper.close_browser()
+
+    except Exception as e:
+        print(f"[Assignments] Failed: {e}")
+
+
 def run_pipeline():
     start_time = datetime.now().strftime('%H:%M:%S')
     pipeline_start = time.time()
     results = []
+
+    # Daily assignments scrape (runs once per day)
+    run_assignments_scrape()
 
     # ─── STAGE 1: MTM Scrape (critical) ───────────────────────────────────────
     from scrape_marketplace import MTMController
@@ -110,6 +161,13 @@ def run_pipeline():
     # ─── STAGE 11: Publish Map & Dashboard to GitHub Pages (non-critical) ─────
     from map_updater import publish_map
     def run_publish():
+        import shutil, os
+        _home = os.path.expanduser('~')
+        driver_routes_src = os.path.join(_home, 'nemt-scraper', 'driver_routes.json')
+        driver_routes_dst = os.path.join(_home, 'nemt-map', 'driver_routes.json')
+        if os.path.exists(driver_routes_src):
+            shutil.copy(driver_routes_src, driver_routes_dst)
+            print("   [Pipeline] Copied driver_routes.json to GitHub Pages")
         url = publish_map()
         if url:
             print(f"   🌐 Published to GitHub Pages: {url}")

@@ -30,6 +30,12 @@ def publish_map():
                 ['git', '-C', MAP_REPO, 'add', 'regular_riders.json'],
                 capture_output=True, text=True)
 
+        driver_routes_path = os.path.join(MAP_REPO, 'driver_routes.json')
+        if os.path.exists(driver_routes_path):
+            subprocess.run(
+                ['git', '-C', MAP_REPO, 'add', 'driver_routes.json'],
+                capture_output=True, text=True)
+
         dashboard_path = os.path.join(_HOME, 'nemt-map', 'dashboard.html')
         if os.path.exists(dashboard_path):
             subprocess.run(

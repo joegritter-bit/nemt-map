@@ -901,5 +901,37 @@ document.addEventListener('DOMContentLoaded', function() {
   console.log('NEMT: All button bindings attached');
   console.log('switchHubBtn:', document.getElementById('switchHubBtn'));
 
+  // Load today's driver assignments from GitHub Pages
+  fetch('https://joegritter-bit.github.io/nemt-map/driver_routes.json?t=' + Date.now())
+    .then(r => r.json())
+    .then(data => {
+      if (!data.drivers) return;
+
+      const today = new Date().toLocaleDateString('en-US', {
+        month: '2-digit', day: '2-digit', year: 'numeric'
+      });
+
+      if (data.date === today) {
+        const existing = JSON.parse(
+          localStorage.getItem('nemt_driver_routes') || '{}');
+        const merged = { ...existing };
+
+        for (const [driver, driverTrips] of Object.entries(data.drivers)) {
+          merged[driver] = {
+            trips:   driverTrips,
+            hub:     'Effingham',
+            savedAt: data.generated_at,
+            source:  'auto'
+          };
+        }
+
+        localStorage.setItem('nemt_driver_routes', JSON.stringify(merged));
+        console.log(`NEMT: Loaded ${Object.keys(data.drivers).length} driver routes from assignments scraper`);
+      }
+    })
+    .catch(() => {
+      console.log('NEMT: No driver routes file available yet');
+    });
+
   render();
 });

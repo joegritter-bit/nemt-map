@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Effingham Transport — Trip Quote Calculator</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:    #1B3A5C;
+    --navy2:   #243F63;
+    --green:   #1A7A4A;
+    --green2:  #22A060;
+    --amber:   #B87A00;
+    --red:     #A32D2D;
+    --sky:     #3A8FD4;
+    --bg:      #F0F2F5;
+    --card:    #FFFFFF;
+    --border:  #D8DCE3;
+    --text:    #1A1F2E;
+    --muted:   #6B7280;
+    --mono:    'DM Mono', monospace;
+    --sans:    'DM Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ─────────────────────────────────────── */
+  header {
+    background: var(--navy);
+    padding: 0 28px;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    height: 52px;
+    border-bottom: 2px solid #0f2238;
+  }
+  .header-brand {
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    margin-right: 28px;
+    white-space: nowrap;
+  }
+  .header-brand span { color: #5BA3D4; }
+  .header-nav {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    flex: 1;
+  }
+  .nav-link {
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(255,255,255,.65);
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    transition: all .15s;
+    white-space: nowrap;
+  }
+  .nav-link:hover { color: #fff; background: rgba(255,255,255,.1); }
+  .nav-link.active { color: #fff; background: rgba(255,255,255,.15); }
+
+  /* ── LAYOUT ─────────────────────────────────────── */
+  .page {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 32px 20px 60px;
+  }
+
+  .page-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 4px;
+  }
+  .page-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 28px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  @media (max-width: 680px) { .grid { grid-template-columns: 1fr; } }
+
+  /* ── CARDS ──────────────────────────────────────── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 22px 24px;
+  }
+  .card-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--sky);
+    display: inline-block;
+  }
+
+  /* ── FORM ───────────────────────────────────────── */
+  .field { margin-bottom: 14px; }
+  .field:last-child { margin-bottom: 0; }
+  label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 5px;
+    letter-spacing: .03em;
+  }
+  input[type=text], input[type=number], select {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--text);
+    background: #FAFBFC;
+    transition: border-color .15s, box-shadow .15s;
+    outline: none;
+  }
+  input[type=text]:focus, input[type=number]:focus, select:focus {
+    border-color: var(--sky);
+    box-shadow: 0 0 0 3px rgba(58,143,212,.12);
+    background: #fff;
+  }
+  input[type=number] { font-family: var(--mono); }
+
+  /* ── URGENCY SELECTOR ───────────────────────────── */
+  .urgency-grid {
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 8px;
+  }
+  .urgency-btn {
+    padding: 10px 8px;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    background: #FAFBFC;
+    cursor: pointer;
+    text-align: center;
+    transition: all .15s;
+    font-family: var(--sans);
+  }
+  .urgency-btn .ub-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    display: block;
+  }
+  .urgency-btn .ub-pct {
+    font-size: 11px;
+    color: var(--muted);
+    font-family: var(--mono);
+    display: block;
+    margin-top: 2px;
+  }
+  .urgency-btn:hover { border-color: var(--sky); }
+  .urgency-btn.selected {
+    border-color: var(--navy);
+    background: var(--navy);
+  }
+  .urgency-btn.selected .ub-label { color: #fff; }
+  .urgency-btn.selected .ub-pct { color: rgba(255,255,255,.7); }
+
+  /* ── CALC BUTTON ────────────────────────────────── */
+  .calc-btn {
+    width: 100%;
+    margin-top: 18px;
+    padding: 13px;
+    background: var(--navy);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: .03em;
+    transition: background .15s, transform .1s;
+  }
+  .calc-btn:hover { background: var(--navy2); }
+  .calc-btn:active { transform: scale(.99); }
+
+  /* ── RESULTS ────────────────────────────────────── */
+  .results { display: none; }
+  .results.visible { display: block; }
+
+  .result-hero {
+    background: var(--navy);
+    border-radius: 10px;
+    padding: 24px 28px;
+    margin-bottom: 16px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+  }
+  @media (max-width: 520px) { .result-hero { grid-template-columns: 1fr; } }
+
+  .hero-item { text-align: center; }
+  .hero-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.55);
+    margin-bottom: 6px;
+  }
+  .hero-value {
+    font-family: var(--mono);
+    font-size: 28px;
+    font-weight: 500;
+    color: #fff;
+  }
+  .hero-value.green { color: #5EE69A; }
+  .hero-value.amber { color: #FFCC55; }
+  .hero-value.red   { color: #FF7070; }
+  .hero-sub {
+    font-size: 11px;
+    color: rgba(255,255,255,.45);
+    margin-top: 3px;
+    font-family: var(--mono);
+  }
+
+  .breakdown-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .breakdown-row:last-child { border-bottom: none; }
+  .br-label { color: var(--muted); }
+  .br-value {
+    font-family: var(--mono);
+    font-weight: 500;
+    color: var(--text);
+    font-size: 13px;
+  }
+
+  .quote-box {
+    background: #F0FFF7;
+    border: 1.5px solid var(--green);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-top: 16px;
+  }
+  .quote-box .ql {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 4px;
+  }
+  .quote-box .qv {
+    font-family: var(--mono);
+    font-size: 26px;
+    font-weight: 500;
+    color: var(--green);
+  }
+  .quote-box .qs {
+    font-size: 12px;
+    color: #555;
+    margin-top: 4px;
+  }
+
+  .urgency-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-top: 8px;
+    background: rgba(184,122,0,.12);
+    color: var(--amber);
+  }
+
+  .mileage-note {
+    background: #FFF8E6;
+    border-left: 3px solid var(--amber);
+    border-radius: 0 6px 6px 0;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: #6B4C00;
+    margin-top: 14px;
+    line-height: 1.5;
+  }
+
+  /* ── MANUAL OVERRIDE ────────────────────────────── */
+  .override-toggle {
+    font-size: 12px;
+    color: var(--sky);
+    cursor: pointer;
+    text-decoration: underline;
+    margin-top: 8px;
+    display: inline-block;
+    background: none;
+    border: none;
+    font-family: var(--sans);
+    padding: 0;
+  }
+  .override-section { display: none; margin-top: 12px; }
+  .override-section.open { display: block; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  hr.section-rule {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 20px 0;
+  }
+
+  .reset-btn {
+    font-size: 12px;
+    color: var(--muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: var(--sans);
+    text-decoration: underline;
+    margin-top: 12px;
+    display: block;
+  }
+  .reset-btn:hover { color: var(--red); }
+</style>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD93_zSxbsB77NGyoJD7R3S1pxY4dRB9n4&libraries=geometry&callback=initMap" async defer></script>
+<script>
+  function initMap() {
+    window.googleMapsReady = true;
+  }
+</script>
+</head>
+<body>
+
+<header>
+  <div class="header-brand">Effingham <span>Transport</span></div>
+  <nav class="header-nav">
+    <a href="https://joegritter-bit.github.io/nemt-map/dashboard.html" class="nav-link">📊 Dashboard</a>
+    <a href="https://joegritter-bit.github.io/nemt-map/map.html" class="nav-link">🗺 Map</a>
+    <a href="#" class="nav-link active">💲 Trip Quote</a>
+  </nav>
+</header>
+
+<div class="page">
+  <div class="page-title">Last-Minute Trip Quote Calculator</div>
+  <div class="page-sub">For broker calls — enter trip details to get full cost breakdown and what to quote</div>
+
+  <div class="grid">
+
+    <!-- ── LEFT: INPUTS ── -->
+    <div>
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-title"><span class="dot"></span>Trip Details</div>
+
+        <div class="field">
+          <label>Hub / Driver Starting Point</label>
+          <select id="hub">
+            <option value="effingham">Effingham Hub — 506 South St</option>
+            <option value="springfield">Springfield Hub</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Pickup City / Address</label>
+          <input type="text" id="pickup" placeholder="e.g. Danville, IL or 400 W Main St, Danville">
+        </div>
+
+        <div class="field">
+          <label>Dropoff / Appointment Address</label>
+          <input type="text" id="dropoff" placeholder="e.g. Springfield Memorial Hospital">
+        </div>
+
+        <div class="two-col">
+          <div class="field">
+            <label>Trip Miles (auto-calculated · override if needed)</label>
+            <input type="number" id="tripmiles" placeholder="e.g. 12.5" step="0.1" min="0">
+            <div id="tripmiles-note" style="font-size:11px;color:#1A7A4A;margin-top:4px;display:none;">✓ Auto-calculated from Google Maps</div>
+          </div>
+          <div class="field">
+            <label>Riders</label>
+            <select id="riders">
+              <option value="1">1 rider</option>
+              <option value="2">2 riders</option>
+              <option value="3">3 riders</option>
+              <option value="4">4 riders</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Appointment Type</label>
+          <select id="appttype">
+            <option value="standard">Standard medical (1 hr wait)</option>
+            <option value="clinic">Clinic / dialysis / methadone (5 min wait)</option>
+            <option value="custom">Custom wait time</option>
+          </select>
+        </div>
+
+        <div class="field" id="customWaitField" style="display:none">
+          <label>Custom wait time (minutes)</label>
+          <input type="number" id="customwait" placeholder="e.g. 45" min="0" max="480">
+        </div>
+
+        <button class="override-toggle" onclick="toggleOverride()">⚙ Adjust cost constants</button>
+        <div class="override-section" id="overrideSection">
+          <hr class="section-rule">
+          <div class="two-col">
+            <div class="field">
+              <label>Gas price ($/gal)</label>
+              <input type="number" id="gasprice" value="4.14" step="0.01">
+            </div>
+            <div class="field">
+              <label>Driver rate ($/hr)</label>
+              <input type="number" id="driverrate" value="19.00" step="0.50">
+            </div>
+            <div class="field">
+              <label>MPG</label>
+              <input type="number" id="mpg" value="15.5" step="0.5">
+            </div>
+            <div class="field">
+              <label>Wear & tear (¢/mi)</label>
+              <input type="number" id="wear" value="14" step="1">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="dot" style="background:#FFCC55"></span>Broker Call Urgency</div>
+        <div class="urgency-grid">
+          <div class="urgency-btn" data-markup="0.25" onclick="selectUrgency(this)">
+            <span class="ub-label">4+ hrs notice</span>
+            <span class="ub-pct">+25% markup</span>
+          </div>
+          <div class="urgency-btn" data-markup="0.35" onclick="selectUrgency(this)">
+            <span class="ub-label">2–4 hrs notice</span>
+            <span class="ub-pct">+35% markup</span>
+          </div>
+          <div class="urgency-btn selected" data-markup="0.50" onclick="selectUrgency(this)">
+            <span class="ub-label">Under 2 hrs</span>
+            <span class="ub-pct">+50% markup</span>
+          </div>
+          <div class="urgency-btn" data-markup="0.65" onclick="selectUrgency(this)">
+            <span class="ub-label">Right now / ASAP</span>
+            <span class="ub-pct">+65% markup</span>
+          </div>
+        </div>
+      </div>
+
+      <button class="calc-btn" id="calc-btn" onclick="calculate()">Calculate Trip Cost &amp; Quote →</button>
+    </div>
+
+    <!-- ── RIGHT: RESULTS ── -->
+    <div>
+      <div class="results" id="results">
+
+        <div class="result-hero">
+          <div class="hero-item">
+            <div class="hero-label">Variable Cost</div>
+            <div class="hero-value" id="r-cost">—</div>
+            <div class="hero-sub" id="r-miles">— total miles</div>
+          </div>
+          <div class="hero-item">
+            <div class="hero-label">Break-Even Rate</div>
+            <div class="hero-value amber" id="r-be">—</div>
+            <div class="hero-sub" id="r-permi">— per mile</div>
+          </div>
+          <div class="hero-item">
+            <div class="hero-label">Quote to Broker</div>
+            <div class="hero-value green" id="r-quote">—</div>
+            <div class="hero-sub" id="r-margin">— margin</div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-title"><span class="dot"></span>Cost Breakdown</div>
+          <div class="breakdown-row">
+            <span class="br-label">Deadhead (hub → pickup → hub)</span>
+            <span class="br-value" id="r-deadhead-mi">—</span>
+          </div>
+          <div class="breakdown-row">
+            <span class="br-label">Rider leg (round trip)</span>
+            <span class="br-value" id="r-rider-mi">—</span>
+          </div>
+          <div class="breakdown-row">
+            <span class="br-label">Total miles</span>
+            <span class="br-value" id="r-total-mi">—</span>
+          </div>
+          <hr class="section-rule" style="margin:8px 0">
+          <div class="breakdown-row">
+            <span class="br-label">Fuel cost</span>
+            <span class="br-value" id="r-fuel">—</span>
+          </div>
+          <div class="breakdown-row">
+            <span class="br-label">Driver labor</span>
+            <span class="br-value" id="r-labor">—</span>
+          </div>
+          <div class="breakdown-row">
+            <span class="br-label">Wear & tear</span>
+            <span class="br-value" id="r-wear">—</span>
+          </div>
+          <div class="breakdown-row" style="font-weight:600">
+            <span class="br-label" style="color:var(--text);font-weight:600">Total variable cost</span>
+            <span class="br-value" id="r-total-cost">—</span>
+          </div>
+        </div>
+
+        <div class="quote-box">
+          <div class="ql">Quote to Broker</div>
+          <div class="qv" id="r-quote2">—</div>
+          <div class="qs" id="r-quote-desc">—</div>
+          <div class="urgency-badge" id="r-urgency-badge">—</div>
+        </div>
+
+        <div class="mileage-note" id="r-mileage-note"></div>
+
+        <button class="reset-btn" onclick="resetForm()">↺ Reset calculator</button>
+      </div>
+
+      <!-- placeholder when no results yet -->
+      <div id="placeholder" class="card" style="height:200px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;border-style:dashed">
+        <div style="font-size:32px">💲</div>
+        <div style="font-size:13px;color:var(--muted)">Enter trip details and click Calculate</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const HUB_ADDRESSES = {
+  'effingham': '506 South St, Effingham, IL 62401',
+  'springfield': '1 Springfield Hub, Springfield, IL'
+};
+
+function getDeadheadFromGoogle(hubAddress, pickupAddress) {
+  return new Promise((resolve) => {
+    if (!window.google || !window.google.maps) {
+      resolve(null);
+      return;
+    }
+    const service = new google.maps.DistanceMatrixService();
+    service.getDistanceMatrix({
+      origins: [hubAddress],
+      destinations: [pickupAddress],
+      travelMode: google.maps.TravelMode.DRIVING,
+      unitSystem: google.maps.UnitSystem.IMPERIAL,
+    }, (response, status) => {
+      if (status === 'OK' &&
+          response.rows[0].elements[0].status === 'OK') {
+        const meters = response.rows[0].elements[0].distance.value;
+        const miles = Math.round(meters / 1609.34);
+        resolve(miles);
+      } else {
+        resolve(null);
+      }
+    });
+  });
+}
+
+function getTripMilesFromGoogle(pickupAddress, dropoffAddress) {
+  return new Promise((resolve) => {
+    if (!window.google || !window.google.maps) {
+      resolve(null);
+      return;
+    }
+    const service = new google.maps.DistanceMatrixService();
+    service.getDistanceMatrix({
+      origins: [pickupAddress],
+      destinations: [dropoffAddress],
+      travelMode: google.maps.TravelMode.DRIVING,
+      unitSystem: google.maps.UnitSystem.IMPERIAL,
+    }, (response, status) => {
+      if (status === 'OK' &&
+          response.rows[0].elements[0].status === 'OK') {
+        const meters = response.rows[0].elements[0].distance.value;
+        const miles = Math.round(meters * 10 / 1609.34) / 10;
+        resolve(miles);
+      } else {
+        resolve(null);
+      }
+    });
+  });
+}
+
+// ── DEADHEAD LOOKUP TABLES ───────────────────────────────────────────────
+const EFFINGHAM_DH = {
+  'springfield':96,'chatham':91,'decatur':58,'taylorville':66,
+  'champaign':75,'urbana':77,'rantoul':85,'danville':100,
+  'bloomington':90,'normal':92,'clinton':68,'farmer city':78,
+  'mattoon':38,'charleston':46,'paris':65,'robinson':54,
+  'olney':44,'fairfield':52,'mt vernon':72,'benton':76,
+  'west frankfort':84,'carbondale':105,'anna':115,'harrisburg':88,
+  'vandalia':34,'centralia':58,'salem':48,'flora':28,
+  'louisville':26,'newton':25,'effingham':0,'altamont':14,
+  'teutopolis':8,'dieterich':10,'greenup':30,'casey':42,
+  'marshall':55,'oblong':50,'lawrenceville':70,'peoria':133,
+  'streator':145,'ottawa':155,'galesburg':175,'quincy':215,
+  'macomb':170,'jacksonville':122,'beardstown':140,'carmi':110,
+  'mt carmel':90,'watseka':105,'kankakee':130,'pontiac':110,
+  'morris':215,'joliet':200,'chicago':235,'south holland':225,
+  'harvey':220,'calumet city':230,'lansing':228,'dolton':222,
+  'lincoln':80,'atlanta':85,'clinton':68,'pana':60,
+  'morrisonville':72,'virden':88,'litchfield':52,'hillsboro':56,
+  'staunton':68,'alton':115,'edwardsville':100,'collinsville':95,
+  'belleville':90,'o\'fallon':92,'mascoutah':85,'lebanon':72,
+  'breese':65,'highland':62,'greenville':48,'mulberry grove':42,
+  'kinmundy':35,'patoka':30,'cisne':38,'wayne city':45,
+  'xenia':40,'clay city':32,'noble':28,'richview':48,
+  'waltonville':55,'rome':58,'christopher':68,'herrin':80,
+  'marion':75,'creal springs':90,'vienna':100,'cairo':130,
+  'mound city':120,'metropolis':115,'joppa':110,'golconda':108
+};
+
+const SPRINGFIELD_DH = {
+  'springfield':0,'chatham':8,'decatur':39,'taylorville':32,
+  'champaign':52,'urbana':54,'rantoul':62,'danville':90,
+  'bloomington':62,'normal':60,'clinton':30,'farmer city':44,
+  'mattoon':68,'charleston':76,'lincoln':28,'atlanta':22,
+  'mt pulaski':25,'havana':45,'beardstown':60,'jacksonville':38,
+  'virden':30,'morrisonville':28,'pana':32,'assumption':35,
+  'sullivan':48,'tuscola':55,'arcola':60,'effingham':96,
+  'vandalia':66,'centralia':72,'mt vernon':95,'carbondale':130,
+  'peoria':73,'pontiac':55,'dwight':80,'kankakee':105,
+  'collinsville':88,'edwardsville':92,'alton':100,'belleville':95
+};
+
+// ── STATE ────────────────────────────────────────────────────────────────
+let selectedMarkup = 0.50;
+
+function selectUrgency(el) {
+  document.querySelectorAll('.urgency-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedMarkup = parseFloat(el.dataset.markup);
+}
+
+function toggleOverride() {
+  const s = document.getElementById('overrideSection');
+  s.classList.toggle('open');
+}
+
+document.getElementById('appttype').addEventListener('change', function() {
+  document.getElementById('customWaitField').style.display =
+    this.value === 'custom' ? 'block' : 'none';
+});
+
+// ── DEADHEAD LOOKUP ──────────────────────────────────────────────────────
+function getDeadhead(address, hub) {
+  if (!address) return { miles: 50, city: null };
+  const lower = address.toLowerCase();
+  const table = hub === 'springfield' ? SPRINGFIELD_DH : EFFINGHAM_DH;
+  for (const [city, miles] of Object.entries(table)) {
+    if (lower.includes(city)) return { miles, city };
+  }
+  return { miles: 50, city: null };
+}
+
+// ── MAIN CALCULATION ─────────────────────────────────────────────────────
+async function calculate() {
+  const hub       = document.getElementById('hub').value;
+  const pickup    = document.getElementById('pickup').value.trim();
+  const dropoff   = document.getElementById('dropoff').value.trim();
+  const riders    = parseInt(document.getElementById('riders').value) || 1;
+  const apptType  = document.getElementById('appttype').value;
+  const gasPrice  = parseFloat(document.getElementById('gasprice').value) || 4.14;
+  const driverRate= parseFloat(document.getElementById('driverrate').value) || 19;
+  const mpg       = parseFloat(document.getElementById('mpg').value) || 15.5;
+  const wearCents = parseFloat(document.getElementById('wear').value) || 20;
+  const wear      = wearCents / 100;
+
+  let waitHours = 1.0;
+  if (apptType === 'clinic') waitHours = 5/60;
+  else if (apptType === 'custom') {
+    const cw = parseFloat(document.getElementById('customwait').value);
+    waitHours = isNaN(cw) ? 1.0 : cw/60;
+  }
+
+  // Show loading state
+  document.getElementById('calc-btn').textContent =
+    'Looking up distance...';
+  document.getElementById('calc-btn').disabled = true;
+
+  const hubAddress = HUB_ADDRESSES[hub];
+
+  // Fire both API calls simultaneously
+  const [googleDeadhead, googleTripMiles] = await Promise.all([
+    getDeadheadFromGoogle(hubAddress, pickup),
+    getTripMilesFromGoogle(pickup, dropoff)
+  ]);
+
+  let deadheadMi;
+  let geocoded = false;
+  let dh;
+
+  if (googleDeadhead !== null) {
+    deadheadMi = googleDeadhead;
+    geocoded = true;
+  } else {
+    dh = getDeadhead(pickup, hub);
+    deadheadMi = dh.miles;
+  }
+
+  // Auto-populate trip miles if Google returned a value
+  // and the field is empty or was previously auto-filled
+  let tripMiles;
+  if (googleTripMiles !== null) {
+    tripMiles = googleTripMiles;
+    const tripField = document.getElementById('tripmiles');
+    tripField.value = tripMiles;
+    tripField.style.background = '#F0FFF7';
+    tripField.style.borderColor = '#1A7A4A';
+    document.getElementById('tripmiles-note').style.display = 'block';
+  } else {
+    tripMiles = parseFloat(
+      document.getElementById('tripmiles').value) || 0;
+  }
+
+  // Restore button
+  document.getElementById('calc-btn').textContent =
+    'Calculate Trip Cost & Quote →';
+  document.getElementById('calc-btn').disabled = false;
+
+  // Extra miles per additional rider (local pickup variation)
+  const extraRiderMi = (riders - 1) * 10;
+  const riderRoundTrip = tripMiles * 2;
+  const totalMiles = (deadheadMi * 2) + riderRoundTrip + extraRiderMi;
+
+  const fuel  = (totalMiles / mpg) * gasPrice;
+  const driveHrs = totalMiles / 45;
+  const extraWait = (riders - 1) * 0.25;
+  const labor = (driveHrs + waitHours + extraWait) * driverRate;
+  const wearCost = totalMiles * wear;
+  const totalCost = fuel + labor + wearCost;
+
+  const quote = totalCost * (1 + selectedMarkup);
+  const margin = quote - totalCost;
+  const perMi = totalCost / totalMiles;
+
+  // ── UPDATE DOM ──────────────────────────────────────────────────────────
+  const fmt = n => '$' + n.toFixed(2);
+
+  document.getElementById('r-cost').textContent = fmt(totalCost);
+  document.getElementById('r-miles').textContent = totalMiles.toFixed(0) + ' total miles';
+  document.getElementById('r-be').textContent = fmt(totalCost);
+  document.getElementById('r-permi').textContent = fmt(perMi) + '/mi';
+  document.getElementById('r-quote').textContent = fmt(quote);
+  document.getElementById('r-margin').textContent = '+' + fmt(margin) + ' margin';
+
+  document.getElementById('r-deadhead-mi').textContent = (deadheadMi*2).toFixed(0) + ' mi';
+  document.getElementById('r-rider-mi').textContent = riderRoundTrip.toFixed(1) + ' mi';
+  document.getElementById('r-total-mi').textContent = totalMiles.toFixed(0) + ' mi';
+  document.getElementById('r-fuel').textContent = fmt(fuel);
+  document.getElementById('r-labor').textContent =
+    fmt(labor) + ' (' + (driveHrs + waitHours + extraWait).toFixed(1) + ' hrs)';
+  document.getElementById('r-wear').textContent = fmt(wearCost);
+  document.getElementById('r-total-cost').textContent = fmt(totalCost);
+
+  document.getElementById('r-quote2').textContent = fmt(quote);
+
+  const urgencyLabels = {
+    0.25: '4+ hrs notice — 25% last-minute premium',
+    0.35: '2–4 hrs notice — 35% last-minute premium',
+    0.50: 'Under 2 hrs — 50% emergency premium',
+    0.65: 'ASAP / right now — 65% emergency premium',
+  };
+  document.getElementById('r-quote-desc').textContent =
+    `Cost $${totalCost.toFixed(2)} + ${Math.round(selectedMarkup*100)}% premium = $${quote.toFixed(2)}`;
+  document.getElementById('r-urgency-badge').textContent =
+    urgencyLabels[selectedMarkup] || `+${Math.round(selectedMarkup*100)}% premium`;
+
+  let note = '';
+  if (geocoded) {
+    const bothCalc = geocoded && googleTripMiles !== null;
+    note = bothCalc
+      ? `✓ Google Maps calculated deadhead (${deadheadMi} mi each way) and trip miles (${tripMiles} mi one-way). Total driver day: ${totalMiles.toFixed(0)} miles.`
+      : `✓ Deadhead calculated via Google Maps — exact driving distance from ${hub === 'springfield' ? 'Springfield' : 'Effingham'} hub to pickup (${deadheadMi} mi each way). Total driver day: ${totalMiles.toFixed(0)} miles.`;
+  } else if (!dh || !dh.city) {
+    note = `⚠ Google Maps lookup failed and "${pickup}" was not found in our city table — defaulting to 50 miles deadhead. Verify actual distance and adjust if needed.`;
+  } else {
+    note = `ℹ Google Maps unavailable — deadhead estimated from city table: ${hub === 'springfield' ? 'Springfield' : 'Effingham'} hub to ${dh.city} (${deadheadMi} mi each way). Total driver day: ${totalMiles.toFixed(0)} miles.`;
+  }
+  document.getElementById('r-mileage-note').textContent = note;
+
+  document.getElementById('results').classList.add('visible');
+  document.getElementById('placeholder').style.display = 'none';
+}
+
+function resetForm() {
+  document.getElementById('pickup').value = '';
+  document.getElementById('dropoff').value = '';
+  const tf = document.getElementById('tripmiles');
+  tf.value = '';
+  tf.style.background = '';
+  tf.style.borderColor = '';
+  document.getElementById('tripmiles-note').style.display = 'none';
+  document.getElementById('riders').value = '1';
+  document.getElementById('appttype').value = 'standard';
+  document.getElementById('customWaitField').style.display = 'none';
+  document.getElementById('results').classList.remove('visible');
+  document.getElementById('placeholder').style.display = 'flex';
+}
+
+// Allow Enter key to trigger calc
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') calculate();
+});
+</script>
+</body>
+</html>

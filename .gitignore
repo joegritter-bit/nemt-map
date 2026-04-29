@@ -13,6 +13,7 @@ user_data/
 
 # Generated output files
 *.html
+!dashboard.html
 *.png
 *.db
 *.db-shm

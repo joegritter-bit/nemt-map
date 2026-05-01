@@ -153,18 +153,6 @@
     const DAILY_MTM_TRIPS = [54,57,57,57,60,30];
     const DAILY_MTM_REVENUE = [4292,4822,4678,4730,4619,2028];
 
-    const WEEKLY_LABELS = ['9/29','10/6','10/13','10/20','10/27','11/3','11/10','11/17','11/24','12/1','12/8','12/15','12/22','12/29','1/5','1/12','1/19','1/26','2/2','2/9','2/16','2/23','3/2','3/9','3/16','3/23','3/30','4/6','4/13','4/20','4/27'];
-    const WEEKLY_MTM_TRIPS = [190,314,312,317,303,303,287,301,294,214,240,271,194,252,209,267,259,255,247,262,245,269,237,262,238,230,176,190,183,194,182];
-    const WEEKLY_MTM_REVENUE = [14215,24303,23526,23948,22789,23223,22939,22962,22698,17474,18795,21388,14636,18931,15494,20388,18951,19033,18538,20215,20287,21581,19372,20976,20230,20033,14375,16098,14884,15864,14673];
-    const WEEKLY_MDV_TRIPS = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,15,4,14,55,71,92,101,118,144];
-    const WEEKLY_MDV_REVENUE = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,351,254,622,1534,1988,3621,5089,6076,6166];
-
-    const MONTHLY_LABELS = ["Oct '25","Nov '25","Dec '25","Jan '26","Feb '26","Mar '26","Apr '26"];
-    const MONTHLY_MTM_TRIPS = [1400,1221,1085,1076,1023,1151,876];
-    const MONTHLY_MTM_REVENUE = [106397,94207,84918,80173,80621,89911,70511];
-    const MONTHLY_MDV_TRIPS = [0,0,0,0,0,114,442];
-    const MONTHLY_MDV_REVENUE = [0,0,0,0,0,3501,20147];
-
     const BREAKEVEN = { daily: { trips: 53, revenue: 4213 }, weekly: { trips: 318, revenue: 25245 }, monthly: { trips: 1150, revenue: 100500 } };
     const PROFIT_GOAL = { daily: { trips: 58, revenue: 4613 }, weekly: { trips: 348, revenue: 27678 }, monthly: { trips: 1260, revenue: 110500 } };
 
@@ -227,11 +215,19 @@
       const [histPeriod, setHistPeriod] = useState('monthly');
 
       const trendGran     = granularity.toLowerCase();
-      const trendLabels   = granularity === 'Daily' ? DAILY_LABELS : granularity === 'Weekly' ? WEEKLY_LABELS : MONTHLY_LABELS;
-      const trendMtmTrips = granularity === 'Daily' ? DAILY_MTM_TRIPS   : granularity === 'Weekly' ? WEEKLY_MTM_TRIPS   : MONTHLY_MTM_TRIPS;
-      const trendMtmRev   = granularity === 'Daily' ? DAILY_MTM_REVENUE : granularity === 'Weekly' ? WEEKLY_MTM_REVENUE : MONTHLY_MTM_REVENUE;
-      const trendMdvTrips = granularity === 'Weekly' ? WEEKLY_MDV_TRIPS   : MONTHLY_MDV_TRIPS;
-      const trendMdvRev   = granularity === 'Weekly' ? WEEKLY_MDV_REVENUE : MONTHLY_MDV_REVENUE;
+      const trendLabels   = granularity === 'Daily'   ? DAILY_LABELS
+                          : granularity === 'Weekly'  ? HISTORY_WEEKLY.map(d => d.week.slice(0, 6))
+                          : HISTORY_MONTHLY.map(d => d.month);
+      const trendMtmTrips = granularity === 'Daily'   ? DAILY_MTM_TRIPS
+                          : granularity === 'Weekly'  ? HISTORY_WEEKLY.map(d => d.mtmTrips)
+                          : HISTORY_MONTHLY.map(d => d.mtmTrips);
+      const trendMtmRev   = granularity === 'Daily'   ? DAILY_MTM_REVENUE
+                          : granularity === 'Weekly'  ? HISTORY_WEEKLY.map(d => d.mtmRevenue)
+                          : HISTORY_MONTHLY.map(d => d.mtmRevenue);
+      const trendMdvTrips = granularity === 'Weekly'  ? HISTORY_WEEKLY.map(d => d.modTrips)
+                          : HISTORY_MONTHLY.map(d => d.modTrips);
+      const trendMdvRev   = granularity === 'Weekly'  ? HISTORY_WEEKLY.map(d => d.modRevenue)
+                          : HISTORY_MONTHLY.map(d => d.modRevenue);
       const trendTripsData = trendLabels.map((label, i) => ({ label, mtm: trendMtmTrips[i], mdv: granularity !== 'Daily' ? trendMdvTrips[i] : undefined }));
       const trendRevData   = trendLabels.map((label, i) => ({ label, mtm: trendMtmRev[i],   mdv: granularity !== 'Daily' ? trendMdvRev[i]   : undefined }));
       const trendTotalMtmTrips = trendMtmTrips.reduce((s, v) => s + v, 0);
@@ -726,8 +722,8 @@
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
                   <StatCard label="Valid Trips" value="22,572" sub="Dec '24–Apr '26" accent={BLUE} />
                   <StatCard label="Total Revenue" value="$1,760,936" sub="VALID trips only" accent={GREEN} />
-                  <StatCard label="Avg / Trip" value="$78.14" sub="All valid trips" accent={ACCENT} />
-                  <StatCard label="Total Miles" value="181,897" sub="Valid trips" accent={BLUE} />
+                  <StatCard label="Avg / Trip" value="$78.01" sub="All valid trips" accent={ACCENT} />
+                  <StatCard label="Total Miles" value="191,984" sub="Valid trips" accent={BLUE} />
                 </div>
 
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
@@ -807,9 +803,9 @@
             {tab === "Modivcare Detail" && (
               <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
-                  <StatCard label="Total Trips" value="251" sub="Mar–Apr '26" accent={PURPLE} />
+                  <StatCard label="Total Trips" value="556" sub="Mar–Apr '26" accent={PURPLE} />
                   <StatCard label="Total Revenue" value={fmt$(mdvTotalRev)} sub="Billed and completed" accent={GREEN} />
-                  <StatCard label="Avg / Trip" value="$33.34" sub="vs MTM $78.14" accent={ACCENT} />
+                  <StatCard label="Avg / Trip" value="$42.53" sub="vs MTM $78.01" accent={ACCENT} />
                   <StatCard label="Months of Data" value="2" sub="More incoming" accent={PURPLE} />
                 </div>
 
@@ -845,9 +841,9 @@
                   <SectionTitle>Rate Comparison</SectionTitle>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16 }}>
                     {[
-                      { label: "MTM Avg/Trip", value: "$78.14", color: BLUE },
-                      { label: "Modivcare Avg/Trip", value: "$33.34", color: PURPLE },
-                      { label: "MTM Premium", value: "+137%", color: ACCENT },
+                      { label: "MTM Avg/Trip", value: "$78.01", color: BLUE },
+                      { label: "Modivcare Avg/Trip", value: "$42.53", color: PURPLE },
+                      { label: "MTM Premium", value: "+83%", color: ACCENT },
                     ].map(s => (
                       <div key={s.label} style={{ background: "#091422", borderRadius: 8, padding: "14px 16px", textAlign: "center" }}>
                         <div style={{ color: MUTED, fontSize: 10, marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.1em", fontFamily: "monospace" }}>{s.label}</div>
@@ -856,7 +852,7 @@
                     ))}
                   </div>
                   <div style={{ marginTop: 12, padding: "10px 14px", background: "#091422", borderRadius: 8, borderLeft: `2px solid ${ACCENT}`, fontSize: 12, color: "#94a3b8", lineHeight: 1.6 }}>
-                    💡 Modivcare pays 137% less per trip than MTM. Direct Medicaid billing eliminates broker margin entirely, making it the highest-leverage revenue growth path.
+                    💡 Modivcare earns 83% less per trip than MTM ($42.53 vs $78.01). Direct Medicaid billing eliminates broker margin entirely, making it the highest-leverage revenue growth path.
                   </div>
                 </div>
               </div>

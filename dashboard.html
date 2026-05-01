@@ -58,7 +58,7 @@
 <div class="header">
   <div>
     <h1>🚗 NEMT Dispatch Dashboard</h1>
-    <div class="meta">Last updated: 04/30/2026 04:22 PM · Auto-refreshes every 30 min</div>
+    <div class="meta">Last updated: 04/30/2026 11:28 PM · Auto-refreshes every 30 min</div>
   </div>
   <a href="https://joegritter-bit.github.io/nemt-map/" class="map-btn" target="_blank">
     🗺️ Live Map
@@ -78,15 +78,15 @@
 <div class="section">
   <div class="stats-bar">
     <div class="stat">
-      <div class="val">11</div>
+      <div class="val">0</div>
       <div class="lbl">Available Shifts</div>
     </div>
     <div class="stat">
-      <div class="val" style="color:#27ae60">$3,513</div>
+      <div class="val" style="color:#27ae60">$0</div>
       <div class="lbl">Total Opportunity</div>
     </div>
     <div class="stat">
-      <div class="val">$50/hr</div>
+      <div class="val">$0/hr</div>
       <div class="lbl">Avg Rev/Hour</div>
     </div>
     <div class="stat">
@@ -160,6 +160,9 @@
   <div class="section-header" style="background:#1a6b3c;">
     🏙️ Springfield Dispatch
   </div>
+  <div style="background:#fff3cd; color:#856404; padding:8px 16px; font-size:12px; font-weight:bold; border-bottom:1px solid #ffc107;">
+    ⚠️ Data from previous run — Stage 4 may have failed
+  </div>
   <table>
     <tr>
       <th>Date</th><th>Priority</th><th>Model</th>
@@ -167,18 +170,7 @@
       <th>Total</th><th>Top County</th><th>Route</th>
     </tr>
 
-    <tr>
-      <td>04/30/2026</td>
-      <td>📋 STANDARD</td>
-      <td>Traditional</td>
-      <td>1</td>
-      <td>3.7h</td>
-      <td class="revenue">$40.70</td>
-      <td class="revenue"><b>$149.50</b></td>
-      <td>Unknown</td>
-      <td style="font-size:11px;">4:00 PM (1706 Springfiel)</td>
-    </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td>05/01/2026</td>
       <td>✅ GOOD</td>
       <td>Traditional</td>
@@ -189,18 +181,7 @@
       <td>Unknown</td>
       <td style="font-size:11px;">2:30 PM (2200 Lake Victo)</td>
     </tr>
-    <tr>
-      <td>05/02/2026</td>
-      <td>✅ GOOD</td>
-      <td>Traditional</td>
-      <td>1</td>
-      <td>3.4h</td>
-      <td class="revenue">$66.14</td>
-      <td class="revenue"><b>$223.19</b></td>
-      <td>Unknown</td>
-      <td style="font-size:11px;">10:30 AM (921 W Edwards S)</td>
-    </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td>05/04/2026</td>
       <td>✅ GOOD</td>
       <td>Traditional</td>
@@ -211,7 +192,7 @@
       <td>Unknown</td>
       <td style="font-size:11px;">10:30 AM (365 Valley View)</td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td>05/05/2026</td>
       <td>📋 STANDARD</td>
       <td>Clinic</td>
@@ -222,7 +203,7 @@
       <td>Unknown</td>
       <td style="font-size:11px;">8:00 AM (156 N Commercia)</td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td>05/06/2026</td>
       <td>✅ GOOD</td>
       <td>Traditional</td>
@@ -233,7 +214,7 @@
       <td>Unknown</td>
       <td style="font-size:11px;">3:00 PM (309 Tara Ave)</td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td>05/06/2026</td>
       <td>📋 STANDARD</td>
       <td>Traditional</td>
@@ -244,7 +225,7 @@
       <td>Unknown</td>
       <td style="font-size:11px;">4:00 PM (1706 Springfiel)</td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td>05/06/2026</td>
       <td>📋 STANDARD</td>
       <td>Traditional</td>
@@ -255,7 +236,7 @@
       <td>Unknown</td>
       <td style="font-size:11px;">8:45 AM (1660 E Grand Av)</td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td>05/07/2026</td>
       <td>✅ GOOD</td>
       <td>Traditional</td>
@@ -269,18 +250,19 @@
   </table>
 </div>
 <div class="section">
-  <div class="section-header" style="background:#e67e22;">
-    💊 Clinic Routes (Multi-Load)
+  <div class="section-header" style="background:#7f8c8d;">
+    🕐 Historical Routes (data older than 150 minutes — pipeline may not have run)
   </div>
   <table>
     <tr>
-      <th>Date</th><th>Hub</th><th>Jobs</th>
+      <th>Date</th><th>Model</th><th>Hub</th><th>Jobs</th>
       <th>Shift</th><th>Rev/Hr</th><th>Total</th>
       <th>Top County</th><th>Route</th>
     </tr>
 
-    <tr>
+    <tr style="opacity:0.7;">
       <td>05/05/2026</td>
+      <td>Clinic</td>
       <td><b>Springfield</b></td>
       <td>1</td>
       <td>4.1h</td>
@@ -289,41 +271,9 @@
       <td>Unknown</td>
       <td style="font-size:11px;">8:00 AM (156 N Commercia)</td>
     </tr>
-  </table>
-</div>
-<div class="section">
-  <div class="section-header" style="background:#8e44ad;">
-    🏆 Traditional Routes
-  </div>
-  <table>
-    <tr>
-      <th>Date</th><th>Hub</th><th>Jobs</th>
-      <th>Shift</th><th>Rev/Hr</th><th>Total</th>
-      <th>Top County</th><th>Route</th>
-    </tr>
-
-    <tr>
-      <td>04/30/2026</td>
-      <td><b>Effingham</b> <span style="color:#e67e22;font-weight:bold;" title="One or more legs may no longer be available">⚠️</span></td>
-      <td>3</td>
-      <td>10.0h</td>
-      <td class="revenue">$51.78</td>
-      <td class="revenue"><b>$516.98</b></td>
-      <td>Unknown</td>
-      <td style="font-size:11px;">🚌 2x to 1120 n mel ➡ 1:25 pm (425 Lakeshore D)<br><span style="font-size:10px;color:#e67e22;">⚠️ One or more legs may no longer be available</span></td>
-    </tr>
-    <tr>
-      <td>04/30/2026</td>
-      <td><b>Springfield</b> <span style="color:#e67e22;font-weight:bold;" title="One or more legs may no longer be available">⚠️</span></td>
-      <td>1</td>
-      <td>3.7h</td>
-      <td class="revenue">$40.70</td>
-      <td class="revenue"><b>$149.50</b></td>
-      <td>Unknown</td>
-      <td style="font-size:11px;">4:00 PM (1706 Springfiel)<br><span style="font-size:10px;color:#e67e22;">⚠️ One or more legs may no longer be available</span></td>
-    </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td>05/01/2026</td>
+      <td>Traditional</td>
       <td><b>Springfield</b></td>
       <td>1</td>
       <td>4.9h</td>
@@ -332,18 +282,9 @@
       <td>Unknown</td>
       <td style="font-size:11px;">2:30 PM (2200 Lake Victo)</td>
     </tr>
-    <tr>
-      <td>05/02/2026</td>
-      <td><b>Springfield</b> <span style="color:#e67e22;font-weight:bold;" title="One or more legs may no longer be available">⚠️</span></td>
-      <td>1</td>
-      <td>3.4h</td>
-      <td class="revenue">$66.14</td>
-      <td class="revenue"><b>$223.19</b></td>
-      <td>Unknown</td>
-      <td style="font-size:11px;">10:30 AM (921 W Edwards S)<br><span style="font-size:10px;color:#e67e22;">⚠️ One or more legs may no longer be available</span></td>
-    </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td>05/04/2026</td>
+      <td>Traditional</td>
       <td><b>Springfield</b></td>
       <td>1</td>
       <td>8.5h</td>
@@ -352,8 +293,9 @@
       <td>Unknown</td>
       <td style="font-size:11px;">10:30 AM (365 Valley View)</td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td>05/04/2026</td>
+      <td>Traditional</td>
       <td><b>Effingham</b></td>
       <td>2</td>
       <td>10.5h</td>
@@ -362,8 +304,9 @@
       <td>Unknown</td>
       <td style="font-size:11px;">6:40 am (425 Lakeshore D) ➡ 10:45 AM (2502 E Main St)</td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td>05/06/2026</td>
+      <td>Traditional</td>
       <td><b>Springfield</b></td>
       <td>1</td>
       <td>9.1h</td>
@@ -372,8 +315,9 @@
       <td>Unknown</td>
       <td style="font-size:11px;">3:00 PM (309 Tara Ave)</td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td>05/06/2026</td>
+      <td>Traditional</td>
       <td><b>Springfield</b></td>
       <td>1</td>
       <td>3.7h</td>
@@ -382,8 +326,9 @@
       <td>Unknown</td>
       <td style="font-size:11px;">4:00 PM (1706 Springfiel)</td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td>05/06/2026</td>
+      <td>Traditional</td>
       <td><b>Springfield</b></td>
       <td>1</td>
       <td>2.9h</td>
@@ -392,8 +337,9 @@
       <td>Unknown</td>
       <td style="font-size:11px;">8:45 AM (1660 E Grand Av)</td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td>05/07/2026</td>
+      <td>Traditional</td>
       <td><b>Springfield</b></td>
       <td>2</td>
       <td>10.6h</td>
@@ -417,19 +363,9 @@
       <td class="revenue"><b>6 available</b></td>
     </tr>
     <tr>
-      <td>107 S Fairdale St</td>
-      <td><b>MTM</b></td>
-      <td class="revenue"><b>5 available</b></td>
-    </tr>
-    <tr>
       <td>1434 15th Ave</td>
       <td><b>MTM</b></td>
       <td class="revenue"><b>5 available</b></td>
-    </tr>
-    <tr>
-      <td>350 E Roosevelt Rd</td>
-      <td><b>MTM</b></td>
-      <td class="revenue"><b>4 available</b></td>
     </tr>
     <tr>
       <td>7223 N Rogers Ave</td>
@@ -437,7 +373,17 @@
       <td class="revenue"><b>4 available</b></td>
     </tr>
     <tr>
-      <td>1706 Springfield Rd</td>
+      <td>1441 N Shore Dr</td>
+      <td><b>MTM</b></td>
+      <td class="revenue"><b>4 available</b></td>
+    </tr>
+    <tr>
+      <td>315 E Mckinley Rd</td>
+      <td><b>MTM</b></td>
+      <td class="revenue"><b>4 available</b></td>
+    </tr>
+    <tr>
+      <td>350 E Roosevelt Rd</td>
       <td><b>MTM</b></td>
       <td class="revenue"><b>4 available</b></td>
     </tr>
@@ -475,17 +421,31 @@
       <td><b>14x/week</b></td>
     </tr>
     <tr>
+      <td>Friday</td>
+      <td>10:30 am</td>
+      <td><b>Modivcare</b></td>
+      <td>305 N Broadway St Newman 61942-9621</td>
+      <td><b>13x/week</b></td>
+    </tr>
+    <tr>
+      <td>Tuesday</td>
+      <td>9:00 AM</td>
+      <td><b>MTM</b></td>
+      <td>1441 N Shore Dr</td>
+      <td><b>13x/week</b></td>
+    </tr>
+    <tr>
+      <td>Tuesday</td>
+      <td>-----</td>
+      <td><b>MTM</b></td>
+      <td>18325 Pulaski Rd</td>
+      <td><b>13x/week</b></td>
+    </tr>
+    <tr>
       <td>Monday</td>
       <td>5:00 AM</td>
       <td><b>MTM</b></td>
       <td>201 Stillwell Ave</td>
-      <td><b>13x/week</b></td>
-    </tr>
-    <tr>
-      <td>Thursday</td>
-      <td>5:15 AM</td>
-      <td><b>MTM</b></td>
-      <td>35 Belle Crest Dr</td>
       <td><b>13x/week</b></td>
     </tr>
     <tr>
@@ -495,25 +455,15 @@
       <td>17568 Us-67</td>
       <td><b>13x/week</b></td>
     </tr>
-    <tr>
-      <td>Wednesday</td>
-      <td>10:30 am</td>
-      <td><b>Modivcare</b></td>
-      <td>305 N Broadway St Newman 61942-9621</td>
-      <td><b>13x/week</b></td>
-    </tr>
-    <tr>
-      <td>Friday</td>
-      <td>10:30 am</td>
-      <td><b>Modivcare</b></td>
-      <td>305 N Broadway St Newman 61942-9621</td>
-      <td><b>13x/week</b></td>
-    </tr>
   </table>
 </div>
 <div class="section">
   <div class="section-header" style="background:#27ae60;">
     📋 Driver Schedule — Load in Route Builder
+  </div>
+  <div style="background:#fff3cd;color:#856404;padding:6px 16px;
+              font-size:12px;font-weight:bold;border-bottom:1px solid #ffc107;">
+    ⚠️ Extension data from previous run — Stage 5 may have failed
   </div>
   <div id="nemt-driver-cards" style="padding:14px;">
     <div style="color:#888;font-style:italic;font-size:13px;">Loading…</div>

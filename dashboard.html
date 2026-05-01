@@ -58,7 +58,7 @@
 <div class="header">
   <div>
     <h1>🚗 NEMT Dispatch Dashboard</h1>
-    <div class="meta">Last updated: 05/01/2026 10:50 AM · Auto-refreshes every 30 min</div>
+    <div class="meta">Last updated: 05/01/2026 01:47 PM · Auto-refreshes every 30 min</div>
   </div>
   <a href="https://joegritter-bit.github.io/nemt-map/" class="map-btn" target="_blank">
     🗺️ Live Map
@@ -78,19 +78,19 @@
 <div class="section">
   <div class="stats-bar">
     <div class="stat">
-      <div class="val">7</div>
+      <div class="val">0</div>
       <div class="lbl">Available Shifts</div>
     </div>
     <div class="stat">
-      <div class="val" style="color:#27ae60">$2,510</div>
+      <div class="val" style="color:#27ae60">$0</div>
       <div class="lbl">Total Opportunity</div>
     </div>
     <div class="stat">
-      <div class="val">$47/hr</div>
+      <div class="val">$0/hr</div>
       <div class="lbl">Avg Rev/Hour</div>
     </div>
     <div class="stat">
-      <div class="val" style="color:#e74c3c">6</div>
+      <div class="val" style="color:#e74c3c">7</div>
       <div class="lbl">Regular Rider Alerts</div>
     </div>
   </div>
@@ -156,6 +156,15 @@
     </tr>
     <tr class="alert-row">
       <td>Upcoming</td>
+      <td>05/02/2026</td>
+      <td><b>8:00 AM</b></td>
+      <td><b>806 W 7th St, , West Frankfort Il, 62896</b><br><span style="font-size:10px;color:#888;">Matched: 806 W 7th St , West Frankfort, IL 62896</span></td>
+      <td>202 S Bentley St, , Marion Il, 62959</td>
+      <td>12.98</td>
+      <td>MTM</td>
+    </tr>
+    <tr class="alert-row">
+      <td>Upcoming</td>
       <td>05/08/2026</td>
       <td><b>9:00 AM</b></td>
       <td><b>11090 Washington Rd, , Clinton Il, 61727</b><br><span style="font-size:10px;color:#888;">Matched: 11090 Washington Rd , Clinton, IL 61727</span></td>
@@ -169,6 +178,9 @@
   <div class="section-header" style="background:#1a6b3c;">
     🏙️ Springfield Dispatch
   </div>
+  <div style="background:#fff3cd; color:#856404; padding:8px 16px; font-size:12px; font-weight:bold; border-bottom:1px solid #ffc107;">
+    ⚠️ Data from previous run — Stage 4 may have failed
+  </div>
   <table>
     <tr>
       <th>Date</th><th>Priority</th><th>Model</th>
@@ -176,7 +188,7 @@
       <th>Total</th><th>Top County</th><th>Route</th>
     </tr>
 
-    <tr>
+    <tr style="opacity:0.7;">
       <td>05/04/2026</td>
       <td>✅ GOOD</td>
       <td>Traditional</td>
@@ -187,7 +199,7 @@
       <td>Unknown</td>
       <td style="font-size:11px;">10:45 AM (2502 E Main St) ➡ 4:00 PM (1706 Springfiel)</td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td>05/04/2026</td>
       <td>✅ GOOD</td>
       <td>Traditional</td>
@@ -198,7 +210,7 @@
       <td>Unknown</td>
       <td style="font-size:11px;">10:30 AM (365 Valley View)</td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td>05/05/2026</td>
       <td>📋 STANDARD</td>
       <td>Clinic</td>
@@ -209,7 +221,7 @@
       <td>Unknown</td>
       <td style="font-size:11px;">8:00 AM (156 N Commercia)</td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td>05/05/2026</td>
       <td>📋 STANDARD</td>
       <td>Traditional</td>
@@ -220,7 +232,7 @@
       <td>Unknown</td>
       <td style="font-size:11px;">10:30 AM (7 Manor Ct) ➡ 2:00 PM (16 W South St)</td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td>05/06/2026</td>
       <td>✅ GOOD</td>
       <td>Traditional</td>
@@ -231,7 +243,7 @@
       <td>Unknown</td>
       <td style="font-size:11px;">3:00 PM (309 Tara Ave)</td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td>05/07/2026</td>
       <td>✅ GOOD</td>
       <td>Traditional</td>
@@ -245,18 +257,19 @@
   </table>
 </div>
 <div class="section">
-  <div class="section-header" style="background:#e67e22;">
-    💊 Clinic Routes (Multi-Load)
+  <div class="section-header" style="background:#7f8c8d;">
+    🕐 Historical Routes (data older than 150 minutes — pipeline may not have run)
   </div>
   <table>
     <tr>
-      <th>Date</th><th>Hub</th><th>Jobs</th>
+      <th>Date</th><th>Model</th><th>Hub</th><th>Jobs</th>
       <th>Shift</th><th>Rev/Hr</th><th>Total</th>
       <th>Top County</th><th>Route</th>
     </tr>
 
-    <tr>
+    <tr style="opacity:0.7;">
       <td>05/05/2026</td>
+      <td>Clinic</td>
       <td><b>Springfield</b></td>
       <td>1</td>
       <td>4.1h</td>
@@ -265,21 +278,20 @@
       <td>Unknown</td>
       <td style="font-size:11px;">8:00 AM (156 N Commercia)</td>
     </tr>
-  </table>
-</div>
-<div class="section">
-  <div class="section-header" style="background:#8e44ad;">
-    🏆 Traditional Routes
-  </div>
-  <table>
-    <tr>
-      <th>Date</th><th>Hub</th><th>Jobs</th>
-      <th>Shift</th><th>Rev/Hr</th><th>Total</th>
-      <th>Top County</th><th>Route</th>
+    <tr style="opacity:0.7;">
+      <td>05/01/2026</td>
+      <td>Traditional</td>
+      <td><b>Effingham</b></td>
+      <td>1</td>
+      <td>8.4h</td>
+      <td class="revenue">$64.66</td>
+      <td class="revenue"><b>$543.38</b></td>
+      <td>Unknown</td>
+      <td style="font-size:11px;">----- (809 W Church St)</td>
     </tr>
-
-    <tr>
+    <tr style="opacity:0.7;">
       <td>05/04/2026</td>
+      <td>Traditional</td>
       <td><b>Springfield</b></td>
       <td>2</td>
       <td>8.6h</td>
@@ -288,8 +300,9 @@
       <td>Unknown</td>
       <td style="font-size:11px;">10:45 AM (2502 E Main St) ➡ 4:00 PM (1706 Springfiel)</td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td>05/04/2026</td>
+      <td>Traditional</td>
       <td><b>Effingham</b></td>
       <td>2</td>
       <td>5.5h</td>
@@ -298,8 +311,9 @@
       <td>Unknown</td>
       <td style="font-size:11px;">10:00 AM (1115 N Trenary ) ➡ 11:25 AM (629 Jackson Ave)</td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td>05/04/2026</td>
+      <td>Traditional</td>
       <td><b>Springfield</b></td>
       <td>1</td>
       <td>8.5h</td>
@@ -308,8 +322,9 @@
       <td>Unknown</td>
       <td style="font-size:11px;">10:30 AM (365 Valley View)</td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td>05/05/2026</td>
+      <td>Traditional</td>
       <td><b>Springfield</b></td>
       <td>2</td>
       <td>6.3h</td>
@@ -318,8 +333,9 @@
       <td>Unknown</td>
       <td style="font-size:11px;">10:30 AM (7 Manor Ct) ➡ 2:00 PM (16 W South St)</td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td>05/06/2026</td>
+      <td>Traditional</td>
       <td><b>Springfield</b></td>
       <td>1</td>
       <td>9.1h</td>
@@ -328,8 +344,9 @@
       <td>Unknown</td>
       <td style="font-size:11px;">3:00 PM (309 Tara Ave)</td>
     </tr>
-    <tr>
+    <tr style="opacity:0.7;">
       <td>05/07/2026</td>
+      <td>Traditional</td>
       <td><b>Springfield</b></td>
       <td>2</td>
       <td>10.6h</td>
@@ -353,6 +370,11 @@
       <td class="revenue"><b>6 available</b></td>
     </tr>
     <tr>
+      <td>300 Dollar Tree Ln</td>
+      <td><b>MTM</b></td>
+      <td class="revenue"><b>5 available</b></td>
+    </tr>
+    <tr>
       <td>413 S State St</td>
       <td><b>MTM</b></td>
       <td class="revenue"><b>5 available</b></td>
@@ -364,11 +386,6 @@
     </tr>
     <tr>
       <td>315 E Mckinley Rd</td>
-      <td><b>MTM</b></td>
-      <td class="revenue"><b>5 available</b></td>
-    </tr>
-    <tr>
-      <td>300 Dollar Tree Ln</td>
       <td><b>MTM</b></td>
       <td class="revenue"><b>5 available</b></td>
     </tr>
@@ -390,17 +407,17 @@
     </tr>
 
     <tr>
-      <td>Sunday</td>
-      <td>8:00 AM</td>
-      <td><b>MTM</b></td>
-      <td>1607 Sangamon Dr</td>
-      <td><b>14x/week</b></td>
-    </tr>
-    <tr>
       <td>Monday</td>
       <td>6:00 PM</td>
       <td><b>MTM</b></td>
       <td>2618 Briar Trail</td>
+      <td><b>14x/week</b></td>
+    </tr>
+    <tr>
+      <td>Sunday</td>
+      <td>8:00 AM</td>
+      <td><b>MTM</b></td>
+      <td>1607 Sangamon Dr</td>
       <td><b>14x/week</b></td>
     </tr>
     <tr>
@@ -409,13 +426,6 @@
       <td><b>MTM</b></td>
       <td>1231 9th Ave</td>
       <td><b>14x/week</b></td>
-    </tr>
-    <tr>
-      <td>Wednesday</td>
-      <td>10:30 am</td>
-      <td><b>Modivcare</b></td>
-      <td>305 N Broadway St Newman 61942-9621</td>
-      <td><b>13x/week</b></td>
     </tr>
     <tr>
       <td>Friday</td>
@@ -432,17 +442,24 @@
       <td><b>13x/week</b></td>
     </tr>
     <tr>
-      <td>Tuesday</td>
-      <td>5:15 AM</td>
-      <td><b>MTM</b></td>
-      <td>35 Belle Crest Dr</td>
+      <td>Wednesday</td>
+      <td>10:30 am</td>
+      <td><b>Modivcare</b></td>
+      <td>305 N Broadway St Newman 61942-9621</td>
       <td><b>13x/week</b></td>
     </tr>
     <tr>
-      <td>Monday</td>
-      <td>5:00 AM</td>
+      <td>Friday</td>
+      <td>9:00 AM</td>
       <td><b>MTM</b></td>
-      <td>201 Stillwell Ave</td>
+      <td>17568 Us-67</td>
+      <td><b>13x/week</b></td>
+    </tr>
+    <tr>
+      <td>Thursday</td>
+      <td>9:00 AM</td>
+      <td><b>MTM</b></td>
+      <td>17568 Us-67</td>
       <td><b>13x/week</b></td>
     </tr>
   </table>
@@ -467,7 +484,7 @@
   /* driver → {dow(int): [{pickup_city, dropoff_city, completion_rate}]} */
   var PHANTOM_PATTERNS     = {"Debbie Reddish":{"1":[{"pickup_city":"Benton","dropoff_city":"Marion","completion_rate":0.5},{"pickup_city":"Kell","dropoff_city":"Marion","completion_rate":0.0},{"pickup_city":"Marion","dropoff_city":"Benton","completion_rate":0.5},{"pickup_city":"Marion","dropoff_city":"Kell","completion_rate":0.0}]},"Gary Davis":{"0":[{"pickup_city":"Decatur","dropoff_city":"Decatur","completion_rate":0.0}],"1":[{"pickup_city":"Decatur","dropoff_city":"Decatur","completion_rate":0.0769}],"2":[{"pickup_city":"Decatur","dropoff_city":"Decatur","completion_rate":0.0}],"3":[{"pickup_city":"Decatur","dropoff_city":"Decatur","completion_rate":0.0}],"4":[{"pickup_city":"Decatur","dropoff_city":"Decatur","completion_rate":0.0}],"5":[{"pickup_city":"Decatur","dropoff_city":"Decatur","completion_rate":0.0}]},"Jack Wiseman":{"0":[{"pickup_city":"Champaign","dropoff_city":"Danville","completion_rate":0.4583},{"pickup_city":"Danville","dropoff_city":"Champaign","completion_rate":0.3793}],"2":[{"pickup_city":"Champaign","dropoff_city":"Danville","completion_rate":0.5652},{"pickup_city":"Danville","dropoff_city":"Champaign","completion_rate":0.4815}],"3":[{"pickup_city":"Danville","dropoff_city":"Champaign","completion_rate":0.5526}],"5":[{"pickup_city":"Danville","dropoff_city":"Champaign","completion_rate":0.4}]},"Jill Obryan":{"0":[{"pickup_city":"Dix","dropoff_city":"Marion","completion_rate":0.0},{"pickup_city":"Marion","dropoff_city":"Dix","completion_rate":0.0},{"pickup_city":"Marion","dropoff_city":"Mount Vernon","completion_rate":0.0},{"pickup_city":"Mount Vernon","dropoff_city":"Marion","completion_rate":0.0}],"1":[{"pickup_city":"Dix","dropoff_city":"Marion","completion_rate":0.125},{"pickup_city":"Marion","dropoff_city":"Dix","completion_rate":0.125},{"pickup_city":"Marion","dropoff_city":"Mount Vernon","completion_rate":0.1538},{"pickup_city":"Mount Vernon","dropoff_city":"Marion","completion_rate":0.1429}],"2":[{"pickup_city":"Dix","dropoff_city":"Marion","completion_rate":0.0},{"pickup_city":"Marion","dropoff_city":"Dix","completion_rate":0.0},{"pickup_city":"Marion","dropoff_city":"Mount Vernon","completion_rate":0.0},{"pickup_city":"Mount Vernon","dropoff_city":"Marion","completion_rate":0.0}],"3":[{"pickup_city":"Dix","dropoff_city":"Marion","completion_rate":0.0},{"pickup_city":"Marion","dropoff_city":"Dix","completion_rate":0.0},{"pickup_city":"Marion","dropoff_city":"Mount Vernon","completion_rate":0.0},{"pickup_city":"Mount Vernon","dropoff_city":"Marion","completion_rate":0.0}],"4":[{"pickup_city":"Dix","dropoff_city":"Marion","completion_rate":0.0},{"pickup_city":"Marion","dropoff_city":"Dix","completion_rate":0.0},{"pickup_city":"Marion","dropoff_city":"Mount Vernon","completion_rate":0.0},{"pickup_city":"Mount Vernon","dropoff_city":"Marion","completion_rate":0.0}],"5":[{"pickup_city":"Dix","dropoff_city":"Marion","completion_rate":0.0},{"pickup_city":"Marion","dropoff_city":"Dix","completion_rate":0.0},{"pickup_city":"Marion","dropoff_city":"Mount Vernon","completion_rate":0.0},{"pickup_city":"Mount Vernon","dropoff_city":"Marion","completion_rate":0.0}]},"Norma Roderick":{"0":[{"pickup_city":"Champaign","dropoff_city":"Champaign","completion_rate":0.2632},{"pickup_city":"Champaign","dropoff_city":"Urbana","completion_rate":0.5625}],"1":[{"pickup_city":"Champaign","dropoff_city":"Champaign","completion_rate":0.3529},{"pickup_city":"Champaign","dropoff_city":"Urbana","completion_rate":0.5625},{"pickup_city":"Urbana","dropoff_city":"Champaign","completion_rate":0.5625}],"2":[{"pickup_city":"Champaign","dropoff_city":"Champaign","completion_rate":0.2963},{"pickup_city":"Champaign","dropoff_city":"Urbana","completion_rate":0.5625},{"pickup_city":"Urbana","dropoff_city":"Champaign","completion_rate":0.5625}],"3":[{"pickup_city":"Champaign","dropoff_city":"Champaign","completion_rate":0.4444},{"pickup_city":"Champaign","dropoff_city":"Urbana","completion_rate":0.5385},{"pickup_city":"Urbana","dropoff_city":"Champaign","completion_rate":0.5385}],"4":[{"pickup_city":"Champaign","dropoff_city":"Champaign","completion_rate":0.3333}],"5":[{"pickup_city":"Champaign","dropoff_city":"Champaign","completion_rate":0.5},{"pickup_city":"Champaign","dropoff_city":"Urbana","completion_rate":0.5385},{"pickup_city":"Urbana","dropoff_city":"Champaign","completion_rate":0.5385}]},"Steven Cothern":{"0":[{"pickup_city":"Clinton","dropoff_city":"Normal","completion_rate":0.0},{"pickup_city":"Normal","dropoff_city":"Clinton","completion_rate":0.0}],"1":[{"pickup_city":"Clinton","dropoff_city":"Normal","completion_rate":0.0},{"pickup_city":"Normal","dropoff_city":"Clinton","completion_rate":0.0}],"2":[{"pickup_city":"Clinton","dropoff_city":"Normal","completion_rate":0.0},{"pickup_city":"Normal","dropoff_city":"Clinton","completion_rate":0.0}],"4":[{"pickup_city":"Clinton","dropoff_city":"Normal","completion_rate":0.0},{"pickup_city":"Normal","dropoff_city":"Clinton","completion_rate":0.0}],"5":[{"pickup_city":"Clinton","dropoff_city":"Normal","completion_rate":0.0},{"pickup_city":"Normal","dropoff_city":"Clinton","completion_rate":0.0}]},"Tammy Goodman":{"2":[{"pickup_city":"Decatur","dropoff_city":"Decatur","completion_rate":0.0}],"3":[{"pickup_city":"Decatur","dropoff_city":"Decatur","completion_rate":0.0}]}};
   /* driver → [{day, window, broker, route, price}] */
-  var EXTENSIONS_BY_DRIVER = {"Robert McGee":[{"day":"Monday 05/04","window":"After 10:27","broker":"MTM","route":"2502 E Main St \u27a1\ufe0f 108 Robinson St \ud83d\udd04","price":"$334.70"}],"7":[{"day":"Tuesday 05/05","window":"Before 15:00","broker":"MTM","route":"114 Pennsylvania Ave \u27a1\ufe0f 600 N Keller Dr \ud83d\udd04","price":"$311.41"},{"day":"Tuesday 05/05","window":"Before 15:00","broker":"MTM","route":"156 N Commercial St \u27a1\ufe0f 120 N 11th St \ud83d\udd04","price":"$177.07"},{"day":"Tuesday 05/05","window":"Before 15:00","broker":"MTM","route":"7 Manor Ct \u27a1\ufe0f 2239 E Cook St \ud83d\udd04","price":"$130.00"},{"day":"Tuesday 05/05","window":"Before 15:00","broker":"MTM","route":"1305 Bailey Ln \u27a1\ufe0f 1400 Pin Oak Dr \ud83d\udd04","price":"$108.10"},{"day":"Tuesday 05/05","window":"Before 15:00","broker":"MTM","route":"401 W Lake St \u27a1\ufe0f 47 Clock Tower Plaza \ud83d\udd04","price":"$89.23"},{"day":"Tuesday 05/05","window":"Before 15:00","broker":"MTM","route":"9450 Booster Station Rd \u27a1\ufe0f 4700 Memorial Dr \ud83d\udd04","price":"$68.92"},{"day":"Tuesday 05/05","window":"Before 15:00","broker":"MTM","route":"1441 N Shore Dr \u27a1\ufe0f 2720 W Locust St \ud83d\udd04","price":"$55.36"},{"day":"Tuesday 05/05","window":"Before 15:00","broker":"MTM","route":"1986 Spruce St \u27a1\ufe0f 400 S Kennedy Dr \ud83d\udd04","price":"$40.00"},{"day":"Tuesday 05/05","window":"Before 15:00","broker":"MTM","route":"611 Country Club Hts \u27a1\ufe0f 1118 Hampshire St \ud83d\udd04","price":"$40.00"},{"day":"Tuesday 05/05","window":"Before 15:00","broker":"MTM","route":"605 E Livingston St \u27a1\ufe0f 111 Spring St \ud83d\udd04","price":"$40.00"},{"day":"Tuesday 05/05","window":"Before 15:00","broker":"MTM","route":"847 E Jefferson St \u27a1\ufe0f 333 Us-6 \ud83d\udd04","price":"$40.00"}],"Jill O'Bryan":[{"day":"Monday 05/04","window":"After 07:57","broker":"MTM","route":"629 Jackson Ave \u27a1\ufe0f 8 Doctors Park Rd \ud83d\udd04","price":"$159.46"},{"day":"Monday 05/04","window":"After 07:57","broker":"MTM","route":"1115 N Trenary St \u27a1\ufe0f 1201 Ricker Dr \ud83d\udd04","price":"$100.00"},{"day":"Tuesday 05/05","window":"After 07:57","broker":"MTM","route":"11 Richmond Heights \u27a1\ufe0f 402 N Pleasant Ave \ud83d\udd04","price":"$100.00"},{"day":"Tuesday 05/05","window":"After 07:57","broker":"MTM","route":"4106 Oak Grove Rd \u27a1\ufe0f 904 M.l.k. Jr Dr \ud83d\udd04","price":"$90.34"}],"Debbie Reddish":[{"day":"Tuesday 05/05","window":"After 09:27","broker":"MTM","route":"1405 E Main St \u27a1\ufe0f 800 N Main St \ud83d\udd04","price":"$151.87"},{"day":"Tuesday 05/05","window":"After 09:27","broker":"MTM","route":"700 S Lewis Ln \u27a1\ufe0f 1400 Pin Oak Dr \ud83d\udd04","price":"$43.51"}],"Adam Scott Watkins":[{"day":"Thursday 05/07","window":"After 12:42","broker":"MTM","route":"1706 Springfield Rd  \u27a1\ufe0f 1003 Martin Luther King Dr \ud83d\udd04","price":"$130.00"},{"day":"Monday 05/04","window":"After 12:42","broker":"MTM","route":"1706 Springfield Rd  \u27a1\ufe0f 1003 Martin Luther King Dr \ud83d\udd04","price":"$130.00"},{"day":"Tuesday 05/05","window":"Before 11:45","broker":"MTM","route":"1986 Spruce St \u27a1\ufe0f 400 S Kennedy Dr \ud83d\udd04","price":"$40.00"},{"day":"Monday 05/04","window":"After 12:42","broker":"MTM","route":"1331 W Monroe St \u27a1\ufe0f 2406 E Empire St \ud83d\udd04","price":"$40.00"},{"day":"Wednesday 05/06","window":"After 10:12","broker":"MTM","route":"716 W Walnut St \u27a1\ufe0f 2406 E Empire St \ud83d\udd04","price":"$40.00"}],"Steven Ray Cothern":[{"day":"Thursday 05/07","window":"After 12:42","broker":"MTM","route":"1706 Springfield Rd  \u27a1\ufe0f 1003 Martin Luther King Dr \ud83d\udd04","price":"$130.00"},{"day":"Monday 05/04","window":"After 12:42","broker":"MTM","route":"1706 Springfield Rd  \u27a1\ufe0f 1003 Martin Luther King Dr \ud83d\udd04","price":"$130.00"},{"day":"Monday 05/04","window":"After 12:42","broker":"MTM","route":"1331 W Monroe St \u27a1\ufe0f 2406 E Empire St \ud83d\udd04","price":"$40.00"}],"Steven Schumacher":[{"day":"Friday 05/08","window":"10:27-17:30","broker":"MTM","route":"824 N Division Ave \u27a1\ufe0f 509 W University Ave \ud83d\udd04","price":"$110.00"},{"day":"Monday 05/04","window":"After 09:57","broker":"MTM","route":"222 N State St \u27a1\ufe0f 2300 S 1st St \ud83d\udd04","price":"$110.00"}],"TREVER FLOYD":[{"day":"Friday 05/08","window":"After 09:57","broker":"MTM","route":"824 N Division Ave \u27a1\ufe0f 509 W University Ave \ud83d\udd04","price":"$110.00"},{"day":"Monday 05/04","window":"After 12:27","broker":"MTM","route":"1331 W Monroe St \u27a1\ufe0f 2406 E Empire St \ud83d\udd04","price":"$40.00"}],"Michael Esker":[{"day":"Monday 05/04","window":"After 10:27","broker":"MTM","route":"222 N State St \u27a1\ufe0f 2300 S 1st St \ud83d\udd04","price":"$110.00"}],"Bradford Thoele":[{"day":"Monday 05/04","window":"After 11:27","broker":"MTM","route":"222 N State St \u27a1\ufe0f 2300 S 1st St \ud83d\udd04","price":"$110.00"}],"Shannon Henderson":[{"day":"Friday 05/08","window":"After 10:27","broker":"MTM","route":"824 N Division Ave \u27a1\ufe0f 509 W University Ave \ud83d\udd04","price":"$110.00"},{"day":"Monday 05/04","window":"After 10:27","broker":"MTM","route":"222 N State St \u27a1\ufe0f 2300 S 1st St \ud83d\udd04","price":"$110.00"}],"Stefanie Wofford":[{"day":"Friday 05/08","window":"After 10:27","broker":"MTM","route":"824 N Division Ave \u27a1\ufe0f 509 W University Ave \ud83d\udd04","price":"$110.00"}],"DERRON JENKINS":[{"day":"Friday 05/08","window":"After 11:27","broker":"MTM","route":"824 N Division Ave \u27a1\ufe0f 509 W University Ave \ud83d\udd04","price":"$110.00"}],"Nancy Merritt":[{"day":"Wednesday 05/06","window":"After 09:57","broker":"MTM","route":"716 W Walnut St \u27a1\ufe0f 2406 E Empire St \ud83d\udd04","price":"$40.00"},{"day":"Monday 05/04","window":"After 12:42","broker":"MTM","route":"1331 W Monroe St \u27a1\ufe0f 2406 E Empire St \ud83d\udd04","price":"$40.00"}],"Michael Schabbing":[{"day":"Monday 05/04","window":"After 12:42","broker":"MTM","route":"1331 W Monroe St \u27a1\ufe0f 2406 E Empire St \ud83d\udd04","price":"$40.00"}],"Gary D Davis":[{"day":"Monday 05/04","window":"After 12:42","broker":"MTM","route":"1331 W Monroe St \u27a1\ufe0f 2406 E Empire St \ud83d\udd04","price":"$40.00"}],"David Fagan":[{"day":"Monday 05/04","window":"After 12:42","broker":"MTM","route":"1331 W Monroe St \u27a1\ufe0f 2406 E Empire St \ud83d\udd04","price":"$40.00"}],"Norma Roderick":[{"day":"Monday 05/04","window":"After 12:42","broker":"MTM","route":"1331 W Monroe St \u27a1\ufe0f 2406 E Empire St \ud83d\udd04","price":"$40.00"}]};
+  var EXTENSIONS_BY_DRIVER = {"7":[{"day":"Tuesday 05/05","window":"Before 15:00","broker":"MTM","route":"114 Pennsylvania Ave \u27a1\ufe0f 600 N Keller Dr \ud83d\udd04","price":"$311.41"},{"day":"Tuesday 05/05","window":"Before 15:00","broker":"MTM","route":"156 N Commercial St \u27a1\ufe0f 120 N 11th St \ud83d\udd04","price":"$177.07"},{"day":"Tuesday 05/05","window":"Before 15:00","broker":"MTM","route":"7 Manor Ct \u27a1\ufe0f 2239 E Cook St \ud83d\udd04","price":"$130.00"},{"day":"Tuesday 05/05","window":"Before 15:00","broker":"MTM","route":"1305 Bailey Ln \u27a1\ufe0f 1400 Pin Oak Dr \ud83d\udd04","price":"$108.10"},{"day":"Tuesday 05/05","window":"Before 15:00","broker":"MTM","route":"401 W Lake St \u27a1\ufe0f 47 Clock Tower Plaza \ud83d\udd04","price":"$89.23"},{"day":"Tuesday 05/05","window":"Before 15:00","broker":"MTM","route":"9450 Booster Station Rd \u27a1\ufe0f 4700 Memorial Dr \ud83d\udd04","price":"$68.92"},{"day":"Tuesday 05/05","window":"Before 15:00","broker":"MTM","route":"1441 N Shore Dr \u27a1\ufe0f 2720 W Locust St \ud83d\udd04","price":"$55.36"},{"day":"Tuesday 05/05","window":"Before 15:00","broker":"MTM","route":"1986 Spruce St \u27a1\ufe0f 400 S Kennedy Dr \ud83d\udd04","price":"$40.00"},{"day":"Tuesday 05/05","window":"Before 15:00","broker":"MTM","route":"611 Country Club Hts \u27a1\ufe0f 1118 Hampshire St \ud83d\udd04","price":"$40.00"},{"day":"Tuesday 05/05","window":"Before 15:00","broker":"MTM","route":"847 E Jefferson St \u27a1\ufe0f 333 Us-6 \ud83d\udd04","price":"$40.00"},{"day":"Tuesday 05/05","window":"Before 15:00","broker":"MTM","route":"605 E Livingston St \u27a1\ufe0f 111 Spring St \ud83d\udd04","price":"$40.00"}],"Jill O'Bryan":[{"day":"Monday 05/04","window":"After 07:57","broker":"MTM","route":"629 Jackson Ave \u27a1\ufe0f 8 Doctors Park Rd \ud83d\udd04","price":"$159.46"},{"day":"Monday 05/04","window":"After 07:57","broker":"MTM","route":"1115 N Trenary St \u27a1\ufe0f 1201 Ricker Dr \ud83d\udd04","price":"$100.00"},{"day":"Tuesday 05/05","window":"After 07:57","broker":"MTM","route":"11 Richmond Heights \u27a1\ufe0f 402 N Pleasant Ave \ud83d\udd04","price":"$100.00"},{"day":"Tuesday 05/05","window":"After 07:57","broker":"MTM","route":"4106 Oak Grove Rd \u27a1\ufe0f 904 M.l.k. Jr Dr \ud83d\udd04","price":"$90.34"}],"Debbie Reddish":[{"day":"Tuesday 05/05","window":"After 09:27","broker":"MTM","route":"1405 E Main St \u27a1\ufe0f 800 N Main St \ud83d\udd04","price":"$151.87"},{"day":"Tuesday 05/05","window":"After 09:27","broker":"MTM","route":"700 S Lewis Ln \u27a1\ufe0f 1400 Pin Oak Dr \ud83d\udd04","price":"$43.51"}],"Adam Scott Watkins":[{"day":"Thursday 05/07","window":"After 12:42","broker":"MTM","route":"1706 Springfield Rd  \u27a1\ufe0f 1003 Martin Luther King Dr \ud83d\udd04","price":"$130.00"},{"day":"Monday 05/04","window":"After 12:42","broker":"MTM","route":"1706 Springfield Rd  \u27a1\ufe0f 1003 Martin Luther King Dr \ud83d\udd04","price":"$130.00"},{"day":"Tuesday 05/05","window":"Before 11:45","broker":"MTM","route":"1986 Spruce St \u27a1\ufe0f 400 S Kennedy Dr \ud83d\udd04","price":"$40.00"},{"day":"Monday 05/04","window":"After 12:42","broker":"MTM","route":"1331 W Monroe St \u27a1\ufe0f 2406 E Empire St \ud83d\udd04","price":"$40.00"},{"day":"Wednesday 05/06","window":"After 10:12","broker":"MTM","route":"716 W Walnut St \u27a1\ufe0f 2406 E Empire St \ud83d\udd04","price":"$40.00"}],"Steven Ray Cothern":[{"day":"Thursday 05/07","window":"After 12:42","broker":"MTM","route":"1706 Springfield Rd  \u27a1\ufe0f 1003 Martin Luther King Dr \ud83d\udd04","price":"$130.00"},{"day":"Monday 05/04","window":"After 12:42","broker":"MTM","route":"1706 Springfield Rd  \u27a1\ufe0f 1003 Martin Luther King Dr \ud83d\udd04","price":"$130.00"},{"day":"Monday 05/04","window":"After 12:42","broker":"MTM","route":"1331 W Monroe St \u27a1\ufe0f 2406 E Empire St \ud83d\udd04","price":"$40.00"}],"Steven Schumacher":[{"day":"Friday 05/08","window":"10:27-17:30","broker":"MTM","route":"824 N Division Ave \u27a1\ufe0f 509 W University Ave \ud83d\udd04","price":"$110.00"},{"day":"Monday 05/04","window":"After 09:57","broker":"MTM","route":"222 N State St \u27a1\ufe0f 2300 S 1st St \ud83d\udd04","price":"$110.00"}],"TREVER FLOYD":[{"day":"Friday 05/08","window":"After 09:57","broker":"MTM","route":"824 N Division Ave \u27a1\ufe0f 509 W University Ave \ud83d\udd04","price":"$110.00"},{"day":"Monday 05/04","window":"After 12:27","broker":"MTM","route":"1331 W Monroe St \u27a1\ufe0f 2406 E Empire St \ud83d\udd04","price":"$40.00"}],"Michael Esker":[{"day":"Monday 05/04","window":"After 10:27","broker":"MTM","route":"222 N State St \u27a1\ufe0f 2300 S 1st St \ud83d\udd04","price":"$110.00"}],"Bradford Thoele":[{"day":"Monday 05/04","window":"After 11:27","broker":"MTM","route":"222 N State St \u27a1\ufe0f 2300 S 1st St \ud83d\udd04","price":"$110.00"}],"Shannon Henderson":[{"day":"Friday 05/08","window":"After 10:27","broker":"MTM","route":"824 N Division Ave \u27a1\ufe0f 509 W University Ave \ud83d\udd04","price":"$110.00"},{"day":"Monday 05/04","window":"After 10:27","broker":"MTM","route":"222 N State St \u27a1\ufe0f 2300 S 1st St \ud83d\udd04","price":"$110.00"}],"Stefanie Wofford":[{"day":"Friday 05/08","window":"After 10:27","broker":"MTM","route":"824 N Division Ave \u27a1\ufe0f 509 W University Ave \ud83d\udd04","price":"$110.00"}],"DERRON JENKINS":[{"day":"Friday 05/08","window":"After 11:27","broker":"MTM","route":"824 N Division Ave \u27a1\ufe0f 509 W University Ave \ud83d\udd04","price":"$110.00"}],"Nancy Merritt":[{"day":"Wednesday 05/06","window":"After 09:57","broker":"MTM","route":"716 W Walnut St \u27a1\ufe0f 2406 E Empire St \ud83d\udd04","price":"$40.00"},{"day":"Monday 05/04","window":"After 12:42","broker":"MTM","route":"1331 W Monroe St \u27a1\ufe0f 2406 E Empire St \ud83d\udd04","price":"$40.00"}],"Michael Schabbing":[{"day":"Monday 05/04","window":"After 12:42","broker":"MTM","route":"1331 W Monroe St \u27a1\ufe0f 2406 E Empire St \ud83d\udd04","price":"$40.00"}],"Gary D Davis":[{"day":"Monday 05/04","window":"After 12:42","broker":"MTM","route":"1331 W Monroe St \u27a1\ufe0f 2406 E Empire St \ud83d\udd04","price":"$40.00"}],"David Fagan":[{"day":"Monday 05/04","window":"After 12:42","broker":"MTM","route":"1331 W Monroe St \u27a1\ufe0f 2406 E Empire St \ud83d\udd04","price":"$40.00"}],"Norma Roderick":[{"day":"Monday 05/04","window":"After 12:42","broker":"MTM","route":"1331 W Monroe St \u27a1\ufe0f 2406 E Empire St \ud83d\udd04","price":"$40.00"}]};
 
   /* ── Styles ────────────────────────────────────────────────────────────── */
   var CARD_STYLE = [

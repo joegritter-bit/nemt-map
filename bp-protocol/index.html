@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BP & Cholesterol Protocol v2</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f1117; color: #e8eaf0; line-height: 1.5; padding: 16px; }
+  h1 { font-size: 1.3rem; font-weight: 700; text-align: center; color: #fff; margin-bottom: 4px; }
+  .subtitle { text-align: center; font-size: 0.75rem; color: #6b7280; margin-bottom: 20px; }
+  h2 { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #9ca3af; margin-bottom: 10px; }
+  h3 { font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; }
+  .section { background: #1a1d27; border-radius: 12px; padding: 14px; margin-bottom: 14px; border: 1px solid #2a2d3a; }
+  .tag { display: inline-block; font-size: 0.65rem; font-weight: 600; padding: 2px 7px; border-radius: 20px; margin-right: 4px; margin-bottom: 4px; }
+  .tag-bp { background: #1e3a5f; color: #60a5fa; }
+  .tag-chol { background: #1e3d2f; color: #4ade80; }
+  .tag-both { background: #3d2a1e; color: #fb923c; }
+  .row { display: flex; gap: 10px; margin-bottom: 10px; }
+  .card { flex: 1; background: #12151f; border-radius: 10px; padding: 12px; border: 1px solid #2a2d3a; }
+  .time-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; padding: 3px 8px; border-radius: 6px; display: inline-block; }
+  .morning { background: #2d1f00; color: #fbbf24; }
+  .midday { background: #1a2d1a; color: #4ade80; }
+  .evening { background: #1a1533; color: #a78bfa; }
+  .item { display: flex; align-items: flex-start; gap: 8px; padding: 6px 0; border-bottom: 1px solid #1f2232; }
+  .item:last-child { border-bottom: none; }
+  .item-dot { width: 6px; height: 6px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+  .dot-bp { background: #60a5fa; }
+  .dot-chol { background: #4ade80; }
+  .dot-both { background: #fb923c; }
+  .item-text { font-size: 0.8rem; }
+  .item-sub { font-size: 0.7rem; color: #6b7280; margin-top: 1px; }
+  .dose { font-size: 0.7rem; font-weight: 600; color: #9ca3af; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .metric-card { background: #12151f; border-radius: 10px; padding: 10px; border: 1px solid #2a2d3a; text-align: center; }
+  .metric-val { font-size: 1.3rem; font-weight: 700; color: #60a5fa; }
+  .metric-label { font-size: 0.65rem; color: #6b7280; margin-top: 2px; }
+  .flag { background: #2d1a1a; border-left: 3px solid #ef4444; border-radius: 6px; padding: 8px 10px; font-size: 0.75rem; color: #fca5a5; margin-top: 8px; }
+  .tip { background: #1a2d1a; border-left: 3px solid #4ade80; border-radius: 6px; padding: 8px 10px; font-size: 0.75rem; color: #86efac; margin-top: 8px; }
+  .info { background: #1a1f2d; border-left: 3px solid #60a5fa; border-radius: 6px; padding: 8px 10px; font-size: 0.75rem; color: #93c5fd; margin-top: 8px; }
+  .food-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .food-item { background: #12151f; border-radius: 8px; padding: 8px 10px; border: 1px solid #2a2d3a; }
+  .food-name { font-size: 0.78rem; font-weight: 600; }
+  .food-benefit { font-size: 0.68rem; color: #6b7280; margin-top: 2px; }
+  .exercise-item { background: #12151f; border-radius: 8px; padding: 10px; border: 1px solid #2a2d3a; margin-bottom: 6px; }
+  .ex-name { font-size: 0.82rem; font-weight: 600; }
+  .ex-detail { font-size: 0.7rem; color: #9ca3af; margin-top: 3px; }
+  .legend { display: flex; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+  .leg-item { display: flex; align-items: center; gap: 5px; font-size: 0.7rem; color: #9ca3af; }
+  .avoid-item { background: #1f1215; border-radius: 8px; padding: 8px 10px; border: 1px solid #3a1f2a; margin-bottom: 6px; }
+  .avoid-name { font-weight: 600; color: #f87171; font-size: 0.78rem; }
+  .avoid-why { font-size: 0.68rem; color: #6b7280; margin-top: 2px; }
+  .highlight { color: #fbbf24; font-weight: 600; }
+  .tea-row { display: flex; gap: 8px; }
+  .tea-card { flex: 1; background: #12151f; border-radius: 10px; padding: 10px; border: 1px solid #2a2d3a; }
+  .tea-title { font-size: 0.78rem; font-weight: 700; margin-bottom: 4px; }
+  .tea-time { font-size: 0.65rem; color: #fbbf24; margin-bottom: 6px; }
+  .tea-detail { font-size: 0.7rem; color: #9ca3af; }
+  .timeline { position: relative; }
+  .tl-item { display: flex; gap: 12px; margin-bottom: 12px; }
+  .tl-left { display: flex; flex-direction: column; align-items: center; width: 60px; flex-shrink: 0; }
+  .tl-time { font-size: 0.65rem; font-weight: 700; color: #fbbf24; text-align: center; background: #2d1f00; padding: 3px 6px; border-radius: 6px; width: 100%; text-align: center; }
+  .tl-line { width: 2px; background: #2a2d3a; flex: 1; margin-top: 4px; }
+  .tl-content { background: #12151f; border-radius: 10px; padding: 10px 12px; border: 1px solid #2a2d3a; flex: 1; }
+  .tl-title { font-size: 0.82rem; font-weight: 600; margin-bottom: 4px; }
+  .tl-detail { font-size: 0.7rem; color: #9ca3af; }
+  .tl-tags { margin-top: 5px; }
+  .potassium-item { background: #12151f; border-radius: 8px; padding: 8px 10px; border: 1px solid #2a2d3a; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; }
+  .pot-food { font-size: 0.78rem; font-weight: 600; }
+  .pot-amount { font-size: 0.78rem; font-weight: 700; color: #60a5fa; }
+  .pot-note { font-size: 0.65rem; color: #6b7280; margin-top: 1px; }
+  .new-badge { display: inline-block; background: #1e3d2f; color: #4ade80; font-size: 0.6rem; font-weight: 700; padding: 1px 6px; border-radius: 10px; margin-left: 5px; vertical-align: middle; }
+</style>
+</head>
+<body>
+
+<h1>🫀 BP & Cholesterol Protocol</h1>
+<p class="subtitle">2-Week Screening Prep — Updated Daily Reference</p>
+
+<!-- EXPECTED RESULTS -->
+<div class="section">
+  <h2>Expected Results (2 Weeks — Full Protocol)</h2>
+  <div class="grid-3">
+    <div class="metric-card">
+      <div class="metric-val">10–15</div>
+      <div class="metric-label">pts Systolic BP drop</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-val">8–15</div>
+      <div class="metric-label">pts LDL drop</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-val">15–20%</div>
+      <div class="metric-label">Triglyceride reduction</div>
+    </div>
+  </div>
+</div>
+
+<!-- LEGEND -->
+<div class="legend">
+  <div class="leg-item"><div class="item-dot dot-bp"></div> BP</div>
+  <div class="leg-item"><div class="item-dot dot-chol"></div> Cholesterol</div>
+  <div class="leg-item"><div class="item-dot dot-both"></div> Both</div>
+</div>
+
+<!-- FULL DAY TIMELINE -->
+<div class="section">
+  <h2>Full Day Timeline</h2>
+  <div class="timeline">
+
+    <div class="tl-item">
+      <div class="tl-left"><div class="tl-time">Wake</div><div class="tl-line"></div></div>
+      <div class="tl-content">
+        <div class="tl-title">💧 Hibiscus Cold Brew (prepped night before)</div>
+        <div class="tl-detail">Grab from fridge. Drink 2–3 cups of cold brew (1.5–2 tbsp Frontier loose leaf steeped overnight). Your heaviest BP lever of the day.</div>
+        <div class="tl-tags"><span class="tag tag-bp">BP</span></div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-left"><div class="tl-time">Morning</div><div class="tl-line"></div></div>
+      <div class="tl-content">
+        <div class="tl-title">💊 Morning Supplements (with breakfast)</div>
+        <div class="tl-detail">
+          • Total Beets — per label, before food<br>
+          • CoQ10 300mg — with food (fat soluble)<br>
+          • Fish Oil 1400mg × 1 softgel — with food<br>
+          • Garlique — with food<br>
+          • Vitamin D3/K2 — with food (if obtained)
+        </div>
+        <div class="tl-tags"><span class="tag tag-both">Both</span><span class="tag tag-bp">BP</span></div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-left"><div class="tl-time">Breakfast</div><div class="tl-line"></div></div>
+      <div class="tl-content">
+        <div class="tl-title">🥣 Fiber Breakfast Bowl</div>
+        <div class="tl-detail">
+          Cooked sprouted oats + ground flax (2 tbsp) + chia seeds + hemp hearts + pumpkin seeds (unsalted) + cacao nibs + frozen 4-berry blend + inulin powder (1 tsp) + psyllium husk (1 tbsp) + banana
+        </div>
+        <div class="tl-tags"><span class="tag tag-both">Both</span><span class="tag tag-chol">Cholesterol</span></div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-left"><div class="tl-time">After Bowl</div><div class="tl-line"></div></div>
+      <div class="tl-content">
+        <div class="tl-title">🥤 Nitrate Shot Smoothie <span class="new-badge">NEW</span></div>
+        <div class="tl-detail">2 cups raw spinach + ½ cup arugula + ¾ cup frozen berries + ½ frozen banana + ¾ cup oat milk + ¼ cup water + 1 tbsp cacao nibs. Blend 60 sec. Drink immediately — nitrates degrade with air.</div>
+        <div class="tl-tags"><span class="tag tag-bp">BP</span><span class="tag tag-both">Both</span></div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-left"><div class="tl-time">Morning</div><div class="tl-line"></div></div>
+      <div class="tl-content">
+        <div class="tl-title">🫁 IMST Device — 5 Minutes <span class="new-badge">NEW</span></div>
+        <div class="tl-detail">30 breaths at 75% max resistance. Highest BP benefit-to-time ratio in your entire protocol. 9pt systolic drop in studies. Do daily — same time every morning.</div>
+        <div class="tl-tags"><span class="tag tag-bp">BP</span></div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-left"><div class="tl-time">Morning</div><div class="tl-line"></div></div>
+      <div class="tl-content">
+        <div class="tl-title">🚿 Cold Shower Finish</div>
+        <div class="tl-detail">End every shower with 2–3 min cold. Trains vascular tone, activates dive reflex. Free, compounds over 2 weeks.</div>
+        <div class="tl-tags"><span class="tag tag-bp">BP</span></div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-left"><div class="tl-time">Midday</div><div class="tl-line"></div></div>
+      <div class="tl-content">
+        <div class="tl-title">🥗 Triple Green Massaged Salad</div>
+        <div class="tl-detail">
+          Earthbound kale (massage 3 min with EVOO + lemon + garlic) + arugula + spinach — gentle toss only for these two. Top with avocado + pumpkin seeds + hemp hearts + cacao nibs + walnuts. Add salmon or lentils for potassium + protein.
+        </div>
+        <div class="tl-tags"><span class="tag tag-bp">BP</span><span class="tag tag-both">Both</span></div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-left"><div class="tl-time">Exercise</div><div class="tl-line"></div></div>
+      <div class="tl-content">
+        <div class="tl-title">🏃 Alternate Day Exercise Protocol</div>
+        <div class="tl-detail">
+          <strong>Aerobic days:</strong> 30 min brisk walk or bike. Raises HDL, lowers triglycerides.<br>
+          <strong>Isometric days:</strong> Wall sits OR freestanding static squat holds — 4 sets × 2 min / 2 min rest. Progress to freestanding as strength allows.<br>
+          <strong>Stop exercise 24 hrs before screening.</strong>
+        </div>
+        <div class="tl-tags"><span class="tag tag-both">Both</span></div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-left"><div class="tl-time">Afternoon</div><div class="tl-line"></div></div>
+      <div class="tl-content">
+        <div class="tl-title">🍠 Potassium-Rich Snack or Side</div>
+        <div class="tl-detail">Sweet potato (950mg) OR white beans/lentils (730–1,190mg) OR edamame (740mg) OR avocado if not already in salad. Target 4,700mg/day total potassium.</div>
+        <div class="tl-tags"><span class="tag tag-bp">BP</span></div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-left"><div class="tl-time">Breathing</div><div class="tl-line"></div></div>
+      <div class="tl-content">
+        <div class="tl-title">🧘 10-Min Breathing Protocol</div>
+        <div class="tl-detail">4 sec inhale / 6 sec exhale. 6 breaths/min. Sit quietly, eyes closed. Activates parasympathetic. Do anytime — pairs well with IMST session or pre-bed wind down.</div>
+        <div class="tl-tags"><span class="tag tag-bp">BP</span></div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-left"><div class="tl-time">Dinner</div><div class="tl-line"></div></div>
+      <div class="tl-content">
+        <div class="tl-title">🍽️ Dinner — Clean Plate Rules</div>
+        <div class="tl-detail">
+          Lean protein (salmon, chicken, legumes) + cooked leafy greens sautéed in EVOO + sweet potato or lentils. No added salt. No refined carbs. No alcohol. Fermented food side (unsweetened yogurt, kimchi, or kefir).
+        </div>
+        <div class="tl-tags"><span class="tag tag-both">Both</span></div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-left"><div class="tl-time">Evening</div><div class="tl-line"></div></div>
+      <div class="tl-content">
+        <div class="tl-title">💊 Evening Supplements</div>
+        <div class="tl-detail">
+          • Magnesium Citrate 500mg (2 softgels) — bedtime, 2+ hrs after spinach meal<br>
+          • L-Theanine 200mg softgel<br>
+          • Ashwagandha KSM-66 1,000mg (2 caps) — with food <span class="new-badge">NEW</span><br>
+          • Fish Oil 1400mg × 1 softgel (split dose)<br>
+          • Garlique × 1 (if 2x/day label)
+        </div>
+        <div class="tl-tags"><span class="tag tag-bp">BP</span><span class="tag tag-both">Both</span></div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-left"><div class="tl-time">Bedtime</div><div class="tl-line"></div></div>
+      <div class="tl-content">
+        <div class="tl-title">🍵 Bigelow Whispering Wildflowers Tea</div>
+        <div class="tl-detail">Steep 4 min. Contains chamomile, hibiscus, passionflower, tulsi, elderberries, L-theanine. Stacks with your L-theanine softgel + ashwagandha for compounded cortisol and nervous system wind-down.</div>
+        <div class="tl-tags"><span class="tag tag-bp">BP</span></div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-left"><div class="tl-time">Night Prep</div><div class="tl-line"></div></div>
+      <div class="tl-content">
+        <div class="tl-title">🫙 Set Hibiscus Cold Brew for Tomorrow</div>
+        <div class="tl-detail">1.5–2 tbsp Frontier loose leaf in 2–3 cups cold water in mason jar. In fridge. 10–12 hrs steep. Ready when you wake up.</div>
+        <div class="tl-tags"><span class="tag tag-bp">BP</span></div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-left"><div class="tl-time">Sleep</div></div>
+      <div class="tl-content">
+        <div class="tl-title">😴 7–8 Hours — Non-Negotiable</div>
+        <div class="tl-detail">Poor sleep directly raises BP and LDL. Your entire evening supplement stack is designed to optimize this. Phones away, dark room, consistent bedtime.</div>
+        <div class="tl-tags"><span class="tag tag-both">Both</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- POTASSIUM TRACKER -->
+<div class="section">
+  <h2>Daily Potassium Target: 4,700mg</h2>
+  <div class="potassium-item">
+    <div><div class="pot-food">Avocado (1 whole)</div><div class="pot-note">In salad or as snack</div></div>
+    <div class="pot-amount">975mg</div>
+  </div>
+  <div class="potassium-item">
+    <div><div class="pot-food">Sweet potato (1 large)</div><div class="pot-note">Microwave — easiest daily add</div></div>
+    <div class="pot-amount">950mg</div>
+  </div>
+  <div class="potassium-item">
+    <div><div class="pot-food">White beans or lentils (1 cup)</div><div class="pot-note">In salad, soup, or as side</div></div>
+    <div class="pot-amount">730–1,190mg</div>
+  </div>
+  <div class="potassium-item">
+    <div><div class="pot-food">Spinach — cooked (1 cup)</div><div class="pot-note">Sauté in EVOO + garlic at dinner</div></div>
+    <div class="pot-amount">840mg</div>
+  </div>
+  <div class="potassium-item">
+    <div><div class="pot-food">Banana (1 large)</div><div class="pot-note">In breakfast bowl or smoothie</div></div>
+    <div class="pot-amount">480mg</div>
+  </div>
+  <div class="potassium-item">
+    <div><div class="pot-food">Salmon (3oz)</div><div class="pot-note">Also hits omega-3 goal</div></div>
+    <div class="pot-amount">780mg</div>
+  </div>
+  <div class="tip">✓ Avocado + sweet potato + lentils daily = ~2,900mg before anything else. Close the gap with spinach + banana + salmon.</div>
+  <div class="flag">⚠️ Do not supplement potassium in high doses — food sources only. Potassium supplements can cause cardiac arrhythmia.</div>
+</div>
+
+<!-- EXERCISE REFERENCE -->
+<div class="section">
+  <h2>Exercise Protocol</h2>
+  <div class="exercise-item">
+    <div class="ex-name">🚶 Aerobic Days — 30 Min Walk or Bike</div>
+    <div class="ex-detail">5–8pt systolic drop. Raises HDL, lowers triglycerides. Every other day minimum.</div>
+  </div>
+  <div class="exercise-item">
+    <div class="ex-name">🧱 Isometric Days — Wall Sits / Static Squat Holds</div>
+    <div class="ex-detail">4 sets × 2 min hold / 2 min rest. 8–10pt systolic effect. Progress: wall sit → freestanding static squat hold (harder, more muscle recruitment, stronger BP signal).</div>
+  </div>
+  <div class="exercise-item">
+    <div class="ex-name">🫁 IMST — Daily (5 Minutes)</div>
+    <div class="ex-detail">30 breaths at 75% max resistance. Do every morning regardless of aerobic/isometric day. Independent BP pathway — 9pt systolic in studies.</div>
+  </div>
+  <div class="tip">✓ Air squats = aerobic/isotonic. Wall sits / static holds = isometric. Different mechanisms — both useful on their respective days.</div>
+  <div class="flag">⚠️ No exercise within 24 hrs of screening day.</div>
+</div>
+
+<!-- AVOID -->
+<div class="section">
+  <h2>Avoid Entirely — 2 Week Window</h2>
+  <div class="avoid-item">
+    <div class="avoid-name">Coffee / Caffeine</div>
+    <div class="avoid-why">Already stopped. Full cessation = 8–12pt baseline drop vs 4–6pt day-of skip. Transition via green tea if withdrawal hits.</div>
+  </div>
+  <div class="avoid-item">
+    <div class="avoid-name">Alcohol</div>
+    <div class="avoid-why">Raises BP + triglycerides. Full elimination for 2 weeks.</div>
+  </div>
+  <div class="avoid-item">
+    <div class="avoid-name">THC / Marijuana Gummies</div>
+    <div class="avoid-why">Disrupts REM sleep, raises resting heart rate, sympathetic nervous system activation with habitual use. Undermines your entire evening recovery stack. Eliminate for 2 weeks especially 3–4 days before screening.</div>
+  </div>
+  <div class="avoid-item">
+    <div class="avoid-name">NSAIDs (Ibuprofen, Aleve, Aspirin)</div>
+    <div class="avoid-why">Can raise BP. Skip aspirin despite having it in your stack.</div>
+  </div>
+  <div class="avoid-item">
+    <div class="avoid-name">Sodium over 1,500mg/day</div>
+    <div class="avoid-why">Read every label. No processed or restaurant food. Swap salted pumpkin seeds to unsalted.</div>
+  </div>
+  <div class="avoid-item">
+    <div class="avoid-name">Sugar / Refined Carbs (day before screening)</div>
+    <div class="avoid-why">Triglycerides are highly sensitive 24–48hrs before labs. Eat completely clean the day before.</div>
+  </div>
+  <div class="avoid-item">
+    <div class="avoid-name">Decongestants / Nicotine</div>
+    <div class="avoid-why">Both vasoconstrictive — directly raise BP acutely.</div>
+  </div>
+</div>
+
+<!-- SUPPLEMENTS TO ADD -->
+<div class="section">
+  <h2>Still Needed — Pick Up This Week</h2>
+  <div class="food-grid">
+    <div class="food-item">
+      <div class="food-name">Psyllium Husk ⭐ Priority #1</div>
+      <div class="food-benefit">1 tbsp/day in breakfast bowl. 5–10pt LDL drop. Strongest single cholesterol addition.</div>
+    </div>
+    <div class="food-item">
+      <div class="food-name">Frontier Hibiscus Loose Leaf</div>
+      <div class="food-benefit">Call Harvest Health (616) 975-7555 first. Otherwise Amazon Prime. 1 lb bag ~$14.</div>
+    </div>
+    <div class="food-item">
+      <div class="food-name">Vitamin D3 + K2</div>
+      <div class="food-benefit">2,000–5,000 IU D3 + K2 daily. Harvest Health carries it. Addresses deficiency that blunts everything else.</div>
+    </div>
+    <div class="food-item">
+      <div class="food-name">Berberine (optional)</div>
+      <div class="food-benefit">500mg with meals. Natural statin-adjacent. Strong triglyceride + LDL effect if you want to be aggressive.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREENING DAY -->
+<div class="section">
+  <h2>Screening Day Checklist</h2>
+  <div class="grid-2">
+    <div class="card">
+      <h3 style="font-size:0.75rem; color:#fbbf24; margin-bottom:8px;">✅ Do</h3>
+      <div class="item"><div class="item-dot dot-bp"></div><div class="item-text" style="font-size:0.75rem;">Empty bladder before cuff — full bladder adds 10–15pts</div></div>
+      <div class="item"><div class="item-dot dot-bp"></div><div class="item-text" style="font-size:0.75rem;">Sit quietly 5 min before reading — ask for this</div></div>
+      <div class="item"><div class="item-dot dot-bp"></div><div class="item-text" style="font-size:0.75rem;">Feet flat, arm supported at heart level</div></div>
+      <div class="item"><div class="item-dot dot-bp"></div><div class="item-text" style="font-size:0.75rem;">Slow breathing while waiting (4 in / 6 out)</div></div>
+      <div class="item"><div class="item-dot dot-bp"></div><div class="item-text" style="font-size:0.75rem;">Arrive early — no rushing or stress</div></div>
+      <div class="item"><div class="item-dot dot-bp"></div><div class="item-text" style="font-size:0.75rem;">Drink hibiscus cold brew that morning</div></div>
+    </div>
+    <div class="card">
+      <h3 style="font-size:0.75rem; color:#f87171; margin-bottom:8px;">🚫 Don't</h3>
+      <div class="item"><div class="item-dot dot-bp"></div><div class="item-text" style="font-size:0.75rem;">No caffeine morning of</div></div>
+      <div class="item"><div class="item-dot dot-bp"></div><div class="item-text" style="font-size:0.75rem;">No exercise within 24 hrs</div></div>
+      <div class="item"><div class="item-dot dot-bp"></div><div class="item-text" style="font-size:0.75rem;">No IMST morning of screening</div></div>
+      <div class="item"><div class="item-dot dot-both"></div><div class="item-text" style="font-size:0.75rem;">No alcohol night before</div></div>
+      <div class="item"><div class="item-dot dot-chol"></div><div class="item-text" style="font-size:0.75rem;">No sugar or refined carbs day before</div></div>
+      <div class="item"><div class="item-dot dot-bp"></div><div class="item-text" style="font-size:0.75rem;">No NSAIDs or decongestants</div></div>
+    </div>
+  </div>
+</div>
+
+<p style="text-align:center; font-size:0.65rem; color:#374151; margin-top:16px;">Not medical advice — consult your physician before making health decisions.</p>
+
+</body>
+</html>

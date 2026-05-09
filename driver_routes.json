@@ -1,57 +1,7 @@
 {
-  "date": "05/08/2026",
-  "generated_at": "02:05 PM",
+  "date": "05/09/2026",
+  "generated_at": "08:18 AM",
   "drivers": {
-    "Brandy Wakeland": [
-      {
-        "pickup": "530 Reynolds Dr , LOT 135, , Charleston Il, 61920",
-        "dropoff": "1000 Health Center Dr, , Mattoon Il, 61938",
-        "time": "N/A",
-        "miles": null
-      },
-      {
-        "pickup": "1000 Health Center Dr, , Mattoon Il, 61938",
-        "dropoff": "530 Reynolds Dr , LOT 135, , Charleston Il, 61920",
-        "time": "N/A",
-        "miles": null
-      },
-      {
-        "pickup": "509 E North St, , Kansas Il, 61933",
-        "dropoff": "805 Bloomington Rd, , Champaign Il, 61821",
-        "time": "N/A",
-        "miles": null
-      },
-      {
-        "pickup": "805 Bloomington Rd, , Champaign Il, 61821",
-        "dropoff": "509 E North St, , Kansas Il, 61933",
-        "time": "N/A",
-        "miles": null
-      },
-      {
-        "pickup": "2200 S 17th St, , Mattoon Il, 61938",
-        "dropoff": "1802 S Mattis Ave, , Champaign Il, 61821",
-        "time": "N/A",
-        "miles": null
-      },
-      {
-        "pickup": "1802 S Mattis Ave, , Champaign Il, 61821",
-        "dropoff": "2200 S 17th St, , Mattoon Il, 61938",
-        "time": "N/A",
-        "miles": null
-      },
-      {
-        "pickup": "1501 Shelby Ave , Apt 2, , Mattoon Il, 61938",
-        "dropoff": "1813 W Kirby Ave, , Champaign Il, 61821",
-        "time": "N/A",
-        "miles": null
-      },
-      {
-        "pickup": "1813 W Kirby Ave, , Champaign Il, 61821",
-        "dropoff": "1501 Shelby Ave , Apt 2, , Mattoon Il, 61938",
-        "time": "N/A",
-        "miles": null
-      }
-    ],
     "Gary D Davis": [
       {
         "pickup": "24 Ridge Dr, , Decatur Il, 62521",
@@ -220,34 +170,8 @@
         "miles": null
       },
       {
-        "pickup": "1052 Eastview Dr, , Rantoul Il, 61866",
-        "dropoff": "106 S Country Fair Dr, , Champaign Il, 61821",
-        "time": "N/A",
-        "miles": null
-      },
-      {
-        "pickup": "106 S Country Fair Dr, , Champaign Il, 61821",
-        "dropoff": "1052 Eastview Dr, , Rantoul Il, 61866",
-        "time": "N/A",
-        "miles": null
-      },
-      {
         "pickup": "807 N Division Ave, , Urbana Il, 61801",
         "dropoff": "1405 W Park St, , Urbana Il, 61801",
-        "time": "N/A",
-        "miles": null
-      }
-    ],
-    "Kevin G Cornwell": [
-      {
-        "pickup": "3180 N 400 St, , Ramsey Il, 62080",
-        "dropoff": "650 W Taylor St, , Vandalia Il, 62471",
-        "time": "N/A",
-        "miles": null
-      },
-      {
-        "pickup": "650 W Taylor St, , Vandalia Il, 62471",
-        "dropoff": "3180 N 400 St, , Ramsey Il, 62080",
         "time": "N/A",
         "miles": null
       }

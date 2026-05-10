@@ -1,45 +1,7 @@
 {
-  "date": "05/09/2026",
-  "generated_at": "08:18 AM",
+  "date": "05/10/2026",
+  "generated_at": "12:06 AM",
   "drivers": {
-    "Gary D Davis": [
-      {
-        "pickup": "24 Ridge Dr, , Decatur Il, 62521",
-        "dropoff": "151 N Main St, , Decatur Il, 62523",
-        "time": "N/A",
-        "miles": null
-      },
-      {
-        "pickup": "151 N Main St, , Decatur Il, 62523",
-        "dropoff": "24 Ridge Dr, , Decatur Il, 62521",
-        "time": "N/A",
-        "miles": null
-      },
-      {
-        "pickup": "545 W Main St , apt 2, , Decatur Il, 62522",
-        "dropoff": "151 N Main St, , Decatur Il, 62523",
-        "time": "N/A",
-        "miles": null
-      },
-      {
-        "pickup": "151 N Main St, , Decatur Il, 62523",
-        "dropoff": "545 W Main St , apt 2, , Decatur Il, 62522",
-        "time": "N/A",
-        "miles": null
-      },
-      {
-        "pickup": "5727 Mooney Rd, , Niantic Il, 62551",
-        "dropoff": "151 N Main St, , Decatur Il, 62523",
-        "time": "N/A",
-        "miles": null
-      },
-      {
-        "pickup": "151 N Main St, , Decatur Il, 62523",
-        "dropoff": "5727 Mooney Rd, , Niantic Il, 62551",
-        "time": "N/A",
-        "miles": null
-      }
-    ],
     "Jack Wiseman": [
       {
         "pickup": "52 Bismark St, , Danville Il, 61832",
@@ -172,68 +134,6 @@
       {
         "pickup": "807 N Division Ave, , Urbana Il, 61801",
         "dropoff": "1405 W Park St, , Urbana Il, 61801",
-        "time": "N/A",
-        "miles": null
-      }
-    ],
-    "Norma Roderick": [
-      {
-        "pickup": "2627 Wescott St, , Mount Vernon Il, 62864",
-        "dropoff": "202 S Bentley St, , Marion Il, 62959",
-        "time": "N/A",
-        "miles": null
-      },
-      {
-        "pickup": "202 S Bentley St, , Marion Il, 62959",
-        "dropoff": "2627 Wescott St, , Mount Vernon Il, 62864",
-        "time": "N/A",
-        "miles": null
-      },
-      {
-        "pickup": "605 S 2nd St, , Irvington Il, 62848",
-        "dropoff": "202 S Bentley St, , Marion Il, 62959",
-        "time": "N/A",
-        "miles": null
-      },
-      {
-        "pickup": "202 S Bentley St, , Marion Il, 62959",
-        "dropoff": "605 S 2nd St, , Irvington Il, 62848",
-        "time": "N/A",
-        "miles": null
-      },
-      {
-        "pickup": "111 Joplin St, , Benton Il, 62812",
-        "dropoff": "202 S Bentley St, , Marion Il, 62959",
-        "time": "N/A",
-        "miles": null
-      },
-      {
-        "pickup": "202 S Bentley St, , Marion Il, 62959",
-        "dropoff": "111 Joplin St, , Benton Il, 62812",
-        "time": "N/A",
-        "miles": null
-      },
-      {
-        "pickup": "806 W 7th St, , West Frankfort Il, 62896",
-        "dropoff": "202 S Bentley St, , Marion Il, 62959",
-        "time": "N/A",
-        "miles": null
-      },
-      {
-        "pickup": "202 S Bentley St, , Marion Il, 62959",
-        "dropoff": "806 W 7th St, , West Frankfort Il, 62896",
-        "time": "N/A",
-        "miles": null
-      },
-      {
-        "pickup": "4117 Il-154, , Pinckneyville Il, 62274",
-        "dropoff": "202 S Bentley St, , Marion Il, 62959",
-        "time": "N/A",
-        "miles": null
-      },
-      {
-        "pickup": "202 S Bentley St, , Marion Il, 62959",
-        "dropoff": "4117 Il-154, , Pinckneyville Il, 62274",
         "time": "N/A",
         "miles": null
       }

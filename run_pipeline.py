@@ -82,6 +82,17 @@ def run_pipeline():
     pipeline_start = time.time()
     results = []
 
+    # ─── STAGE 0: Ingest completed trips from WellRyde / MTM exports ──────────
+    import subprocess
+    result = subprocess.run(
+        ['python3', 'ingest_trips.py'],
+        capture_output=True, text=True
+    )
+    if result.stdout:
+        print(result.stdout)
+    if result.returncode != 0:
+        print(f"[ingest] warning: {result.stderr[:200]}")
+
     # Daily assignments scrape (runs once per day)
     run_assignments_scrape()
 
@@ -130,35 +141,17 @@ def run_pipeline():
         print(f"   🧵 Extensions found: {len(res)}")
     results.append(run_step("Driver Schedule Extensions", run_stitch))
 
-    # ─── STAGE 6: Map Generation (non-critical) ───────────────────────────────
-    from generate_map import generate_map
-    results.append(run_step("Map Generation", generate_map))
-
-    # ─── STAGE 6b: Sync Route Builder to Extension (non-critical) ────────────
-    def sync_route_builder():
-        import shutil
-        _home = os.path.expanduser('~')
-        files = ['route_builder.html', 'route_builder_main.js', 'route_builder_loader.js']
-        for f in files:
-            src = os.path.join(_home, 'nemt-scraper', f)
-            dst = os.path.join(_home, 'nemt-extension', f)
-            if os.path.exists(src):
-                shutil.copy2(src, dst)
-        print("   🔧 Route builder synced to extension")
-    results.append(run_step("Sync Route Builder", sync_route_builder))
-
-    # ─── STAGE 9: Email Report (non-critical) ─────────────────────────────────
-    from analyze_patterns import analyze_and_report
-    results.append(run_step("Email Report", analyze_and_report))
-
-    # ─── STAGE 10: Team Dispatch Dashboard (non-critical) ─────────────────────
+    # ─── STAGE 6: Dashboard + Publish (non-critical) ──────────────────────────
+    # IMPORTANT: must run HERE — before the email stage — so that
+    # potential_routes.csv is still within the 150-minute freshness window.
+    # Moving this after the email stage caused the dashboard to always show
+    # 0 shifts / $0 because the routes file appeared stale by then.
     from generate_dashboard import generate_dashboard
     def run_dashboard():
         generate_dashboard()
         print("   📊 Dashboard generated")
     results.append(run_step("Team Dispatch Dashboard", run_dashboard))
 
-    # ─── STAGE 11: Publish Map & Dashboard to GitHub Pages (non-critical) ─────
     from map_updater import publish_map
     def run_publish():
         import shutil, os
@@ -174,6 +167,27 @@ def run_pipeline():
         else:
             print("   ⚠️  GitHub Pages publish failed or nothing to push")
     results.append(run_step("Publish to GitHub Pages", run_publish))
+
+    # ─── STAGE 7: Map Generation (non-critical) ───────────────────────────────
+    from generate_map import generate_map
+    results.append(run_step("Map Generation", generate_map))
+
+    # ─── STAGE 8: Sync Route Builder to Extension (non-critical) ─────────────
+    def sync_route_builder():
+        import shutil
+        _home = os.path.expanduser('~')
+        files = ['route_builder.html', 'route_builder_main.js', 'route_builder_loader.js']
+        for f in files:
+            src = os.path.join(_home, 'nemt-scraper', f)
+            dst = os.path.join(_home, 'nemt-extension', f)
+            if os.path.exists(src):
+                shutil.copy2(src, dst)
+        print("   🔧 Route builder synced to extension")
+    results.append(run_step("Sync Route Builder", sync_route_builder))
+
+    # ─── STAGE 9: Email Report (non-critical) ─────────────────────────────────
+    from analyze_patterns import analyze_and_report
+    results.append(run_step("Email Report", analyze_and_report))
 
     # ─── SUMMARY ──────────────────────────────────────────────────────────────
     total_elapsed = time.time() - pipeline_start

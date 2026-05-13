@@ -206,6 +206,11 @@ const CLINIC_KEYWORDS = [
 // ── STATE ──────────────────────────────────────────────────────────────────────
 let trips = [];
 let hubManuallySelected = false;
+let currentLoad = 1;   // Feature 3: tracks which load the next trip belongs to
+let loadLabels  = {};  // {loadNum → custom label} — set by loader for named batches
+window.nemt_setLoadLabel   = (num, label) => { loadLabels[num] = label; };
+window.nemt_getCurrentLoad = () => currentLoad;
+window.nemt_hasTrips       = () => trips.length > 0;
 
 // ── INIT: Build rates reference table ─────────────────────────────────────────
 (function() {
@@ -228,7 +233,6 @@ function detectCounty(addr) {
   for (const [city, county] of Object.entries(CITY_COUNTY_MAP)) {
     if (lower.includes(city)) return county;
   }
-  // ZIP code fallback
   const zipMatch = addr.match(/\b(6[0-9]{4})\b/);
   if (zipMatch) {
     const zip = parseInt(zipMatch[1]);
@@ -330,7 +334,6 @@ function calcDeadheadHours(address, avgSpeed = AVG_MPH) {
   if (city) {
     return estimateDistanceMiles(hub.lat, hub.lng, city.lat, city.lng) / avgSpeed;
   }
-  // City not in lookup — use hub-specific average and flag for display
   window._deadheadEstimated = true;
   return getHub() === 'Springfield' ? 0.6 : 0.5;
 }
@@ -346,14 +349,13 @@ function getDeadheadMiles() {
 function getInterStopMiles(fromAddr, toAddr) {
   const from = getPickupCityCoords(fromAddr);
   const to   = getPickupCityCoords(toAddr);
-  if (!from || !to) return 30; // default if city not in coords table
+  if (!from || !to) return 30;
   return Math.round(estimateDistanceMiles(from.lat, from.lng, to.lat, to.lng) * 1.3);
 }
 
 function estimateTotalHours(avgSpeed = AVG_MPH) {
   if (!trips.length) return 0;
 
-  // Use geocoded deadhead if available, else lookup table
   const deadheadOutMiles = trips[0].deadheadMiles !== undefined
     ? trips[0].deadheadMiles
     : getDeadheadMilesRB(trips[0].pickup);
@@ -387,8 +389,8 @@ function updateSwitchBtnLabel() {
 }
 
 function autoSelectHub(pickupAddress) {
-  if (hubManuallySelected) return; // user made a deliberate choice
-  if (trips.length > 0) return;    // only on first trip
+  if (hubManuallySelected) return;
+  if (trips.length > 0) return;
   const lower = pickupAddress.toLowerCase();
   let suggestedHub = null;
   for (const city of SPRINGFIELD_CITIES) {
@@ -419,6 +421,78 @@ function autoSelectHub(pickupAddress) {
   updateSwitchBtnLabel();
 }
 
+// ── FEATURE 1: ADDRESS GEOCODING IN FORM ──────────────────────────────────────
+
+// Called from inline card editing too (tripIdx ≥ 0) or form (tripIdx = -1)
+function geocodeAddress(address, onSuccess, onError) {
+  if (!address || address.trim().length < 5) { if (onError) onError(); return; }
+  if (typeof chrome === 'undefined' || !chrome.runtime) { if (onError) onError(); return; }
+  chrome.runtime.sendMessage({ type: 'GEOCODE_ADDRESS', address: address.trim() }, (response) => {
+    if (chrome.runtime.lastError || !response || !response.lat) {
+      if (onError) onError(response?.error);
+      return;
+    }
+    if (onSuccess) onSuccess(response);
+  });
+}
+
+function setupAddressGeocode(fieldId, latId, lngId, statusId, sublabelId) {
+  const field = document.getElementById(fieldId);
+  if (!field) return;
+
+  // Clear geo markers when user edits the field
+  field.addEventListener('input', () => {
+    field.dataset.geocodedValue = '';
+    const s = document.getElementById(statusId);
+    const sub = document.getElementById(sublabelId);
+    const latEl = document.getElementById(latId);
+    const lngEl = document.getElementById(lngId);
+    if (s) { s.textContent = ''; s.title = ''; }
+    if (sub) sub.textContent = '';
+    if (latEl) latEl.value = '';
+    if (lngEl) lngEl.value = '';
+  });
+
+  field.addEventListener('blur', () => {
+    const addr = field.value.trim();
+    if (!addr) return;
+    // Skip if this exact value was already geocoded (incl. pre-populated from marketplace)
+    if (field.dataset.geocodedValue === addr) return;
+
+    const statusEl  = document.getElementById(statusId);
+    const sublabel  = document.getElementById(sublabelId);
+    const latEl     = document.getElementById(latId);
+    const lngEl     = document.getElementById(lngId);
+    if (statusEl) statusEl.textContent = '🔄';
+
+    geocodeAddress(addr, (res) => {
+      field.dataset.geocodedValue = addr;
+      if (latEl) latEl.value = res.lat;
+      if (lngEl) lngEl.value = res.lng;
+      if (statusEl) { statusEl.textContent = '✅'; statusEl.title = res.formatted; }
+      if (sublabel) sublabel.textContent = res.cityState;
+    }, (err) => {
+      if (statusEl) { statusEl.textContent = '❌'; statusEl.title = err || 'Geocoding failed'; }
+      if (sublabel) sublabel.textContent = '';
+    });
+  });
+}
+
+// Pre-populate lat/lng hidden fields when a trip is loaded from the marketplace
+// (currently marketplace doesn't pass coords, but this future-proofs it)
+function markFieldGeocoded(fieldId, latId, lngId, statusId, sublabelId, lat, lng, formatted, cityState) {
+  const field  = document.getElementById(fieldId);
+  const latEl  = document.getElementById(latId);
+  const lngEl  = document.getElementById(lngId);
+  const status = document.getElementById(statusId);
+  const sub    = document.getElementById(sublabelId);
+  if (latEl)  latEl.value  = lat;
+  if (lngEl)  lngEl.value  = lng;
+  if (field)  field.dataset.geocodedValue = field.value;
+  if (status) { status.textContent = '✅'; status.title = formatted || ''; }
+  if (sub)    sub.textContent = cityState || '';
+}
+
 // ── ACTIONS ────────────────────────────────────────────────────────────────────
 function addTrip() {
   const pickup  = document.getElementById('pickup').value.trim();
@@ -444,38 +518,58 @@ function addTrip() {
   const pickupMins      = apptMins !== null ? Math.round(apptMins - driveMins) : null;
   const pickup_time_calc = minutesToTimeStr(pickupMins);
 
-  const trip = { pickup, dropoff, miles, time, riders, county, baseRate, payout, isClinic, duration_hrs, pickup_time_calc, hub: getHub() };
+  // Capture hidden lat/lng if geocoded in form (Feature 1)
+  const pickupLat  = parseFloat(document.getElementById('pickup_lat')?.value)  || null;
+  const pickupLng  = parseFloat(document.getElementById('pickup_lng')?.value)  || null;
+  const dropoffLat = parseFloat(document.getElementById('dropoff_lat')?.value) || null;
+  const dropoffLng = parseFloat(document.getElementById('dropoff_lng')?.value) || null;
+
+  const trip = {
+    pickup, dropoff, miles, time, riders, county, baseRate, payout,
+    isClinic, duration_hrs, pickup_time_calc, hub: getHub(),
+    loadNum: currentLoad,
+    pickupLat, pickupLng, dropoffLat, dropoffLng
+  };
   trips.push(trip);
 
-  // Geocode deadhead for this trip (hub → pickup)
+  // Geocode deadhead (hub → pickup)
   const hubAddr = trip.hub === 'Springfield'
     ? '1 North Old State Capitol Plaza, Springfield, IL 62701'
     : '506 South St, Effingham, IL 62401';
   getDistanceMiles(hubAddr, trip.pickup).then(geoMiles => {
-    if (geoMiles !== null) {
-      trip.deadheadMiles = geoMiles;
-      console.log('Deadhead geocoded:', geoMiles, 'mi to', trip.pickup);
-      render();
-    }
+    if (geoMiles !== null) { trip.deadheadMiles = geoMiles; render(); }
   });
 
-  // Geocode inter-stop from previous trip's dropoff to this trip's pickup
+  // Geocode inter-stop from previous trip's dropoff → this pickup
   if (trips.length > 1) {
     const prevTrip = trips[trips.length - 2];
     getDistanceMiles(prevTrip.dropoff, trip.pickup).then(geoMiles => {
-      if (geoMiles !== null) {
-        prevTrip.interStopToNext = geoMiles;
-        console.log('Inter-stop geocoded:', prevTrip.dropoff, '→', trip.pickup, '=', geoMiles, 'mi');
-        render();
-      }
+      if (geoMiles !== null) { prevTrip.interStopToNext = geoMiles; render(); }
     });
   }
 
   // Reset form
-  document.getElementById('pickup').value = '';
+  document.getElementById('pickup').value  = '';
   document.getElementById('dropoff').value = '';
-  document.getElementById('miles').value = '';
-  document.getElementById('riders').value = '1';
+  document.getElementById('miles').value   = '';
+  document.getElementById('riders').value  = '1';
+  // Clear geocode state on form fields
+  ['pickup','dropoff'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.dataset.geocodedValue = '';
+  });
+  ['pickup_lat','pickup_lng','dropoff_lat','dropoff_lng'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  ['pickup-geo-status','dropoff-geo-status'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.textContent = ''; el.title = ''; }
+  });
+  ['pickup-geo-sublabel','dropoff-geo-sublabel'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = '';
+  });
   document.getElementById('pickup').focus();
 
   render();
@@ -489,8 +583,86 @@ function removeTrip(idx) {
 function clearRoute() {
   if (trips.length && !confirm('Clear all trips?')) return;
   trips = [];
+  currentLoad = 1;
   hubManuallySelected = false;
   render();
+}
+
+// ── FEATURE 3: MULTI-LOAD ─────────────────────────────────────────────────────
+function newLoad() {
+  if (!trips.length) {
+    // No trips yet — still increment so first trip lands in Load 2 if user insists,
+    // but warn them it's unusual.
+    currentLoad++;
+    const btn = document.getElementById('newLoadBtn');
+    if (btn) {
+      btn.textContent = `✓ Load ${currentLoad}`;
+      setTimeout(() => { btn.textContent = '＋ New Load'; }, 1500);
+    }
+    return;
+  }
+  currentLoad++;
+  render();
+  const btn = document.getElementById('newLoadBtn');
+  if (btn) {
+    btn.textContent = `✓ Load ${currentLoad} started`;
+    setTimeout(() => { btn.textContent = '＋ New Load'; }, 1500);
+  }
+}
+
+function renderLoadBreakdown() {
+  const el = document.getElementById('load-breakdown');
+  if (!el) return;
+
+  // Gather per-load stats
+  const loads = {};
+  trips.forEach(t => {
+    const ln = t.loadNum || 1;
+    if (!loads[ln]) loads[ln] = { trips: 0, miles: 0, rev: 0, hrs: 0 };
+    loads[ln].trips++;
+    loads[ln].miles += parseFloat(t.miles) || 0;
+    loads[ln].rev   += t.payout || 0;
+    loads[ln].hrs   += t.duration_hrs || 0;
+  });
+
+  const loadNums = Object.keys(loads).map(Number).sort((a,b) => a - b);
+
+  // Only show breakdown if more than one load is in use
+  if (loadNums.length <= 1) { el.innerHTML = ''; return; }
+
+  let html = '';
+  let totalTrips = 0, totalMiles = 0, totalRev = 0, totalHrs = 0;
+
+  loadNums.forEach(ln => {
+    const d = loads[ln];
+    const revHr = d.hrs > 0 ? d.rev / d.hrs : 0;
+    totalTrips += d.trips; totalMiles += d.miles;
+    totalRev   += d.rev;   totalHrs   += d.hrs;
+    html += `<div class="load-row">
+      <span class="load-label" style="color:#b39ddb;">Load ${ln}</span>
+      <span>${d.trips} trip${d.trips !== 1 ? 's' : ''}</span>
+      <span>·</span>
+      <span>${d.miles.toFixed(1)} mi</span>
+      <span>·</span>
+      <span style="color:#7dffb3;">$${d.rev.toFixed(2)}</span>
+      <span>·</span>
+      <span>$${revHr.toFixed(0)}/hr</span>
+    </div>`;
+  });
+
+  const totalRevHr = totalHrs > 0 ? totalRev / totalHrs : 0;
+  html += `<div class="load-row total-row">
+    <span class="load-label">Total</span>
+    <span>${totalTrips} trip${totalTrips !== 1 ? 's' : ''}</span>
+    <span>·</span>
+    <span>${totalMiles.toFixed(1)} mi</span>
+    <span>·</span>
+    <span>$${totalRev.toFixed(2)}</span>
+    <span>·</span>
+    <span>$${totalRevHr.toFixed(0)}/hr</span>
+  </div>`;
+
+  el.innerHTML = html;
 }
 
 // ── ROUTE COST ─────────────────────────────────────────────────────────────────
@@ -512,22 +684,18 @@ function calculateRouteCost(trips) {
   const firstPickup  = trips[0]?.pickup || '';
   const lastDropoff  = trips[trips.length - 1]?.dropoff || '';
 
-  // Deadhead out — use geocoded if available
   const deadheadOut = trips[0].deadheadMiles !== undefined
     ? trips[0].deadheadMiles
     : getDeadheadMilesRB(firstPickup);
 
-  // Deadhead back — use geocoded if available
   const lastTrip = trips[trips.length - 1];
   const deadheadBack = lastTrip.deadheadMiles !== undefined
     ? lastTrip.deadheadMiles
     : getDeadheadMilesRB(lastDropoff);
 
-  // Rider miles — sum of all trip miles × 2 (round trip each)
   const riderMiles = trips.reduce(
     (s, t) => s + (parseFloat(t.miles) || 0), 0) * 2;
 
-  // Inter-stop miles — use geocoded if available
   let interStopMiles = 0;
   for (let i = 0; i < trips.length - 1; i++) {
     if (trips[i].interStopToNext !== undefined) {
@@ -538,7 +706,6 @@ function calculateRouteCost(trips) {
   }
 
   const totalMiles = deadheadOut + riderMiles + interStopMiles + deadheadBack;
-
   const fuel = (totalMiles / TRIP_COST_RB.MPG) * TRIP_COST_RB.GAS_PRICE;
   const avgSpeed = totalMiles > 60 ? 55 : 45;
   const driveHours = totalMiles / avgSpeed;
@@ -549,6 +716,96 @@ function calculateRouteCost(trips) {
   const totalCost = fuel + labor + wear;
   const multiload = trips.length > 1;
   return { totalCost, totalMiles, deadheadOut, deadheadBack, riderMiles, interStopMiles, multiload };
+}
+
+// ── FEATURE 2: INLINE EDITING ─────────────────────────────────────────────────
+function startInlineEdit(span) {
+  if (span.querySelector('input')) return; // already editing
+
+  const tripIdx = parseInt(span.dataset.tripIdx);
+  const field   = span.dataset.field;
+  const type    = span.dataset.type || 'text';
+  const trip    = trips[tripIdx];
+  if (!trip) return;
+
+  const originalValue   = trip[field];
+  const displayOriginal = type === 'time' ? (formatTime(originalValue) || '--') : String(originalValue);
+  let _done = false;
+
+  const input = document.createElement('input');
+  input.type  = type;
+  input.value = type === 'number' ? (parseFloat(originalValue) || 0) : (originalValue || '');
+  if (type === 'number') { input.step = '0.1'; input.min = '0'; input.style.width = '70px'; }
+  else if (type === 'time') { input.style.width = '110px'; }
+  else { input.style.width = '100%'; }
+
+  span.textContent = '';
+  span.appendChild(input);
+  input.focus();
+  if (input.select) input.select();
+
+  function confirm() {
+    if (_done) return;
+    _done = true;
+
+    const rawVal = input.value;
+    const newVal = type === 'number' ? (parseFloat(rawVal) || 0) : rawVal.trim();
+    trip[field]  = newVal;
+
+    // Recalculate derived fields when key trip properties change
+    if (field === 'miles' || field === 'time' || field === 'pickup' || field === 'dropoff') {
+      const county    = detectCounty(trip.pickup);
+      trip.county     = county;
+      trip.baseRate   = COUNTY_BASE_RATES[county] || STANDARD_BASE_RATE;
+      trip.payout     = calcPayout(trip.miles, trip.time, county, trip.riders);
+      trip.isClinic   = detectClinic(trip.dropoff);
+      trip.duration_hrs = calcTripDuration(trip.miles, trip.isClinic);
+    }
+
+    // Re-geocode inter-stop distances when addresses change
+    if (field === 'pickup' && newVal) {
+      trip.deadheadMiles = undefined;
+      const hubAddr = trip.hub === 'Springfield'
+        ? '1 North Old State Capitol Plaza, Springfield, IL 62701'
+        : '506 South St, Effingham, IL 62401';
+      getDistanceMiles(hubAddr, trip.pickup).then(m => {
+        if (m !== null) { trip.deadheadMiles = m; render(); }
+      });
+      if (tripIdx > 0) {
+        const prev = trips[tripIdx - 1];
+        prev.interStopToNext = undefined;
+        getDistanceMiles(prev.dropoff, trip.pickup).then(m => {
+          if (m !== null) { prev.interStopToNext = m; render(); }
+        });
+      }
+    }
+    if (field === 'dropoff' && newVal && tripIdx < trips.length - 1) {
+      trips[tripIdx].interStopToNext = undefined;
+      getDistanceMiles(trip.dropoff, trips[tripIdx + 1].pickup).then(m => {
+        if (m !== null) { trips[tripIdx].interStopToNext = m; render(); }
+      });
+    }
+
+    render();
+  }
+
+  function cancel() {
+    if (_done) return;
+    _done = true;
+    span.textContent = displayOriginal;
+  }
+
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === 'Tab') { e.preventDefault(); confirm(); }
+    if (e.key === 'Escape') { e.preventDefault(); cancel(); }
+  });
+
+  // Blur confirms unless already resolved (by keydown or span disconnected by render())
+  input.addEventListener('blur', () => {
+    setTimeout(() => {
+      if (!_done) confirm();
+    }, 60);
+  });
 }
 
 // ── RENDER ─────────────────────────────────────────────────────────────────────
@@ -562,7 +819,7 @@ function render() {
   const revHr     = totalHrs > 0 ? totalRev / totalHrs : 0;
   const remaining = Math.max(0, MAX_SHIFT_HOURS - totalHrs);
 
-  // Totals
+  // Totals bar
   document.getElementById('stat-revenue').textContent = `$${totalRev.toFixed(2)}`;
 
   const hoursEl = document.getElementById('stat-hours');
@@ -571,11 +828,7 @@ function render() {
   const dhEl = document.getElementById('deadheadMiles');
   if (dhEl) {
     const dh = getDeadheadMiles();
-    if (deadheadEstimated) {
-      dhEl.textContent = '⚠️ est.';
-    } else {
-      dhEl.textContent = dh !== null ? dh : '?';
-    }
+    dhEl.textContent = deadheadEstimated ? '⚠️ est.' : (dh !== null ? dh : '?');
   }
 
   const revHrEl = document.getElementById('stat-revhr');
@@ -590,11 +843,11 @@ function render() {
   remEl.className = `stat-value ${remaining <= 0 ? 'warn' : 'neutral'}`;
 
   // Cost / margin
-  const costResult = trips.length ? calculateRouteCost(trips) : null;
-  const costEl = document.getElementById('stat-route-cost');
-  const marginEl = document.getElementById('stat-route-margin');
-  const marginPctEl = document.getElementById('stat-route-margin-pct');
-  const totalMilesEl = document.getElementById('stat-total-miles');
+  const costResult    = trips.length ? calculateRouteCost(trips) : null;
+  const costEl        = document.getElementById('stat-route-cost');
+  const marginEl      = document.getElementById('stat-route-margin');
+  const marginPctEl   = document.getElementById('stat-route-margin-pct');
+  const totalMilesEl  = document.getElementById('stat-total-miles');
   const multiloadNoteEl = document.getElementById('multiload-note');
   if (costEl) costEl.textContent = costResult ? `$${costResult.totalCost.toFixed(2)}` : '—';
   if (totalMilesEl) totalMilesEl.textContent = costResult ? `${Math.round(costResult.totalMiles)} mi` : '—';
@@ -611,7 +864,7 @@ function render() {
   if (marginEl && marginPctEl) {
     if (costResult) {
       const margin = totalRev - costResult.totalCost;
-      const pct = totalRev > 0 ? (margin / totalRev * 100) : 0;
+      const pct    = totalRev > 0 ? (margin / totalRev * 100) : 0;
       marginEl.textContent = `${margin >= 0 ? '+' : ''}$${margin.toFixed(2)}`;
       marginEl.className = `stat-value ${margin >= 40 ? 'good' : margin >= 0 ? 'neutral' : 'warn'}`;
       marginPctEl.textContent = `${pct.toFixed(0)}% margin`;
@@ -623,7 +876,6 @@ function render() {
   }
   if (multiloadNoteEl) {
     if (costResult && costResult.multiload && trips.length >= 2) {
-      const singleCostEst = costResult.totalCost / trips.length * trips.length;
       const savedDeadhead = costResult.deadheadOut + costResult.deadheadBack;
       const savedCost = (savedDeadhead * (trips.length - 1) / TRIP_COST_RB.MPG * TRIP_COST_RB.GAS_PRICE)
         + (savedDeadhead * (trips.length - 1) / TRIP_COST_RB.AVG_SPEED_MPH * TRIP_COST_RB.DRIVER_RATE)
@@ -635,6 +887,9 @@ function render() {
     }
   }
 
+  // Per-load breakdown (Feature 3)
+  renderLoadBreakdown();
+
   // Warnings
   const warnDiv = document.getElementById('warnings');
   warnDiv.innerHTML = '';
@@ -643,39 +898,66 @@ function render() {
   if (trips.length && revHr < MIN_REV_PER_HOUR)
     warnDiv.innerHTML += `<div class="warning-banner">⚠️ Below minimum profit threshold ($${MIN_REV_PER_HOUR}/hr) — currently $${revHr.toFixed(2)}/hr</div>`;
 
-  // Trip cards
+  // Trip cards + load dividers (Features 2 & 3)
   const area = document.getElementById('trips-area');
   if (!trips.length) {
     area.innerHTML = '<div class="empty-state">No trips yet.<br>Fill in the form and click <b>Add Trip</b>.</div>';
   } else {
-    area.innerHTML = trips.map((t, i) => `
-      <div class="trip-card${t.isClinic ? ' clinic' : ''}" data-trip-idx="${i}">
-        <div class="trip-header">
-          <div>
-            <div class="trip-title">Trip ${i+1} &nbsp;·&nbsp; ${getHub()} → ${t.pickup.split(',')[0].trim()} → ${t.dropoff.split(',')[0].trim()}</div>
-            <div class="trip-subtitle">${t.pickup}</div>
+    let html = '';
+    let lastLoadNum = null;
+
+    trips.forEach((t, i) => {
+      const loadNum = t.loadNum || 1;
+
+      // Insert load divider when load changes (Feature 3)
+      if (lastLoadNum !== null && loadNum !== lastLoadNum) {
+        const divText = loadLabels[loadNum] || `Load ${loadNum}`;
+        html += `<div class="load-divider">── ${divText} ──</div>`;
+      }
+      lastLoadNum = loadNum;
+
+      // Load badge in top-right of card (Feature 3)
+      const loadBadge = `<span class="load-badge">L${loadNum}</span>`;
+
+      // Editable field spans (Feature 2)
+      const editPickup  = `<span class="editable-field" data-editable data-trip-idx="${i}" data-field="pickup"  data-type="text"   title="Click to edit">${t.pickup}</span>`;
+      const editDropoff = `<span class="editable-field" data-editable data-trip-idx="${i}" data-field="dropoff" data-type="text"   title="Click to edit">${t.dropoff}</span>`;
+      const editMiles   = `<span class="editable-field" data-editable data-trip-idx="${i}" data-field="miles"   data-type="number" title="Click to edit">${t.miles}</span>`;
+      const editTime    = `<span class="editable-field" data-editable data-trip-idx="${i}" data-field="time"    data-type="time"   title="Click to edit">${t.time || '--'}</span>`;
+
+      html += `
+        <div class="trip-card${t.isClinic ? ' clinic' : ''}" data-trip-idx="${i}">
+          ${loadBadge}
+          <div class="trip-header">
+            <div>
+              <div class="trip-title">Trip ${i+1} &nbsp;·&nbsp; ${getHub()}</div>
+              <div class="trip-subtitle" style="color:#2c3e50;font-size:12px;">${editPickup}</div>
+              <div class="trip-subtitle" style="color:#888;font-size:11px;margin-top:1px;">→ ${editDropoff}</div>
+            </div>
+            <button class="btn-remove" data-idx="${i}">Remove</button>
           </div>
-          <button class="btn-remove" data-idx="${i}">Remove</button>
-        </div>
-        <div class="trip-details">
-          <b>County:</b> ${t.county || `<span style="color:#e67e22">Unknown (using $${STANDARD_BASE_RATE.toFixed(2)})</span>`}<br>
-          <b>Base Rate:</b> $${t.baseRate.toFixed(2)} &nbsp;&nbsp;
-          <b>Miles:</b> ${t.miles} &nbsp;&nbsp;
-          <b>Riders:</b> ${t.riders}
-          ${t.isClinic ? '<br><span class="clinic-badge">💊 CLINIC</span>' : ''}
-          <div style="font-size:11px; color:#666; margin-top:4px;">
-            Appt: <b>${t.time || '--'}</b> &nbsp;|&nbsp;
-            Est. Pickup: <b>${t.pickup_time_calc || '--'}</b> &nbsp;|&nbsp;
-            Duration: <b>${t.duration_hrs.toFixed(1)}h</b> &nbsp;|&nbsp;
-            Wait: <b>${t.isClinic ? '5 min (clinic)' : '1 hr'}</b>
+          <div class="trip-details">
+            <b>County:</b> ${t.county || `<span style="color:#e67e22">Unknown (using $${STANDARD_BASE_RATE.toFixed(2)})</span>`}<br>
+            <b>Base Rate:</b> $${t.baseRate.toFixed(2)} &nbsp;&nbsp;
+            <b>Miles:</b> ${editMiles} &nbsp;&nbsp;
+            <b>Riders:</b> ${t.riders}
+            ${t.isClinic ? '<br><span class="clinic-badge">💊 CLINIC</span>' : ''}
+            <div style="font-size:11px; color:#666; margin-top:4px;">
+              Appt: <b>${editTime}</b> &nbsp;|&nbsp;
+              Est. Pickup: <b>${t.pickup_time_calc || '--'}</b> &nbsp;|&nbsp;
+              Duration: <b>${t.duration_hrs.toFixed(1)}h</b> &nbsp;|&nbsp;
+              Wait: <b>${t.isClinic ? '5 min (clinic)' : '1 hr'}</b>
+            </div>
           </div>
-        </div>
-        <div class="payout">Estimated RT Payout: $${t.payout.toFixed(2)}</div>
-        <div style="font-size:11px;color:#888;margin-top:2px;">
-          Rev/Hr this trip: <b style="color:#27ae60;">$${(t.duration_hrs > 0 ? t.payout / t.duration_hrs : 0).toFixed(2)}/hr</b>
-          (${t.duration_hrs.toFixed(1)}h total inc. wait &amp; return)
-        </div>
-      </div>`).join('');
+          <div class="payout">Estimated RT Payout: $${t.payout.toFixed(2)}</div>
+          <div style="font-size:11px;color:#888;margin-top:2px;">
+            Rev/Hr this trip: <b style="color:#27ae60;">$${(t.duration_hrs > 0 ? t.payout / t.duration_hrs : 0).toFixed(2)}/hr</b>
+            (${t.duration_hrs.toFixed(1)}h total inc. wait &amp; return)
+          </div>
+        </div>`;
+    });
+
+    area.innerHTML = html;
   }
 
   // Route flow
@@ -684,6 +966,7 @@ function render() {
   trips.forEach(t => flow.push(`${formatTime(t.time)} ${t.pickup.split(',')[0].trim()}`));
   if (trips.length) flow.push(`${hub} Hub`);
   document.getElementById('route-flow').textContent = flow.join(' → ');
+
   flagMultiLoads();
   checkTimeConflicts();
 }
@@ -714,8 +997,15 @@ function copyRouteSummary() {
   let msg = `🚗 DISPATCH ROUTE — ${hub} Hub\n`;
   msg += `Date: ${new Date().toLocaleDateString()}\n`;
   msg += `━━━━━━━━━━━━━━━━━━━━━━━\n`;
+
+  let lastLoad = null;
   trips.forEach((t, i) => {
-    msg += `\nTrip ${i+1}`;
+    const ln = t.loadNum || 1;
+    if (lastLoad !== null && ln !== lastLoad) {
+      msg += `\n── Load ${ln} ──\n`;
+    }
+    lastLoad = ln;
+    msg += `\nTrip ${i+1} [L${ln}]`;
     if (t.time) msg += ` | Appt: ${t.time}`;
     msg += `\n`;
     msg += `  📍 Pickup: ${t.pickup}\n`;
@@ -728,15 +1018,16 @@ function copyRouteSummary() {
   msg += `Est. Hours: ${getTotalHours().toFixed(1)}h\n`;
   msg += `Rev/Hour: $${getRevPerHour().toFixed(2)}/hr\n`;
   msg += `\nRoute: ${getRouteFlowText()}`;
-  const btn = document.querySelector('button[onclick*="copyRouteSummary"]');
+
   navigator.clipboard.writeText(msg).then(() => {
+    const btn = document.getElementById('copyBtn');
     if (btn) { btn.textContent = '✓ Copied!'; setTimeout(() => btn.textContent = '📋 Copy Route Summary', 2000); }
   }).catch(() => prompt('Copy this text:', msg));
 }
 
 function saveRoute() {
   if (!trips.length) { alert('No trips to save.'); return; }
-  localStorage.setItem('nemt_saved_route', JSON.stringify({ trips, hub: getHub() }));
+  localStorage.setItem('nemt_saved_route', JSON.stringify({ trips, hub: getHub(), currentLoad }));
   alert('Route saved to browser storage.');
 }
 
@@ -745,6 +1036,7 @@ function loadRoute() {
   if (!raw) { alert('No saved route found.'); return; }
   const data = JSON.parse(raw);
   trips = data.trips || [];
+  currentLoad = data.currentLoad || 1;
   const radio = document.querySelector(`input[name="hub"][value="${data.hub}"]`);
   if (radio) radio.checked = true;
   render();
@@ -759,28 +1051,18 @@ function switchHub() {
   if (!eff || !spr) return;
 
   const currentlySpringfield = spr.checked;
-  console.log('NEMT: switchHub called, currently Springfield:', currentlySpringfield);
-
-  if (currentlySpringfield) {
-    spr.checked = false;
-    eff.checked = true;
-  } else {
-    eff.checked = false;
-    spr.checked = true;
-  }
-
-  console.log('NEMT: hub switched to:', getHub());
+  if (currentlySpringfield) { spr.checked = false; eff.checked = true; }
+  else { eff.checked = false; spr.checked = true; }
 
   const btn = document.getElementById('switchHubBtn');
   if (btn) {
     const otherHub = getHub() === 'Springfield' ? 'Effingham' : 'Springfield';
     btn.textContent = `⇄ Switch to ${otherHub}`;
   }
-
   render();
 }
 
-// ── MULTI-LOAD FLAGS ───────────────────────────────────────────────────────────
+// ── MULTI-LOAD FLAGS (shared dropoff detection) ────────────────────────────────
 function flagMultiLoads() {
   const dropoffGroups = {};
   trips.forEach((t, i) => {
@@ -804,22 +1086,131 @@ function flagMultiLoads() {
 
 // ── OPTIMIZE ORDER ─────────────────────────────────────────────────────────────
 function optimizeOrder() {
-  if (trips.length < 2) { alert('Add at least 2 trips to optimize.'); return; }
-  const before = trips.map(t => t.time).join(',');
-  trips.sort((a, b) => {
-    const tA = parseTime(a.time), tB = parseTime(b.time);
-    if (tA === null && tB === null) return 0;
-    if (tA === null) return 1;
-    if (tB === null) return -1;
-    return tA - tB;
-  });
-  const after = trips.map(t => t.time).join(',');
+  if (trips.length < 2) {
+    alert('Add at least 2 trips to optimize.');
+    return;
+  }
+
+  const hub = getHub();
+  const hubCoords = HUB_COORDS[hub] || HUB_COORDS['Effingham'];
+
+  // Get coordinates for a trip pickup —
+  // use geocoded lat/lng if available,
+  // fall back to city table, then hub
+  function getTripCoords(trip) {
+    if (trip.pickupLat && trip.pickupLng) {
+      return { lat: trip.pickupLat, lng: trip.pickupLng };
+    }
+    const cityCoords = getPickupCityCoords(trip.pickup || '');
+    if (cityCoords) return cityCoords;
+    return hubCoords; // last resort
+  }
+
+  // Get dropoff coords
+  function getDropoffCoords(trip) {
+    if (trip.dropoffLat && trip.dropoffLng) {
+      return { lat: trip.dropoffLat, lng: trip.dropoffLng };
+    }
+    const cityCoords = getPickupCityCoords(trip.dropoff || '');
+    if (cityCoords) return cityCoords;
+    return hubCoords;
+  }
+
+  // Check if all trips share the same dropoff
+  // (multi-load clinic run)
+  function normalizeAddr(addr) {
+    return (addr || '').toLowerCase()
+      .replace(/[^a-z0-9]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  const dropoffs = trips.map(t => normalizeAddr(t.dropoff));
+  const uniqueDropoffs = new Set(dropoffs);
+  const isSharedDropoff = uniqueDropoffs.size === 1;
+
+  let optimized;
+
+  if (isSharedDropoff) {
+    // CLINIC RUN: all riders go to same dropoff
+    // Sort by distance from hub DESCENDING —
+    // farthest pickup first, sweep toward clinic
+    const clinicCoords = getDropoffCoords(trips[0]);
+
+    optimized = [...trips].sort((a, b) => {
+      const coordsA = getTripCoords(a);
+      const coordsB = getTripCoords(b);
+
+      // Distance from hub
+      const distA = estimateDistanceMiles(
+        hubCoords.lat, hubCoords.lng,
+        coordsA.lat, coordsA.lng);
+      const distB = estimateDistanceMiles(
+        hubCoords.lat, hubCoords.lng,
+        coordsB.lat, coordsB.lng);
+
+      // Farthest from hub goes first
+      // (driver sweeps outward then back to clinic)
+      return distB - distA;
+    });
+
+    console.log('NEMT Optimize: clinic run — ' +
+      'sorted by distance from hub descending');
+
+  } else {
+    // MIXED ROUTE: different dropoffs
+    // Use nearest-neighbor greedy algorithm
+    // starting from hub
+    const remaining = [...trips];
+    optimized = [];
+    let currentCoords = hubCoords;
+
+    while (remaining.length > 0) {
+      // Find closest unvisited pickup to current position
+      let closestIdx = 0;
+      let closestDist = Infinity;
+
+      for (let i = 0; i < remaining.length; i++) {
+        const coords = getTripCoords(remaining[i]);
+        const dist = estimateDistanceMiles(
+          currentCoords.lat, currentCoords.lng,
+          coords.lat, coords.lng);
+        if (dist < closestDist) {
+          closestDist = dist;
+          closestIdx = i;
+        }
+      }
+
+      const nextTrip = remaining.splice(closestIdx, 1)[0];
+      optimized.push(nextTrip);
+
+      // Move to the dropoff of this trip
+      // (next pickup starts from here)
+      currentCoords = getDropoffCoords(nextTrip);
+    }
+
+    console.log('NEMT Optimize: mixed route — ' +
+      'nearest-neighbor from hub');
+  }
+
+  // Apply optimized order
+  trips.length = 0;
+  optimized.forEach(t => trips.push(t));
+
   render();
+
+  // Update button feedback
   const btn = document.getElementById('optimizeBtn');
   if (btn) {
-    btn.textContent = before === after ? '✓ Already Optimal' : '✓ Optimized!';
+    const modeLabel = isSharedDropoff
+      ? '✓ Clinic Sweep!'
+      : '✓ Optimized!';
+    btn.textContent = modeLabel;
     btn.style.background = '#27ae60';
-    setTimeout(() => { btn.textContent = '⚡ Optimize Order'; btn.style.background = '#8e44ad'; }, 2000);
+    setTimeout(() => {
+      btn.textContent = '⚡ Optimize Order';
+      btn.style.background = '#8e44ad';
+    }, 2000);
   }
 }
 
@@ -847,7 +1238,6 @@ function openInGoogleMaps() {
     ? '506 S 6th St, Springfield, IL 62701'
     : '506 South St, Effingham, IL 62401';
 
-  // Group trips by shared dropoff, preserving insertion order
   const dropoffGroups = {};
   const groupOrder = [];
   trips.forEach(t => {
@@ -859,7 +1249,6 @@ function openInGoogleMaps() {
     dropoffGroups[key].pickups.push(t.pickup);
   });
 
-  // Full round trip: outbound pickups → dropoff → return pickups (reverse)
   const waypoints = [];
   groupOrder.forEach(key => {
     const group = dropoffGroups[key];
@@ -876,6 +1265,7 @@ function openInGoogleMaps() {
 // ── EVENT WIRING ───────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('addTripBtn')?.addEventListener('click', addTrip);
+  document.getElementById('newLoadBtn')?.addEventListener('click', newLoad);
   document.getElementById('clearRouteBtn')?.addEventListener('click', clearRoute);
   document.getElementById('switchHubBtn')?.addEventListener('click', switchHub);
   document.getElementById('optimizeBtn')?.addEventListener('click', optimizeOrder);
@@ -884,54 +1274,50 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('saveBtn')?.addEventListener('click', saveRoute);
   document.getElementById('loadBtn')?.addEventListener('click', loadRoute);
 
-  // Delegated listener for dynamically generated Remove buttons
+  // Delegated listener: Remove buttons + inline edit clicks (Features 2 & 3)
   document.getElementById('trips-area')?.addEventListener('click', e => {
-    const btn = e.target.closest('.btn-remove');
-    if (btn) {
-      const idx = parseInt(btn.dataset.idx);
+    const removeBtn = e.target.closest('.btn-remove');
+    if (removeBtn) {
+      const idx = parseInt(removeBtn.dataset.idx);
       if (!isNaN(idx)) removeTrip(idx);
+      return;
+    }
+    const editable = e.target.closest('[data-editable]');
+    if (editable) startInlineEdit(editable);
+  });
+
+  // Enter key in form inputs submits the form
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && e.target.tagName === 'INPUT' && !e.target.dataset.tripIdx) {
+      addTrip();
     }
   });
 
-  // Enter key in any input submits the form
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Enter' && e.target.tagName === 'INPUT') addTrip();
-  });
+  // Feature 1: wire up geocode-on-blur for form address fields
+  setupAddressGeocode('pickup',  'pickup_lat',  'pickup_lng',  'pickup-geo-status',  'pickup-geo-sublabel');
+  setupAddressGeocode('dropoff', 'dropoff_lat', 'dropoff_lng', 'dropoff-geo-status', 'dropoff-geo-sublabel');
 
-  console.log('NEMT: All button bindings attached');
-  console.log('switchHubBtn:', document.getElementById('switchHubBtn'));
+  console.log('NEMT: All button bindings attached (v1.4.0)');
 
   // Load today's driver assignments from GitHub Pages
   fetch('https://joegritter-bit.github.io/nemt-map/driver_routes.json?t=' + Date.now())
     .then(r => r.json())
     .then(data => {
       if (!data.drivers) return;
-
       const today = new Date().toLocaleDateString('en-US', {
         month: '2-digit', day: '2-digit', year: 'numeric'
       });
-
       if (data.date === today) {
-        const existing = JSON.parse(
-          localStorage.getItem('nemt_driver_routes') || '{}');
+        const existing = JSON.parse(localStorage.getItem('nemt_driver_routes') || '{}');
         const merged = { ...existing };
-
         for (const [driver, driverTrips] of Object.entries(data.drivers)) {
-          merged[driver] = {
-            trips:   driverTrips,
-            hub:     'Effingham',
-            savedAt: data.generated_at,
-            source:  'auto'
-          };
+          merged[driver] = { trips: driverTrips, hub: 'Effingham', savedAt: data.generated_at, source: 'auto' };
         }
-
         localStorage.setItem('nemt_driver_routes', JSON.stringify(merged));
         console.log(`NEMT: Loaded ${Object.keys(data.drivers).length} driver routes from assignments scraper`);
       }
     })
-    .catch(() => {
-      console.log('NEMT: No driver routes file available yet');
-    });
+    .catch(() => console.log('NEMT: No driver routes file available yet'));
 
   render();
 });

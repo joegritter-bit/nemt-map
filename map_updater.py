@@ -19,24 +19,21 @@ def publish_map():
             log.warning("nemt_war_room.html not found — skipping map publish")
             return None
 
-        # Ensure we are on the 'main' branch (GitHub Pages branch).
-        # The repo can end up on 'master' if git was initialized locally before
-        # the remote was connected, which caused all pipeline commits to land on
-        # the wrong branch and never reach GitHub Pages.
+        # Ensure we are on the 'master' branch (GitHub Pages branch).
         branch_result = subprocess.run(
             ['git', '-C', MAP_REPO, 'rev-parse', '--abbrev-ref', 'HEAD'],
             capture_output=True, text=True)
         current_branch = branch_result.stdout.strip()
-        if current_branch != 'main':
-            log.warning(f"nemt-map repo is on branch '{current_branch}', switching to 'main'")
+        if current_branch != 'master':
+            log.warning(f"nemt-map repo is on branch '{current_branch}', switching to 'master'")
             subprocess.run(
-                ['git', '-C', MAP_REPO, 'checkout', 'main'],
+                ['git', '-C', MAP_REPO, 'checkout', 'master'],
                 capture_output=True, text=True)
 
         # Pull any remote commits (e.g. from worktree pushes) before adding
         # our own commit so the push is never rejected as non-fast-forward.
         pull_result = subprocess.run(
-            ['git', '-C', MAP_REPO, 'pull', '--rebase', 'origin', 'main'],
+            ['git', '-C', MAP_REPO, 'pull', '--rebase', 'origin', 'master'],
             capture_output=True, text=True)
         if pull_result.returncode != 0:
             log.warning(f"Git pull --rebase failed: {pull_result.stderr.strip()}")
@@ -73,7 +70,7 @@ def publish_map():
             return MAP_URL
 
         result = subprocess.run(
-            ['git', '-C', MAP_REPO, 'push', 'origin', 'main'],
+            ['git', '-C', MAP_REPO, 'push', 'origin', 'master'],
             capture_output=True, text=True)
 
         if result.returncode == 0:

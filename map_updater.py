@@ -32,13 +32,25 @@ def publish_map():
 
         # Pull any remote commits (e.g. from worktree pushes) before adding
         # our own commit so the push is never rejected as non-fast-forward.
-        # Stash any unstaged changes before rebase
+        # Stage dashboard.html BEFORE stash so it
+        # isn't stashed as an unstaged change
+        dashboard_path = os.path.join(_HOME, 'nemt-map',
+                                      'dashboard.html')
+        if os.path.exists(dashboard_path):
+            subprocess.run(
+                ['git', '-C', MAP_REPO, 'add',
+                 'dashboard.html'],
+                capture_output=True, text=True)
+
+        # Stash tracked staged/unstaged changes
+        # (regular_riders.json etc) before rebase
         subprocess.run(
             ['git', '-C', MAP_REPO, 'stash'],
             capture_output=True, text=True)
 
         pull_result = subprocess.run(
-            ['git', '-C', MAP_REPO, 'pull', '--rebase', 'origin', 'master'],
+            ['git', '-C', MAP_REPO, 'pull', '--rebase',
+             'origin', 'master'],
             capture_output=True, text=True)
         if pull_result.returncode != 0:
             log.warning(f"Git pull --rebase failed: "
@@ -49,6 +61,7 @@ def publish_map():
             ['git', '-C', MAP_REPO, 'stash', 'pop'],
             capture_output=True, text=True)
 
+        # Copy map and add remaining files after pull
         shutil.copy2(MAP_SOURCE, MAP_DEST)
 
         subprocess.run(
@@ -66,11 +79,7 @@ def publish_map():
                 ['git', '-C', MAP_REPO, 'add', 'driver_routes.json'],
                 capture_output=True, text=True)
 
-        dashboard_path = os.path.join(_HOME, 'nemt-map', 'dashboard.html')
-        if os.path.exists(dashboard_path):
-            subprocess.run(
-                ['git', '-C', MAP_REPO, 'add', 'dashboard.html'],
-                capture_output=True, text=True)
+        # dashboard.html already staged above before stash
 
         result = subprocess.run(
             ['git', '-C', MAP_REPO, 'commit', '-m', 'Update map and rider data'],

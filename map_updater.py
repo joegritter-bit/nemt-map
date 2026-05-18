@@ -32,11 +32,22 @@ def publish_map():
 
         # Pull any remote commits (e.g. from worktree pushes) before adding
         # our own commit so the push is never rejected as non-fast-forward.
+        # Stash any unstaged changes before rebase
+        subprocess.run(
+            ['git', '-C', MAP_REPO, 'stash'],
+            capture_output=True, text=True)
+
         pull_result = subprocess.run(
             ['git', '-C', MAP_REPO, 'pull', '--rebase', 'origin', 'master'],
             capture_output=True, text=True)
         if pull_result.returncode != 0:
-            log.warning(f"Git pull --rebase failed: {pull_result.stderr.strip()}")
+            log.warning(f"Git pull --rebase failed: "
+                        f"{pull_result.stderr.strip()}")
+
+        # Restore stashed changes after rebase
+        subprocess.run(
+            ['git', '-C', MAP_REPO, 'stash', 'pop'],
+            capture_output=True, text=True)
 
         shutil.copy2(MAP_SOURCE, MAP_DEST)
 

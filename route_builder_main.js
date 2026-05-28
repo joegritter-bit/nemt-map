@@ -176,9 +176,18 @@ const CITY_COORDS = {
   'bethany':        { lat: 39.6453, lng: -88.7362 },
 };
 
-function getDistanceMiles(fromAddr, toAddr) {
+// In-memory distance cache for route builder session
+const distanceCache = new Map();
+
+async function getDistanceMiles(fromAddr, toAddr) {
+  if (!fromAddr || !toAddr) return null;
+
+  const key = `${fromAddr}||${toAddr}`;
+  if (distanceCache.has(key)) {
+    return distanceCache.get(key);
+  }
+
   return new Promise((resolve) => {
-    if (!fromAddr || !toAddr) { resolve(null); return; }
     try {
       chrome.runtime.sendMessage({
         type: 'GET_DEADHEAD_MILES',
@@ -190,12 +199,12 @@ function getDistanceMiles(fromAddr, toAddr) {
           resolve(null);
           return;
         }
-        if (response && response.miles !== null) {
-          console.log('Route builder geocode:', fromAddr, '→', toAddr, '=', response.miles, 'mi');
-          resolve(response.miles);
-        } else {
-          resolve(null);
+        const miles = response?.miles ?? null;
+        if (miles !== null) {
+          console.log('Route builder geocode:', fromAddr, '→', toAddr, '=', miles, 'mi');
+          distanceCache.set(key, miles);
         }
+        resolve(miles);
       });
     } catch(e) { resolve(null); }
   });

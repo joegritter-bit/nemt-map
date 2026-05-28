@@ -26,7 +26,7 @@ from mtm_rates import MTM_MILEAGE_RATE, MILEAGE_BAND_LIMIT, STANDARD_BASE_RATE, 
 
 # --- 🌍 GEOCODING ---
 geolocator = Nominatim(user_agent="JoeNEMT_Bot_v1_complex_routes", timeout=10)
-geocode_service = RateLimiter(geolocator.geocode, min_delay_seconds=2.0, max_retries=3, error_wait_seconds=4)
+geocode_service = RateLimiter(geolocator.geocode, min_delay_seconds=2.0, max_retries=1, error_wait_seconds=4)
 
 def get_db_connection(): return sqlite3.connect(DB_PATH, timeout=30)
 

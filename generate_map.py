@@ -38,8 +38,8 @@ COUNTY_CENTROIDS = {
 }
 
 # Geocoding
-geolocator = Nominatim(user_agent="JoeNEMT_Bot_v1_generate_map", timeout=15)
-geocode_service = RateLimiter(geolocator.geocode, min_delay_seconds=2.0, max_retries=3, error_wait_seconds=4)
+geolocator = Nominatim(user_agent="JoeNEMT_Bot_v1_generate_map", timeout=10)
+geocode_service = RateLimiter(geolocator.geocode, min_delay_seconds=2.0, max_retries=1, error_wait_seconds=4)
 
 def get_db_connection(): return sqlite3.connect(DB_PATH, timeout=30)
 

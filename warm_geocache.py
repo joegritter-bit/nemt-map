@@ -7,10 +7,10 @@ import logging
 
 logging.getLogger("geopy").setLevel(logging.CRITICAL)
 
-geolocator = Nominatim(user_agent="JoeNEMT_geocache_warmer", timeout=15)
+geolocator = Nominatim(user_agent="JoeNEMT_geocache_warmer", timeout=10)
 geocode_service = RateLimiter(
     geolocator.geocode, min_delay_seconds=2.0,
-    max_retries=2, error_wait_seconds=4)
+    max_retries=1, error_wait_seconds=4)
 MIDWEST_VIEWBOX = [(35.0, -95.0), (44.0, -84.0)]
 
 def warm_cache():

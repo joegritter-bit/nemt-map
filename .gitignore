@@ -15,6 +15,7 @@ user_data/
 *.html
 !dashboard.html
 !dashboard/index.html
+!quote_calc.html
 *.png
 *.db
 *.db-shm

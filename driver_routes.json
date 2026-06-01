@@ -1,8 +1,8 @@
 {
-  "date": "05/31/2026",
-  "generated_at": "12:32 AM",
+  "date": "06/01/2026",
+  "generated_at": "05:52 AM",
   "drivers": {
-    "Brandy Wakeland": [
+    "Bradford Thoele": [
       {
         "pickup": "509 E North St, , Kansas Il, 61933",
         "dropoff": "805 Bloomington Rd, , Champaign Il, 61821",
@@ -11,51 +11,37 @@
       },
       {
         "pickup": "805 Bloomington Rd, , Champaign Il, 61821",
-        "dropoff": "509 E North St, , Kansas Il, 61933",
+        "dropoff": "403 N Vine St , RM15, , Urbana Il, 61802",
         "time": "N/A",
         "miles": null
       },
       {
-        "pickup": "1405 W Park St, , Urbana Il, 61801",
-        "dropoff": "807 N Division Ave, , Urbana Il, 61801",
+        "pickup": "805 Bloomington Rd, , Champaign Il, 61821",
+        "dropoff": "403 N Vine St, , Urbana Il, 61802",
         "time": "N/A",
         "miles": null
       },
       {
-        "pickup": "15 W Vine Ave, , Charleston Il, 61920",
-        "dropoff": "2300 S 1st St, , Champaign Il, 61820",
+        "pickup": "805 Bloomington Rd, , Champaign Il, 61820",
+        "dropoff": "52 Bismark St, , Danville Il, 61832",
         "time": "N/A",
         "miles": null
       },
       {
-        "pickup": "2300 S 1st St, , Champaign Il, 61820",
-        "dropoff": "15 W Vine Ave, , Charleston Il, 61920",
-        "time": "N/A",
-        "miles": null
-      }
-    ],
-    "Debbie Reddish": [
-      {
-        "pickup": "806 W 7th St, , West Frankfort Il, 62896",
-        "dropoff": "202 S Bentley St, , Marion Il, 62959",
+        "pickup": "805 Bloomington Rd, , Champaign Il, 61821",
+        "dropoff": "503 Harvey St, , Danville Il, 61832",
         "time": "N/A",
         "miles": null
       },
       {
-        "pickup": "202 S Bentley St, , Marion Il, 62959",
-        "dropoff": "806 W 7th St, , West Frankfort Il, 62896",
+        "pickup": "805 Bloomington Rd, , Champaign Il, 61821",
+        "dropoff": "1606 E Colorado Ave, , Urbana Il, 61802",
         "time": "N/A",
         "miles": null
       },
       {
-        "pickup": "1050 Campground Rd, , Ava Il, 62907",
-        "dropoff": "202 S Bentley St, , Marion Il, 62959",
-        "time": "N/A",
-        "miles": null
-      },
-      {
-        "pickup": "202 S Bentley St, , Marion Il, 62959",
-        "dropoff": "1050 Campground Rd, , Ava Il, 62907",
+        "pickup": "106 S Country Fair Dr, , Champaign Il, 61821",
+        "dropoff": "207 Arlington Dr, , Danville Il, 61832",
         "time": "N/A",
         "miles": null
       }

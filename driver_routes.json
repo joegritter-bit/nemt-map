@@ -1,23 +1,11 @@
 {
-  "date": "06/11/2026",
-  "generated_at": "12:05 PM",
+  "date": "06/12/2026",
+  "generated_at": "10:20 AM",
   "drivers": {
-    "David Fagan": [
+    "Bradford Thoele": [
       {
-        "pickup": "111 Joplin St, , Benton Il, 62812",
+        "pickup": "1050 Campground Rd, , Ava Il, 62907",
         "dropoff": "202 S Bentley St, , Marion Il, 62959",
-        "time": "N/A",
-        "miles": null
-      },
-      {
-        "pickup": "806 W 7th St, , West Frankfort Il, 62896",
-        "dropoff": "202 S Bentley St, , Marion Il, 62959",
-        "time": "N/A",
-        "miles": null
-      },
-      {
-        "pickup": "202 S Bentley St, , Marion Il, 62959",
-        "dropoff": "806 W 7th St, , West Frankfort Il, 62896",
         "time": "N/A",
         "miles": null
       },
@@ -26,18 +14,134 @@
         "dropoff": "1050 Campground Rd, , Ava Il, 62907",
         "time": "N/A",
         "miles": null
+      },
+      {
+        "pickup": "202 S Bentley St, , Marion Il, 62959",
+        "dropoff": "111 Joplin St, , Benton Il, 62812",
+        "time": "N/A",
+        "miles": null
       }
     ],
     "Debbie Reddish": [
       {
-        "pickup": "605 S 2nd St, , Irvington Il, 62848",
-        "dropoff": "202 S Bentley St, , Marion Il, 62959",
+        "pickup": "52 Bismark St, , Danville Il, 61832",
+        "dropoff": "805 Bloomington Rd, , Champaign Il, 61820",
+        "time": "N/A",
+        "miles": null
+      },
+      {
+        "pickup": "2613 Perrysville Rd, , Danville Il, 61834",
+        "dropoff": "805 Bloomington Rd, , Champaign Il, 61820",
+        "time": "N/A",
+        "miles": null
+      },
+      {
+        "pickup": "1020 Campbell Ln, , Danville Il, 61832",
+        "dropoff": "805 Bloomington Rd, , Champaign Il, 61821",
+        "time": "N/A",
+        "miles": null
+      },
+      {
+        "pickup": "1001 W Macon St, , Clinton Il, 61727",
+        "dropoff": "303 Landmark Dr, , Normal Il, 61761",
+        "time": "N/A",
+        "miles": null
+      }
+    ],
+    "Gary D Davis": [
+      {
+        "pickup": "24 Ridge Dr, , Decatur Il, 62521",
+        "dropoff": "151 N Main St, , Decatur Il, 62523",
+        "time": "N/A",
+        "miles": null
+      },
+      {
+        "pickup": "151 N Main St, , Decatur Il, 62523",
+        "dropoff": "24 Ridge Dr, , Decatur Il, 62521",
+        "time": "N/A",
+        "miles": null
+      },
+      {
+        "pickup": "11090 Washington Rd, , Clinton Il, 61727",
+        "dropoff": "303 Landmark Dr, , Normal Il, 61761",
+        "time": "N/A",
+        "miles": null
+      },
+      {
+        "pickup": "5727 Mooney Rd, , Niantic Il, 62551",
+        "dropoff": "151 N Main St, , Decatur Il, 62523",
+        "time": "N/A",
+        "miles": null
+      }
+    ],
+    "Michael Schabbing": [
+      {
+        "pickup": "503 Harvey St, , Danville Il, 61832",
+        "dropoff": "805 Bloomington Rd, , Champaign Il, 61821",
+        "time": "N/A",
+        "miles": null
+      },
+      {
+        "pickup": "1606 E Colorado Ave, , Urbana Il, 61802",
+        "dropoff": "805 Bloomington Rd, , Champaign Il, 61821",
+        "time": "N/A",
+        "miles": null
+      },
+      {
+        "pickup": "403 N Vine St , RM15, , Urbana Il, 61802",
+        "dropoff": "805 Bloomington Rd, , Champaign Il, 61821",
+        "time": "N/A",
+        "miles": null
+      },
+      {
+        "pickup": "403 N Vine St, , Urbana Il, 61802",
+        "dropoff": "805 Bloomington Rd, , Champaign Il, 61821",
         "time": "N/A",
         "miles": null
       },
       {
         "pickup": "805 Bloomington Rd, , Champaign Il, 61821",
-        "dropoff": "109 Winding Ln, , Rantoul Il, 61866",
+        "dropoff": "1020 Campbell Ln, , Danville Il, 61832",
+        "time": "N/A",
+        "miles": null
+      },
+      {
+        "pickup": "53 S Virginia Ave, , Danville Il, 61832",
+        "dropoff": "106 S Country Fair Dr, , Champaign Il, 61821",
+        "time": "N/A",
+        "miles": null
+      },
+      {
+        "pickup": "109 Winding Ln, , Rantoul Il, 61866",
+        "dropoff": "805 Bloomington Rd, , Champaign Il, 61821",
+        "time": "N/A",
+        "miles": null
+      },
+      {
+        "pickup": "805 Bloomington Rd, , Champaign Il, 61821",
+        "dropoff": "509 E North St, , Kansas Il, 61933",
+        "time": "N/A",
+        "miles": null
+      }
+    ],
+    "Norma Roderick": [
+      {
+        "pickup": "1303 W Evergreen Ave, , Effingham Il, 62401",
+        "dropoff": "2305 Charleston Ave, , Mattoon Il, 61938",
+        "time": "N/A",
+        "miles": null
+      }
+    ],
+    "Robert McGee": [
+      {
+        "pickup": "805 Bloomington Rd, , Champaign Il, 61821",
+        "dropoff": "403 N Vine St , RM15, , Urbana Il, 61802",
+        "time": "N/A",
+        "miles": null
+      },
+      {
+        "pickup": "805 Bloomington Rd, , Champaign Il, 61820",
+        "dropoff": "2613 Perrysville Rd, , Danville Il, 61834",
         "time": "N/A",
         "miles": null
       },
@@ -54,35 +158,23 @@
         "miles": null
       }
     ],
-    "Gary D Davis": [
+    "Stefanie Wofford": [
       {
-        "pickup": "1001 W Macon St, , Clinton Il, 61727",
-        "dropoff": "303 Landmark Dr, , Normal Il, 61761",
-        "time": "N/A",
-        "miles": null
-      },
-      {
-        "pickup": "804 Turnberry Dr , apt d, , Bloomington Il, 61701",
-        "dropoff": "303 Landmark Dr, , Normal Il, 61761",
+        "pickup": "303 Landmark Dr, , Normal Il, 61761",
+        "dropoff": "1001 W Macon St, , Clinton Il, 61727",
         "time": "N/A",
         "miles": null
       },
       {
         "pickup": "303 Landmark Dr, , Normal Il, 61761",
-        "dropoff": "804 Turnberry Dr , apt d, , Bloomington Il, 61701",
-        "time": "N/A",
-        "miles": null
-      },
-      {
-        "pickup": "1405 W Park St, , Urbana Il, 61801",
-        "dropoff": "807 N Division Ave, , Urbana Il, 61801",
+        "dropoff": "11090 Washington Rd, , Clinton Il, 61727",
         "time": "N/A",
         "miles": null
       }
     ],
-    "Jack Wiseman": [
+    "Steven Schumacher": [
       {
-        "pickup": "1050 Campground Rd, , Ava Il, 62907",
+        "pickup": "605 S 2nd St, , Irvington Il, 62848",
         "dropoff": "202 S Bentley St, , Marion Il, 62959",
         "time": "N/A",
         "miles": null
@@ -94,106 +186,22 @@
         "miles": null
       }
     ],
-    "Michael Esker": [
+    "TREVER FLOYD": [
       {
-        "pickup": "303 Landmark Dr, , Normal Il, 61761",
-        "dropoff": "416 N Grant St, , Clinton Il, 61727",
-        "time": "N/A",
-        "miles": null
-      }
-    ],
-    "Nancy Merritt": [
-      {
-        "pickup": "1020 Campbell Ln, , Danville Il, 61832",
-        "dropoff": "805 Bloomington Rd, , Champaign Il, 61821",
+        "pickup": "1052 Eastview Dr, , Rantoul Il, 61866",
+        "dropoff": "106 S Country Fair Dr, , Champaign Il, 61821",
         "time": "N/A",
         "miles": null
       },
       {
         "pickup": "805 Bloomington Rd, , Champaign Il, 61821",
-        "dropoff": "1020 Campbell Ln, , Danville Il, 61832",
-        "time": "N/A",
-        "miles": null
-      },
-      {
-        "pickup": "52 Bismark St, , Danville Il, 61832",
-        "dropoff": "805 Bloomington Rd, , Champaign Il, 61820",
-        "time": "N/A",
-        "miles": null
-      },
-      {
-        "pickup": "713 Douglas Ave, , Danville Il, 61832",
-        "dropoff": "805 Bloomington Rd, , Champaign Il, 61821",
+        "dropoff": "1606 E Colorado Ave, , Urbana Il, 61802",
         "time": "N/A",
         "miles": null
       },
       {
         "pickup": "805 Bloomington Rd, , Champaign Il, 61821",
-        "dropoff": "713 Douglas Ave, , Danville Il, 61832",
-        "time": "N/A",
-        "miles": null
-      },
-      {
-        "pickup": "116 Dewey St, , Urbana Il, 61802",
-        "dropoff": "805 Bloomington Rd, , Champaign Il, 61821",
-        "time": "N/A",
-        "miles": null
-      },
-      {
-        "pickup": "805 Bloomington Rd, , Champaign Il, 61821",
-        "dropoff": "116 Dewey St, , Urbana Il, 61802",
-        "time": "N/A",
-        "miles": null
-      },
-      {
-        "pickup": "403 N Vine St , RM15, , Urbana Il, 61802",
-        "dropoff": "805 Bloomington Rd, , Champaign Il, 61821",
-        "time": "N/A",
-        "miles": null
-      },
-      {
-        "pickup": "805 Bloomington Rd, , Champaign Il, 61820",
-        "dropoff": "2613 Perrysville Rd, , Danville Il, 61834",
-        "time": "N/A",
-        "miles": null
-      },
-      {
-        "pickup": "807 N Division Ave, , Urbana Il, 61801",
-        "dropoff": "1405 W Park St, , Urbana Il, 61801",
-        "time": "N/A",
-        "miles": null
-      },
-      {
-        "pickup": "1405 W Park St, , Urbana Il, 61801",
-        "dropoff": "222 N State St , Apt 507, , Champaign Il, 61820",
-        "time": "N/A",
-        "miles": null
-      }
-    ],
-    "Norma Roderick": [
-      {
-        "pickup": "222 N State St , Apt 507, , Champaign Il, 61820",
-        "dropoff": "1405 W Park St, , Urbana Il, 61801",
-        "time": "N/A",
-        "miles": null
-      }
-    ],
-    "Steven Schumacher": [
-      {
-        "pickup": "151 N Main St, , Decatur Il, 62523",
-        "dropoff": "24 Ridge Dr, , Decatur Il, 62521",
-        "time": "N/A",
-        "miles": null
-      },
-      {
-        "pickup": "905 Elmhurst Ave, , Decatur Il, 62526",
-        "dropoff": "151 N Main St, , Decatur Il, 62523",
-        "time": "N/A",
-        "miles": null
-      },
-      {
-        "pickup": "151 N Main St, , Decatur Il, 62523",
-        "dropoff": "905 Elmhurst Ave, , Decatur Il, 62526",
+        "dropoff": "109 Winding Ln, , Rantoul Il, 61866",
         "time": "N/A",
         "miles": null
       },

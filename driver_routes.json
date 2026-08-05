@@ -1,8 +1,8 @@
 {
-  "date": "08/03/2026",
-  "generated_at": "11:04 PM",
+  "date": "08/04/2026",
+  "generated_at": "11:05 PM",
   "drivers": {
-    "Bradford Thoele": [
+    "David Fagan": [
       {
         "pickup": "111 Joplin St, , Benton Il, 62812",
         "dropoff": "202 S Bentley St, , Marion Il, 62959",
@@ -28,20 +28,6 @@
         "miles": null
       }
     ],
-    "David Fagan": [
-      {
-        "pickup": "700 E Main St , Apt 1, , Clinton Il, 61727",
-        "dropoff": "303 Landmark Dr, , Normal Il, 61761",
-        "time": "6:54 AM",
-        "miles": null
-      },
-      {
-        "pickup": "804 Turnberry Dr , apt d, , Bloomington Il, 61701",
-        "dropoff": "303 Landmark Dr, , Normal Il, 61761",
-        "time": "7:31 AM",
-        "miles": null
-      }
-    ],
     "Debbie Reddish": [
       {
         "pickup": "5727 Mooney Rd, , Niantic Il, 62551",
@@ -51,28 +37,60 @@
       },
       {
         "pickup": "151 N Main St, , Decatur Il, 62523",
-        "dropoff": "1012 County Rd 700e , 700e, , Sullivan Il, 61951",
-        "time": "8:35 AM",
+        "dropoff": "5727 Mooney Rd, , Niantic Il, 62551",
+        "time": "9:15 AM",
         "miles": null
-      }
-    ],
-    "DERRON JENKINS": [
+      },
       {
-        "pickup": "199 Burdell Ln, , Hillsboro Il, 62049",
-        "dropoff": "120 N 11th St, , Springfield Il, 62703",
-        "time": "8:29 AM",
+        "pickup": "120 N 11th St, , Springfield Il, 62703",
+        "dropoff": "199 Burdell Ln, , Hillsboro Il, 62049",
+        "time": "10:20 AM",
         "miles": null
       }
     ],
-    "FRANKIE COLP": [
+    "Jack Wiseman": [
       {
-        "pickup": "1004 Anthony Dr, , Champaign Il, 61821",
-        "dropoff": "2708 Carrelton Dr, , Champaign Il, 61821",
-        "time": "1:30 PM",
+        "pickup": "805 Bloomington Rd, , Champaign Il, 61820",
+        "dropoff": "2613 Perrysville Rd, , Danville Il, 61834",
+        "time": "6:45 AM",
+        "miles": null
+      },
+      {
+        "pickup": "805 Bloomington Rd, , Champaign Il, 61821",
+        "dropoff": "201 N Hazel St, , Danville Il, 61832",
+        "time": "6:45 AM",
         "miles": null
       }
     ],
-    "Gary D Davis": [
+    "Michael Esker": [
+      {
+        "pickup": "605 S 2nd St, , Irvington Il, 62848",
+        "dropoff": "202 N Bentley St, , Marion Il, 62959",
+        "time": "5:47 AM",
+        "miles": null
+      },
+      {
+        "pickup": "1050 Campground Rd, , Ava Il, 62907",
+        "dropoff": "202 S Bentley St, , Marion Il, 62959",
+        "time": "6:46 AM",
+        "miles": null
+      }
+    ],
+    "Nancy Merritt": [
+      {
+        "pickup": "202 S Bentley St, , Marion Il, 62959",
+        "dropoff": "111 Joplin St, , Benton Il, 62812",
+        "time": "8:30 AM",
+        "miles": null
+      },
+      {
+        "pickup": "202 N Bentley St, , Marion Il, 62959",
+        "dropoff": "605 S 2nd St, , Irvington Il, 62848",
+        "time": "8:30 AM",
+        "miles": null
+      }
+    ],
+    "Norma Roderick": [
       {
         "pickup": "52 Bismark St, , Danville Il, 61832",
         "dropoff": "805 Bloomington Rd, , Champaign Il, 61820",
@@ -98,87 +116,25 @@
         "miles": null
       },
       {
-        "pickup": "805 Bloomington Rd, , Champaign Il, 61820",
-        "dropoff": "2613 Perrysville Rd, , Danville Il, 61834",
-        "time": "6:46 AM",
-        "miles": null
-      },
-      {
         "pickup": "805 Bloomington Rd, , Champaign Il, 61821",
         "dropoff": "403 N Vine St , RM15, , Urbana Il, 61802",
         "time": "6:46 AM",
         "miles": null
       },
       {
-        "pickup": "2708 Carrelton Dr, , Champaign Il, 61821",
-        "dropoff": "1004 Anthony Dr, , Champaign Il, 61821",
-        "time": "8:35 AM",
-        "miles": null
-      },
-      {
         "pickup": "106 S Country Fair Dr, , Champaign Il, 61821",
         "dropoff": "53 S Virginia Ave, , Danville Il, 61832",
-        "time": "9:14 AM",
-        "miles": null
-      },
-      {
-        "pickup": "800 N Logan Ave, , Danville Il, 61832",
-        "dropoff": "310 Market St, , Shumway Il, 62461",
-        "time": "10:00 AM",
-        "miles": null
-      }
-    ],
-    "Jack Wiseman": [
-      {
-        "pickup": "1012 County Rd 700e , 700e, , Sullivan Il, 61951",
-        "dropoff": "151 N Main St, , Decatur Il, 62523",
-        "time": "6:52 AM",
-        "miles": null
-      },
-      {
-        "pickup": "303 Landmark Dr, , Normal Il, 61761",
-        "dropoff": "700 E Main St , Apt 1, , Clinton Il, 61727",
-        "time": "9:00 AM",
-        "miles": null
-      }
-    ],
-    "Kevin G Cornwell": [
-      {
-        "pickup": "904 Medical Park Dr, , Effingham Il, 62401",
-        "dropoff": "1610 N Lakewood Dr, , Effingham Il, 62401",
-        "time": "1:00 PM",
-        "miles": null
-      },
-      {
-        "pickup": "303 Landmark Dr, , Normal Il, 61761",
-        "dropoff": "804 Turnberry Dr , apt d, , Bloomington Il, 61701",
-        "time": "7:00 PM",
-        "miles": null
-      }
-    ],
-    "Michael Schabbing": [
-      {
-        "pickup": "202 S Bentley St, , Marion Il, 62959",
-        "dropoff": "111 Joplin St, , Benton Il, 62812",
-        "time": "8:30 AM",
-        "miles": null
-      },
-      {
-        "pickup": "202 N Bentley St, , Marion Il, 62959",
-        "dropoff": "605 S 2nd St, , Irvington Il, 62848",
-        "time": "8:30 AM",
-        "miles": null
-      }
-    ],
-    "Nancy Merritt": [
-      {
-        "pickup": "1116 S 14th St, , Mattoon Il, 61938",
-        "dropoff": "610 N Lincoln Ave, , Urbana Il, 61801",
-        "time": "7:49 AM",
+        "time": "8:45 AM",
         "miles": null
       }
     ],
     "Robert McGee": [
+      {
+        "pickup": "201 N Hazel St, , Danville Il, 61832",
+        "dropoff": "805 Bloomington Rd, , Champaign Il, 61821",
+        "time": "5:16 AM",
+        "miles": null
+      },
       {
         "pickup": "53 S Virginia Ave, , Danville Il, 61832",
         "dropoff": "106 S Country Fair Dr, , Champaign Il, 61821",
@@ -198,39 +154,11 @@
         "miles": null
       }
     ],
-    "Stefanie Wofford": [
-      {
-        "pickup": "1610 N Lakewood Dr, , Effingham Il, 62401",
-        "dropoff": "904 Medical Park Dr, , Effingham Il, 62401",
-        "time": "8:22 AM",
-        "miles": null
-      },
-      {
-        "pickup": "120 N 11th St, , Springfield Il, 62703",
-        "dropoff": "199 Burdell Ln, , Hillsboro Il, 62049",
-        "time": "10:15 AM",
-        "miles": null
-      }
-    ],
     "Steven Schumacher": [
       {
-        "pickup": "310 Market St, , Shumway Il, 62461",
-        "dropoff": "800 N Logan Ave, , Danville Il, 61832",
-        "time": "7:09 AM",
-        "miles": null
-      }
-    ],
-    "TREVER FLOYD": [
-      {
-        "pickup": "605 S 2nd St, , Irvington Il, 62848",
-        "dropoff": "202 N Bentley St, , Marion Il, 62959",
-        "time": "5:47 AM",
-        "miles": null
-      },
-      {
-        "pickup": "1050 Campground Rd, , Ava Il, 62907",
-        "dropoff": "202 S Bentley St, , Marion Il, 62959",
-        "time": "6:46 AM",
+        "pickup": "199 Burdell Ln, , Hillsboro Il, 62049",
+        "dropoff": "120 N 11th St, , Springfield Il, 62703",
+        "time": "8:29 AM",
         "miles": null
       }
     ]

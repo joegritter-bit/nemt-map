@@ -15,7 +15,6 @@ user_data/
 *.html
 !dashboard.html
 !dashboard/index.html
-!quote_calc.html
 !index.html
 *.png
 *.db
